@@ -7,28 +7,71 @@ part 'message.g.dart';
 class Message extends Equatable {
   const Message({
     this.id,
+    this.docId,
+    this.patId,
+    this.docName,
+    this.patName,
+    this.docAvatar,
+    this.patAvatar,
+    this.lastMessage,
+    this.lastTimeStamp,
+  });
+
+  final String id;
+  final String docId;
+  final String patId;
+  final String docName;
+  final String patName;
+  final String docAvatar;
+  final String patAvatar;
+  final String lastMessage;
+  final String lastTimeStamp;
+
+  @override
+  List<Object> get props => [
+        id,
+        docId,
+        patId,
+        docName,
+        patName,
+        docAvatar,
+        patAvatar,
+        lastMessage,
+        lastTimeStamp,
+      ];
+
+  factory Message.fromJson(Map<String, dynamic> json) =>
+      _$MessageFromJson(json);
+
+  Map<String, dynamic> toJson() => _$MessageToJson(this);
+}
+
+@JsonSerializable()
+class MessageThread extends Equatable {
+  const MessageThread({
+    this.id,
     this.message,
     this.msgFrom,
-    this.doctorId,
+    this.docId,
     this.messageId,
-    this.patientId,
+    this.patId,
     this.documents,
   });
 
   final String id;
   final String message;
   final String msgFrom;
-  final String doctorId;
-  final String patientId;
+  final String docId;
+  final String patId;
   final String messageId;
   final String documents;
 
   @override
   List<Object> get props =>
-      [id, doctorId, messageId, msgFrom, patientId, message, documents];
+      [id, docId, messageId, msgFrom, patId, message, documents];
 
-  factory Message.fromJson(Map<String, dynamic> json) =>
-      _$MessageFromJson(json);
+  factory MessageThread.fromJson(Map<String, dynamic> json) =>
+      _$MessageThreadFromJson(json);
 
-  Map<String, dynamic> toJson() => _$MessageToJson(this);
+  Map<String, dynamic> toJson() => _$MessageThreadToJson(this);
 }

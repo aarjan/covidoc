@@ -8,7 +8,29 @@ import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/model/repo/session_repo.dart';
 
 class MessageRepo {
-  SessionRepository sessionRepo;
+  final SessionRepository sessionRepo;
+
+  MessageRepo(this.sessionRepo);
+
+  Future<String> getUserId() async {
+    final user = await sessionRepo.getUser();
+    return user?.id;
+  }
+
+  Future<List<Message>> loadMsg(String userId) async {
+    final firestore = FirebaseFirestore.instance;
+    final msgRef = await firestore
+        .collection('user')
+        .doc(userId)
+        .collection('message')
+        .limit(10)
+        .get();
+    if (msgRef == null || msgRef.docs.isEmpty) {
+      return [];
+    }
+    final msgs = msgRef.docs.map((m) => Message.fromJson(m.data())).toList();
+    return msgs;
+  }
 
   Future<void> startMessage(Message msg) async {
     final firestore = FirebaseFirestore.instance;

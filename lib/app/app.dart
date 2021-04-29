@@ -1,6 +1,6 @@
 import 'package:covidoc/model/repo/repo.dart';
 import 'package:flutter/material.dart';
-import 'package:covidoc/model/bloc/bloc.dart';
+import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/model/local/pref.dart';
 import 'package:covidoc/ui/screens/screens.dart';
 import 'package:covidoc/utils/const/const.dart';
@@ -56,18 +56,23 @@ Widget runWidget() {
 
   final userRepo = UserRepo(sessionRepo);
 
-  return MultiBlocProvider(
+  return MultiRepositoryProvider(
     providers: [
-      BlocProvider(
-        create: (_) => authBloc..add(AppStarted()),
-      ),
-      BlocProvider(
-        create: (_) => UserBloc(repo: userRepo),
-      ),
-      BlocProvider(
-        create: (_) => SignInBloc(SignInRepo(sessionRepo), authBloc),
-      )
+      RepositoryProvider(create: (_) => MessageRepo(sessionRepo)),
     ],
-    child: const App(),
+    child: MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (_) => authBloc..add(AppStarted()),
+        ),
+        BlocProvider(
+          create: (_) => UserBloc(repo: userRepo),
+        ),
+        BlocProvider(
+          create: (_) => SignInBloc(SignInRepo(sessionRepo), authBloc),
+        )
+      ],
+      child: const App(),
+    ),
   );
 }
