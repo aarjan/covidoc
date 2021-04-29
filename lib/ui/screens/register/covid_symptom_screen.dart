@@ -29,8 +29,8 @@ class CovidSymptomView extends StatefulWidget {
 }
 
 class _CovidSymptomViewState extends State<CovidSymptomView> {
-  final _formKey = GlobalKey<FormState>();
   String _txt;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +53,7 @@ class _CovidSymptomViewState extends State<CovidSymptomView> {
               TextFormField(
                 onSaved: (val) => _txt = val.trim(),
                 maxLines: 10,
+                autofocus: true,
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.fromLTRB(0, 16, 0, 16),
                   hintStyle: AppFonts.MEDIUM_WHITE3_16,
@@ -67,6 +68,7 @@ class _CovidSymptomViewState extends State<CovidSymptomView> {
                     FocusScope.of(context).unfocus();
 
                     final user = AppUser(
+                      profileVerification: true,
                       detail: {'symptoms': _txt},
                     );
                     context
