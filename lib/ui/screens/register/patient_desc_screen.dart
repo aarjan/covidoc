@@ -36,10 +36,22 @@ class _PatientDescriptionState extends State<PatientDescription> {
   String _location;
   String _language;
 
+  FocusScopeNode _node;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _node = FocusScope.of(context);
+  }
+
+  @override
+  void dispose() {
+    _node.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    final node = FocusScope.of(context);
-
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.white,
@@ -62,7 +74,7 @@ class _PatientDescriptionState extends State<PatientDescription> {
                     children: [
                       FormInput(
                         title: 'Name',
-                        onEdit: node.nextFocus,
+                        onEdit: _node.nextFocus,
                         onSave: (val) => _name = val.trim(),
                         onValidate: (val) => val.trim().isEmpty
                             ? AppConst.FULLNAME_LENGTH_ERROR
@@ -72,7 +84,7 @@ class _PatientDescriptionState extends State<PatientDescription> {
                       FormInput(
                         title: 'Age',
                         isNumber: true,
-                        onEdit: node.nextFocus,
+                        onEdit: _node.nextFocus,
                         onSave: (val) =>
                             _age = int.tryParse(val.trim(), radix: 10),
                         onValidate: (val) =>
@@ -81,7 +93,7 @@ class _PatientDescriptionState extends State<PatientDescription> {
                       const SizedBox(height: 16),
                       FormInput(
                         title: 'Gender',
-                        onEdit: node.nextFocus,
+                        onEdit: _node.nextFocus,
                         onSave: (val) => _gender = val.trim(),
                         onValidate: (val) =>
                             val.trim().isEmpty ? AppConst.GENDER_ERROR : null,
@@ -89,7 +101,7 @@ class _PatientDescriptionState extends State<PatientDescription> {
                       const SizedBox(height: 16),
                       FormInput(
                         title: 'Location',
-                        onEdit: node.nextFocus,
+                        onEdit: _node.nextFocus,
                         onSave: (val) => _location = val.trim(),
                         onValidate: (val) => val.trim().isEmpty
                             ? AppConst.FULLNAME_LENGTH_ERROR
@@ -98,12 +110,13 @@ class _PatientDescriptionState extends State<PatientDescription> {
                       const SizedBox(height: 16),
                       FormInput(
                         title: 'Language',
-                        onEdit: node.nextFocus,
+                        onEdit: _node.nextFocus,
                         onSave: (val) => _language = val.trim(),
                         onValidate: (val) => val.trim().isEmpty
                             ? AppConst.FULLNAME_LENGTH_ERROR
                             : null,
                       ),
+                      const SizedBox(height: 16),
                     ],
                   ),
                 ),
