@@ -24,11 +24,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       case AppStarted:
         yield AuthInProgress();
         await Future.delayed(const Duration(seconds: 2));
-        final status = await repo.isSignedIn();
         final user = await repo.getUser();
-        if (status) {
+        if (user != null) {
           yield Authenticated(
-            profileVerification: user.profileVerification,
+            profileVerification: user?.profileVerification ?? false,
           );
         } else
           yield UnAuthenticated();
