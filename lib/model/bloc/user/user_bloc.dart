@@ -10,6 +10,8 @@ class UserEvent extends Equatable {
 
 class LoadUser extends UserEvent {}
 
+class ClearUser extends UserEvent {}
+
 class UpdateUser extends UserEvent {
   final AppUser user;
   final bool persist;
@@ -53,6 +55,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       case UpdateUser:
         yield* _mapUpdateUserEventToState(event);
         break;
+      case ClearUser:
+        yield UserInitial();
+        break;
       default:
     }
   }
@@ -64,19 +69,17 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   }
 
   Stream<UserState> _mapUpdateUserEventToState(UpdateUser event) async* {
-    AppUser cUser;
     yield UserLoadInProgress();
 
-    if (state is UserLoadSuccess) {
-      cUser = (state as UserLoadSuccess).user;
-    } else {
-      cUser = await repo.getUser();
-    }
+    final cUser = (await repo.getUser()) ?? const AppUser();
 
     final nUser = cUser.copyUser(event.user);
+    await repo.cacheUser(nUser);
+
     if (event.persist) {
       await repo.updateUser(nUser);
     }
+
     yield UserLoadSuccess(nUser);
   }
 }

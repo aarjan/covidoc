@@ -10,9 +10,8 @@ class UserRepo {
   // add/overwrite user if existing
   Future<void> updateUser(AppUser user) async {
     final firestore = FirebaseFirestore.instance;
-    await sessionRepo.cacheUser(user);
     final userInfo = user.toJson();
-    await firestore.collection('user').doc(user.id).set(userInfo);
+    await firestore.collection('user').doc(user.id).update(userInfo);
   }
 
   Future<List<AppUser>> searchDoctors({int limit = 10}) async {
@@ -35,5 +34,9 @@ class UserRepo {
 
   Future<AppUser> getUser() async {
     return sessionRepo.getUser();
+  }
+
+  Future<void> cacheUser(AppUser user) async {
+    return sessionRepo.cacheUser(user);
   }
 }
