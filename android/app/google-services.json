@@ -1,0 +1,85 @@
+{
+  "project_info": {
+    "project_number": "27585759843",
+    "firebase_url": "https://covidoc-85e5a.firebaseio.com",
+    "project_id": "covidoc-85e5a",
+    "storage_bucket": "covidoc-85e5a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27585759843:android:0364c42111a082ce34c656",
+        "android_client_info": {
+          "package_name": "com.neuroflip.covidoc"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "27585759843-nb0ed7eotsldinnkgn9itaqgb6modpc2.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neuroflip.covidoc",
+            "certificate_hash": "b2d6f2bc090731c1b69d0a8295ac1f1f5a4b2fd6"
+          }
+        },
+        {
+          "client_id": "27585759843-u9t3soevcmgu8j2c1g19o0bce6ud2h1d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9mTIfcwGiv_in54eyND3aaKOTgCn-hK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "27585759843-u9t3soevcmgu8j2c1g19o0bce6ud2h1d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27585759843:android:4aca16967c521b7134c656",
+        "android_client_info": {
+          "package_name": "com.neuroflip.covidoc.dev"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "27585759843-a0ckrc73ed6rct0ju2lncisvf1vhva7s.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neuroflip.covidoc.dev",
+            "certificate_hash": "b2d6f2bc090731c1b69d0a8295ac1f1f5a4b2fd6"
+          }
+        },
+        {
+          "client_id": "27585759843-u9t3soevcmgu8j2c1g19o0bce6ud2h1d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9mTIfcwGiv_in54eyND3aaKOTgCn-hK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "27585759843-u9t3soevcmgu8j2c1g19o0bce6ud2h1d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
