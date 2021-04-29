@@ -13,6 +13,7 @@ class AuthRepo {
   Future<Either<ServerFailure, void>> signOut() async {
     try {
       await signOutWithGoogle();
+      await sessionRepo.flushAll();
       return Right(null);
     } catch (e) {
       return Left(ServerFailure(e.toString()));
