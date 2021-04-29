@@ -1,5 +1,5 @@
 import 'package:covidoc/model/entity/entity.dart';
-import 'package:covidoc/model/bloc/user/user_bloc.dart';
+import 'package:covidoc/bloc/user/user_bloc.dart';
 import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:flutter/material.dart';
@@ -179,9 +179,11 @@ class FormInput extends StatelessWidget {
       decoration: InputDecoration(
         hintText: title,
         hintStyle: AppFonts.MEDIUM_WHITE3_16,
+        filled: true,
+        fillColor: AppColors.WHITE1,
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(8),
-        ),
+            borderRadius: BorderRadius.circular(8),
+            borderSide: const BorderSide(color: AppColors.WHITE4)),
       ),
     );
   }

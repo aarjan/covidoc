@@ -18,6 +18,7 @@ dependencies:
   equatable: ^1.2.6
   firebase_core: ^0.7.0
   firebase_auth: ^0.20.1
+  cached_network_image: ^2.3.3
   google_sign_in: ^4.5.1
   either_option: ^1.0.6
   cloud_firestore: ^0.16.0

@@ -1,5 +1,5 @@
 import 'package:covidoc/model/entity/entity.dart';
-import 'package:covidoc/model/bloc/user/user_bloc.dart';
+import 'package:covidoc/bloc/user/user_bloc.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';

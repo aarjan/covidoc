@@ -1,3 +1,4 @@
+export 'chat/chat_list_screen.dart';
 export 'dashboard/dashboard_screen.dart';
 export 'forum/forum_screen.dart';
 export 'register/covid_status_screen.dart';

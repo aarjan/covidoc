@@ -1,6 +1,6 @@
 import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/ui/screens/dashboard/dashboard_screen.dart';
-import 'package:covidoc/model/bloc/user/user_bloc.dart';
+import 'package:covidoc/bloc/user/user_bloc.dart';
 import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:flutter/material.dart';

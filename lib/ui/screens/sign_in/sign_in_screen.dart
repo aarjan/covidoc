@@ -1,4 +1,4 @@
-import 'package:covidoc/model/bloc/bloc.dart';
+import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/ui/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

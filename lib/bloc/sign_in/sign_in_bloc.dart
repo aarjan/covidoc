@@ -1,5 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:covidoc/model/bloc/auth/auth.dart';
+import 'package:covidoc/bloc/auth/auth.dart';
 import 'package:covidoc/model/repo/sign_in_repo.dart';
 
 import 'sign_in.dart';
