@@ -1,0 +1,1 @@
+enum TabState { DASHBOARD, CHAT, GUIDELINES, PROFILE }

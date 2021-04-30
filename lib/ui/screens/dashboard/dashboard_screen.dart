@@ -1,26 +1,11 @@
-import 'package:covidoc/model/bloc/auth/auth.dart';
-import 'package:covidoc/utils/const/const.dart';
-import 'package:covidoc/utils/utils.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:covidoc/utils/utils.dart';
+import 'package:covidoc/utils/const/const.dart';
 
 class DashboardScreen extends StatelessWidget {
   const DashboardScreen();
-  @override
-  Widget build(BuildContext context) {
-    return DashboardView();
-  }
-}
-
-class DashboardView extends StatefulWidget {
-  @override
-  _DashboardViewState createState() => _DashboardViewState();
-}
-
-class _DashboardViewState extends State<DashboardView> {
-  int _selectedIndex = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -31,64 +16,6 @@ class _DashboardViewState extends State<DashboardView> {
           const LowerHalf(),
         ],
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: AppColors.WHITE1,
-        currentIndex: _selectedIndex,
-        onTap: (index) {
-          setState(() {
-            _selectedIndex = index;
-            if (index == 3) {
-              context.read<AuthBloc>().add(LoggedOut());
-              
-            }
-          });
-        },
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        type: BottomNavigationBarType.fixed,
-        items: [
-          const BottomNavigationBarItem(
-            label: 'Dashboard',
-            icon: NavItem(icon: Icons.chat_outlined),
-            activeIcon: NavItem(active: true, icon: Icons.chat_outlined),
-          ),
-          const BottomNavigationBarItem(
-            label: 'Discussion',
-            icon: NavItem(icon: Icons.flag_outlined),
-            activeIcon: NavItem(active: true, icon: Icons.flag_outlined),
-          ),
-          const BottomNavigationBarItem(
-            label: 'Guidelines',
-            icon: NavItem(icon: Icons.receipt_long_outlined),
-            activeIcon:
-                NavItem(active: true, icon: Icons.receipt_long_outlined),
-          ),
-          const BottomNavigationBarItem(
-            label: 'Profile',
-            icon: NavItem(icon: Icons.person_outlined),
-            activeIcon: NavItem(active: true, icon: Icons.person_outlined),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class NavItem extends StatelessWidget {
-  final bool active;
-  final IconData icon;
-
-  const NavItem({Key key, this.active = false, this.icon}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(10),
-      decoration: BoxDecoration(
-        color: active ? AppColors.DEFAULT : AppColors.WHITE4,
-        shape: BoxShape.circle,
-      ),
-      child: Icon(icon, color: active ? AppColors.WHITE : AppColors.BLACK3),
     );
   }
 }

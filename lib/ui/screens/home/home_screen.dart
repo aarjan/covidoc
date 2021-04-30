@@ -1,45 +1,52 @@
+import 'package:covidoc/model/entity/app_user.dart';
 import 'package:flutter/material.dart';
-import 'package:covidoc/model/bloc/auth/auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:covidoc/bloc/bloc.dart';
+import 'package:covidoc/ui/screens/screens.dart';
+import 'package:covidoc/ui/widgets/widgets.dart';
 
 class HomeScreen extends StatelessWidget {
   const HomeScreen();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: BlocListener<AuthBloc, AuthState>(
-        listener: (context, state) {
-          if (state is UnAuthenticated) {
-            Navigator.pushReplacementNamed(context, '/');
-          }
-        },
-        child: HomeView(),
-      ),
-    );
-  }
-}
+    return BlocProvider(
+      create: (context) => TabBloc()..add(const OnTabChanged(0)),
+      child: BlocBuilder<TabBloc, TabState>(
+        builder: (context, state) {
+          return Scaffold(
+            body: Builder(builder: (context) {
+              switch (state) {
+                case TabState.DASHBOARD:
+                  return const DashboardScreen();
+                  break;
+                case TabState.CHAT:
+                  return const ChatListScreen();
+                  break;
+                case TabState.GUIDELINES:
+                  return ForumScreen();
+                  break;
+                case TabState.PROFILE:
+                  return Container();
+                  break;
+                default:
+                  throw UnimplementedError();
+              }
+            }),
+            bottomNavigationBar: BottomNavBar(
+              onSelected: (index) {
+                context.read<TabBloc>().add(OnTabChanged(index));
 
-class HomeView extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            'Welcome to Covidoc!',
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          const SizedBox(height: 20),
-          TextButton(
-            onPressed: () {
-              context.read<AuthBloc>().add(LoggedOut());
-            },
-            child: const Text('Logout'),
-          ),
-        ],
+                if (index == 3) {
+                  context.read<AuthBloc>().add(LoggedOut());
+                  context.read<UserBloc>().add(ClearUser());
+                  Navigator.pushReplacementNamed(context, '/');
+                }
+              },
+            ),
+          );
+        },
       ),
     );
   }

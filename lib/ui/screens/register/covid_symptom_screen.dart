@@ -1,6 +1,6 @@
 import 'package:covidoc/model/entity/entity.dart';
-import 'package:covidoc/ui/screens/dashboard/dashboard_screen.dart';
 import 'package:covidoc/bloc/user/user_bloc.dart';
+import 'package:covidoc/ui/screens/screens.dart';
 import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:flutter/material.dart';
@@ -13,8 +13,8 @@ class CovidSymptomScreen extends StatelessWidget {
     return BlocListener<UserBloc, UserState>(
         listener: (context, state) {
           if (state is UserLoadSuccess) {
-            Navigator.pushReplacement(context,
-                MaterialPageRoute(builder: (_) => const DashboardScreen()));
+            Navigator.pushReplacement(
+                context, MaterialPageRoute(builder: (_) => const HomeScreen()));
           }
         },
         child: const CovidSymptomView());

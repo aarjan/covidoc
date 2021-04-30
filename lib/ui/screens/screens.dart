@@ -1,6 +1,8 @@
 export 'chat/chat_list_screen.dart';
+export 'chat/chat_screen.dart';
 export 'dashboard/dashboard_screen.dart';
 export 'forum/forum_screen.dart';
+export 'home/home_screen.dart';
 export 'register/covid_status_screen.dart';
 export 'register/covid_symptom_screen.dart';
 export 'register/patient_desc_screen.dart';

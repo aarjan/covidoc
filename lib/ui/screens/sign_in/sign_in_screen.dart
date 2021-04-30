@@ -21,7 +21,7 @@ class SignInScreen extends StatelessWidget {
           if (state is SignInSuccess) {
             if (state.profileVerification) {
               Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (_) => const DashboardScreen()));
+                  MaterialPageRoute(builder: (_) => const HomeScreen()));
             } else
               Navigator.pushReplacement(context,
                   MaterialPageRoute(builder: (_) => const RegisterScreen()));
