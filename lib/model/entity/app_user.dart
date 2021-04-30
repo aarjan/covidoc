@@ -3,6 +3,8 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'app_user.g.dart';
 
+enum UserType { Doctor, Patient }
+
 @JsonSerializable(includeIfNull: false)
 class AppUser extends Equatable {
   const AppUser({

@@ -41,6 +41,12 @@ class MessageRepo {
     return msgs;
   }
 
+  Future<void> startConversation(
+      {Chat chat, String fromUserId, String toUserId}) async {
+    final firestore = FirebaseFirestore.instance;
+    await firestore.doc('user/$fromUserId/chat/$toUserId').set(chat.toJson());
+  }
+
   Future<Message> sendMessage(
       Message msg, String fromUserId, String toUserId) async {
     final firestore = FirebaseFirestore.instance;

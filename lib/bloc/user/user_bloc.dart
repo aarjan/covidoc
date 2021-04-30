@@ -10,6 +10,8 @@ class UserEvent extends Equatable {
 
 class LoadUser extends UserEvent {}
 
+class LoadDoctor extends UserEvent {}
+
 class ClearUser extends UserEvent {}
 
 class UpdateUser extends UserEvent {
@@ -31,11 +33,16 @@ class UserInitial extends UserState {}
 
 class UserLoadSuccess extends UserState {
   final AppUser user;
+  final List<AppUser> doctors;
 
-  UserLoadSuccess(this.user);
+  UserLoadSuccess({this.user, this.doctors = const []});
 
   @override
-  List<Object> get props => [user];
+  List<Object> get props => [user, doctors];
+
+  UserLoadSuccess copyWith({user, doctors}) {
+    return UserLoadSuccess(user: this.user, doctors: doctors ?? this.doctors);
+  }
 }
 
 class UserLoadInProgress extends UserState {}
@@ -55,6 +62,9 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       case UpdateUser:
         yield* _mapUpdateUserEventToState(event);
         break;
+      case LoadDoctor:
+        yield* _mapLoadDoctorEventToState(event);
+        break;
       case ClearUser:
         yield UserInitial();
         break;
@@ -65,7 +75,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Stream<UserState> _mapLoadUserEventToState() async* {
     yield UserLoadInProgress();
     final user = await repo.getUser();
-    yield UserLoadSuccess(user);
+    yield UserLoadSuccess(user: user);
   }
 
   Stream<UserState> _mapUpdateUserEventToState(UpdateUser event) async* {
@@ -80,6 +90,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       await repo.updateUser(nUser);
     }
 
-    yield UserLoadSuccess(nUser);
+    yield UserLoadSuccess(user: nUser);
+  }
+
+  Stream<UserState> _mapLoadDoctorEventToState(LoadDoctor event) async* {
+    final user = await repo.getUser();
+
+    yield UserLoadInProgress();
+    final doctors = await repo.loadDoctors();
+    yield UserLoadSuccess(doctors: doctors, user: user);
   }
 }

@@ -14,7 +14,7 @@ class UserRepo {
     await firestore.collection('user').doc(user.id).update(userInfo);
   }
 
-  Future<List<AppUser>> searchDoctors({int limit = 10}) async {
+  Future<List<AppUser>> loadDoctors({int limit = 10}) async {
     final firestore = FirebaseFirestore.instance;
     final dRef = await firestore
         .collection('user')
@@ -23,8 +23,7 @@ class UserRepo {
         .get();
     if (dRef != null && dRef.docs.isNotEmpty) {
       final doctors = dRef.docs
-          ?.map((d) =>
-              d == null ? null : AppUser.fromJson(d as Map<String, dynamic>))
+          ?.map((d) => d == null ? null : AppUser.fromJson(d.data()))
           ?.toList();
 
       return doctors;
