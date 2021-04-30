@@ -16,4 +16,6 @@ class AppColors {
 
   static const Color PINK = Color(0xFFF178B6);
   static const Color PURUPLE = Color(0xFFA5A6F6);
+
+  static const Color GREEN1 = Color(0xFFE2FBD7);
 }
