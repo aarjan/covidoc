@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import 'const/app_const.dart';
+
 double screenHeight(BuildContext context) {
   return MediaQuery.of(context).size.height;
 }
@@ -119,4 +121,13 @@ Future<void> launchURL(String url) async {
   if (await canLaunch(url)) {
     await launch(url);
   }
+}
+
+extension DateTimeExtension on DateTime {
+  String get formattedTime => '${day.padInt} ${AppConst.MONTH[month]} $year '
+      '${hour.padInt}:${minute.padInt}';
+
+  String get formattedDate => '${day.padInt} ${AppConst.MONTH[month]} $year';
+
+  String get formattedDay => '${day.padInt} ${AppConst.MONTH[month]}';
 }

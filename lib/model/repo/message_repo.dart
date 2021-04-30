@@ -17,13 +17,22 @@ class MessageRepo {
     return user?.id;
   }
 
-  Future<List<Message>> loadMsg(String userId) async {
+  Future<List<Chat>> loadChats(String userId) async {
+    final firestore = FirebaseFirestore.instance;
+    final msgRef =
+        await firestore.collection('user/$userId/chat').limit(10).get();
+
+    if (msgRef == null || msgRef.docs.isEmpty) {
+      return [];
+    }
+    final msgs = msgRef.docs.map((m) => Chat.fromJson(m.data())).toList();
+    return msgs;
+  }
+
+  Future<List<Message>> loadMessages(String fromUserId, String toUserId) async {
     final firestore = FirebaseFirestore.instance;
     final msgRef = await firestore
-        .collection('user')
-        .doc(userId)
-        .collection('message')
-        .limit(10)
+        .collection('user/$fromUserId/chat/$toUserId/message')
         .get();
     if (msgRef == null || msgRef.docs.isEmpty) {
       return [];
@@ -32,19 +41,40 @@ class MessageRepo {
     return msgs;
   }
 
-  Future<void> startMessage(Message msg) async {
+  Future<Message> sendMessage(
+      Message msg, String fromUserId, String toUserId) async {
     final firestore = FirebaseFirestore.instance;
-    await firestore.collection('message').add(msg.toJson());
+    final mRef = await firestore
+        .collection('user/$fromUserId/chat/$toUserId/message')
+        .add(msg.toJson());
+    return msg.copyWith(id: mRef.id);
   }
 
-  Future<void> editMessage(Message msg) async {
+  Future<void> updateLastMsg(
+      String fromUserId, String chatId, String msg) async {
     final firestore = FirebaseFirestore.instance;
-    await firestore.collection('message').doc(msg.id).update(msg.toJson());
+    await firestore.collection('user/$fromUserId/chat').doc(chatId).update({
+      'lastMessage': msg,
+      'lastTimestmap': DateTime.now().toIso8601String()
+    });
   }
 
-  Future<void> deleteMessage(Message msg) async {
+  Future<void> editMessage(
+      Message msg, String fromUserId, String toUserId) async {
     final firestore = FirebaseFirestore.instance;
-    await firestore.collection('message').doc(msg.id).delete();
+    await firestore
+        .collection('user/$fromUserId/chat/$toUserId/message')
+        .doc(msg.id)
+        .update(msg.toJson());
+  }
+
+  Future<void> deleteMessage(
+      Message msg, String fromUserId, String toUserId) async {
+    final firestore = FirebaseFirestore.instance;
+    await firestore
+        .collection('user/$fromUserId/chat/$toUserId/message')
+        .doc(msg.id)
+        .delete();
   }
 
   Future<void> uploadFile(String fileName) async {

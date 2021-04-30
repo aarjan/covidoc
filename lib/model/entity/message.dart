@@ -4,9 +4,8 @@ import 'package:json_annotation/json_annotation.dart';
 part 'message.g.dart';
 
 @JsonSerializable()
-class Message extends Equatable {
-  const Message({
-    this.id,
+class Chat extends Equatable {
+  const Chat({
     this.docId,
     this.patId,
     this.docName,
@@ -14,10 +13,9 @@ class Message extends Equatable {
     this.docAvatar,
     this.patAvatar,
     this.lastMessage,
-    this.lastTimeStamp,
+    this.lastTimestamp,
   });
 
-  final String id;
   final String docId;
   final String patId;
   final String docName;
@@ -25,11 +23,10 @@ class Message extends Equatable {
   final String docAvatar;
   final String patAvatar;
   final String lastMessage;
-  final String lastTimeStamp;
+  final DateTime lastTimestamp;
 
   @override
   List<Object> get props => [
-        id,
         docId,
         patId,
         docName,
@@ -37,41 +34,60 @@ class Message extends Equatable {
         docAvatar,
         patAvatar,
         lastMessage,
-        lastTimeStamp,
+        lastTimestamp,
       ];
+
+  factory Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);
+
+  Map<String, dynamic> toJson() => _$ChatToJson(this);
+}
+
+@JsonSerializable()
+class Message extends Equatable {
+  const Message({
+    this.id,
+    this.docId,
+    this.patId,
+    this.message,
+    this.msgFrom,
+    this.documents,
+    this.timestamp,
+  });
+
+  final String id;
+  final String docId;
+  final String patId;
+  final String message;
+  final String msgFrom;
+  final String documents;
+  final String timestamp;
+
+  @override
+  List<Object> get props =>
+      [docId, id, msgFrom, patId, message, documents, timestamp];
 
   factory Message.fromJson(Map<String, dynamic> json) =>
       _$MessageFromJson(json);
 
   Map<String, dynamic> toJson() => _$MessageToJson(this);
-}
 
-@JsonSerializable()
-class MessageThread extends Equatable {
-  const MessageThread({
-    this.id,
-    this.message,
-    this.msgFrom,
-    this.docId,
-    this.messageId,
-    this.patId,
-    this.documents,
-  });
-
-  final String id;
-  final String message;
-  final String msgFrom;
-  final String docId;
-  final String patId;
-  final String messageId;
-  final String documents;
-
-  @override
-  List<Object> get props =>
-      [id, docId, messageId, msgFrom, patId, message, documents];
-
-  factory MessageThread.fromJson(Map<String, dynamic> json) =>
-      _$MessageThreadFromJson(json);
-
-  Map<String, dynamic> toJson() => _$MessageThreadToJson(this);
+  Message copyWith({
+    String id,
+    String docId,
+    String patId,
+    String message,
+    String msgFrom,
+    String documents,
+    String timestamp,
+  }) {
+    return Message(
+      id: id ?? this.id,
+      docId: docId ?? this.docId,
+      patId: patId ?? this.patId,
+      message: message ?? this.message,
+      msgFrom: msgFrom ?? this.msgFrom,
+      timestamp: timestamp ?? this.timestamp,
+      documents: documents ?? this.documents,
+    );
+  }
 }

@@ -1,4 +1,5 @@
 import 'package:covidoc/model/repo/repo.dart';
+import 'package:covidoc/ui/screens/home/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/model/local/pref.dart';
@@ -24,7 +25,10 @@ class App extends StatelessWidget {
             backgroundColor: AppColors.DEFAULT,
           ),
         ),
-        appBarTheme: const AppBarTheme(color: AppColors.DEFAULT),
+        appBarTheme: const AppBarTheme(
+          elevation: 1,
+          color: AppColors.WHITE,
+        ),
       ),
       initialRoute: '/',
       home: BlocBuilder<AuthBloc, AuthState>(
@@ -32,7 +36,7 @@ class App extends StatelessWidget {
           switch (state.runtimeType) {
             case Authenticated:
               return (state as Authenticated).profileVerification
-                  ? const DashboardScreen()
+                  ? const HomeScreen()
                   : const RegisterScreen();
               break;
             case UnAuthenticated:
@@ -55,10 +59,11 @@ Widget runWidget() {
   final authBloc = AuthBloc(AuthRepo(sessionRepo));
 
   final userRepo = UserRepo(sessionRepo);
+  final msgRepo = MessageRepo(sessionRepo);
 
   return MultiRepositoryProvider(
     providers: [
-      RepositoryProvider(create: (_) => MessageRepo(sessionRepo)),
+      RepositoryProvider(create: (_) => msgRepo),
     ],
     child: MultiBlocProvider(
       providers: [
@@ -70,7 +75,10 @@ Widget runWidget() {
         ),
         BlocProvider(
           create: (_) => SignInBloc(SignInRepo(sessionRepo), authBloc),
-        )
+        ),
+        BlocProvider(
+          create: (context) => MessageBloc(repo: msgRepo),
+        ),
       ],
       child: const App(),
     ),
