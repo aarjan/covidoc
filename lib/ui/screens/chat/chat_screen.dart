@@ -65,17 +65,12 @@ class _ChatViewState extends State<ChatView> {
   ScrollController _controller;
 
   @override
-  void initState() async {
+  void initState() {
     super.initState();
     _controller = ScrollController(
       initialScrollOffset: 0,
       keepScrollOffset: true,
     );
-    // await _controller.animateTo(
-    //   0,
-    //   duration: const Duration(milliseconds: 1000),
-    //   curve: Curves.bounceIn,
-    // );
   }
 
   @override
