@@ -21,21 +21,24 @@ class ForumScreen extends StatelessWidget {
 class ForumView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        AddQuestionView(onAdd: () {}),
-        const SizedBox(height: 20),
-        const FilterView(),
-        const SizedBox(height: 20),
-        Expanded(
-          child: ListView.builder(
-            itemCount: 10,
-            itemBuilder: (context, index) {
-              return QuestionView();
-            },
+    return Padding(
+      padding: const EdgeInsets.all(15),
+      child: Column(
+        children: [
+          AddQuestionView(onAdd: () {}),
+          const SizedBox(height: 20),
+          const FilterView(),
+          const SizedBox(height: 20),
+          Expanded(
+            child: ListView.builder(
+              itemCount: 10,
+              itemBuilder: (context, index) {
+                return QuestionView();
+              },
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
@@ -105,37 +108,49 @@ class AddQuestionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
         border: Border.all(color: AppColors.WHITE3),
         borderRadius: BorderRadius.circular(10),
       ),
+      constraints: const BoxConstraints(maxHeight: 110),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          Image.asset('assets/forum/add_img'),
-          Column(
-            children: [
-              Text(
-                'Add a new question',
-                style: AppFonts.SEMIBOLD_BLACK3_18,
-              ),
-              const SizedBox(height: 5),
-              Text(
-                'Lorem ipsum dolor sit amet, '
-                'consectetur adipisg elit. In in nisi sed odio',
-                style: AppFonts.REGULAR_BLACK3_14,
-              )
-            ],
-          ),
-          IconButton(
-            icon: Container(
-              padding: const EdgeInsets.all(15),
-              child: const Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
+          Image.asset('assets/forum/add_img.png'),
+          Expanded(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Add a new question',
+                  style: AppFonts.SEMIBOLD_BLACK3_16,
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  'Lorem ipsum dolor sit amet, '
+                  'consectetur adipisg elit. In in nisi sed odio',
+                  softWrap: true,
+                  maxLines: 3,
+                  style: AppFonts.REGULAR_BLACK3_9,
+                )
+              ],
             ),
-            onPressed: onAdd,
+          ),
+          const SizedBox(height: 50),
+          Container(
+            decoration: const BoxDecoration(
+              color: AppColors.DEFAULT,
+              shape: BoxShape.circle,
+            ),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.all(15),
+            child: const Icon(
+              Icons.add,
+              color: Colors.white,
+            ),
           ),
         ],
       ),
@@ -147,7 +162,7 @@ class QuestionView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 20),
       margin: const EdgeInsets.only(top: 10),
       decoration: const BoxDecoration(
           border: Border(bottom: BorderSide(color: AppColors.WHITE4))),
