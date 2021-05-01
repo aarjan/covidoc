@@ -14,25 +14,24 @@ class UserRepo {
     await firestore.collection('user').doc(user.id).update(userInfo);
   }
 
-  // [TODO]: Fix the query, can't query multiple fields at once
   Future<List<AppUser>> loadUsers({
     String userId,
     int limit = 10,
-    String userType,
-    List<String> chatIds,
+    List<String> userIds,
+    String userType = 'Doctor',
   }) async {
     final firestore = FirebaseFirestore.instance;
     final dRef = await firestore
         .collection('user')
-        .where('chatIds', whereNotIn: chatIds.isEmpty ? [' '] : chatIds)
-        // .where('type', isEqualTo: 'Doctor')
-        // .where(FieldPath.documentId, isNotEqualTo: userId)
+        // .where('type', isEqualTo: userType)
+        .where(FieldPath.documentId,
+            whereNotIn: userIds.isEmpty ? [' '] : userIds)
         .limit(limit)
         .get();
     if (dRef != null && dRef.docs.isNotEmpty) {
       final doctors = dRef.docs
           ?.map((d) => d == null ? null : AppUser.fromJson(d.data()))
-          ?.where((d) => d.id != userId && d.type != userType)
+          ?.where((d) => d.id != userId)
           ?.toList();
 
       return doctors;

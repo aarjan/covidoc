@@ -50,16 +50,21 @@ class MessageRepo {
     return cRef.id;
   }
 
-  Future<void> addUserChatRecord({String userId, String chatId}) async {
+  Future<void> addUserChatRecord(
+      {String fromUserId, String toUserId, String chatId}) async {
     final firestore = FirebaseFirestore.instance;
-    await firestore.doc('user/$userId').update({
-      'chatIds': FieldValue.arrayUnion([chatId])
+    await firestore.doc('user/$fromUserId').update({
+      'chatIds': FieldValue.arrayUnion([chatId]),
+      'chatUsers': FieldValue.arrayUnion([toUserId])
     });
   }
 
-  Future<void> cacheUserChatRecord(String chatId) async {
-    final user = await sessionRepo.getUser();
-    final nUser = user.copyWith(chatIds: [...user.chatIds, chatId]);
+  Future<void> cacheUserChatRecord(
+      AppUser user, String toUserId, String chatId) async {
+    final nUser = user.copyWith(
+      chatIds: [...user.chatIds, chatId],
+      chatUsers: [...user.chatUsers, toUserId],
+    );
     await sessionRepo.cacheUser(nUser);
   }
 

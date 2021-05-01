@@ -98,7 +98,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
 
     yield UserLoadInProgress();
     final doctors = await repo.loadUsers(
-        userId: user.id, chatIds: user.chatIds, userType: user.type);
+        userId: user.id, userIds: user.chatUsers, userType: user.type);
     yield UserLoadSuccess(doctors: doctors, user: user);
   }
 }

@@ -92,11 +92,20 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       );
       final nChat = event.chat.copyWith(id: chatId);
 
-      // add chatId in patient & doctor records
-      await repo.addUserChatRecord(userId: event.chat.docId, chatId: chatId);
-      await repo.addUserChatRecord(userId: event.chat.patId, chatId: chatId);
+      // add chatId, userId in patient & doctor records
+      await repo.addUserChatRecord(
+          toUserId: event.chat.docId,
+          chatId: chatId,
+          fromUserId: event.chat.patId);
+      await repo.addUserChatRecord(
+          toUserId: event.chat.patId,
+          chatId: chatId,
+          fromUserId: event.chat.docId);
 
-      await repo.cacheUserChatRecord(chatId);
+      final user = await repo.getUser();
+      final toUserId =
+          user.type == 'Patient' ? event.chat.docId : event.chat.patId;
+      await repo.cacheUserChatRecord(user, toUserId, chatId);
 
       yield curState.copyWith(conversationStarted: true, chatWith: nChat);
     }
