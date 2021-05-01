@@ -47,6 +47,7 @@ class MessageRepo {
   Future<String> startConversation({Chat chat}) async {
     final firestore = FirebaseFirestore.instance;
     final cRef = await firestore.collection('chat').add(chat.toJson());
+    await firestore.doc('chat/${cRef.id}').update({'id': cRef.id});
     return cRef.id;
   }
 
