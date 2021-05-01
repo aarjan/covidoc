@@ -7,36 +7,50 @@ import 'package:covidoc/utils/const/const.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatScreen extends StatelessWidget {
-  const ChatScreen({this.toUser, this.fromUser});
+  const ChatScreen({this.chat, this.isFromPatient});
 
-  final AppUser toUser;
-  final AppUser fromUser;
+  final Chat chat;
+  final bool isFromPatient;
 
   @override
   Widget build(BuildContext context) {
+    String toUserId;
+    String fromUserId;
+    String fullname;
+    String avatar;
+
+    if (isFromPatient) {
+      fromUserId = chat.patId;
+      toUserId = chat.docId;
+      fullname = chat.docName;
+      avatar = chat.docAvatar;
+    } else {
+      fromUserId = chat.docId;
+      toUserId = chat.patId;
+      fullname = chat.patName;
+      avatar = chat.patAvatar;
+    }
+
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        flexibleSpace: ChatAppBar(
-          name: toUser.fullname,
-          active: true,
-          imgUrl: toUser.avatar,
-        ),
+        flexibleSpace: ChatAppBar(name: fullname, active: true, imgUrl: avatar),
       ),
       body: BlocBuilder<MessageBloc, MessageState>(builder: (context, state) {
         if (state is MessageLoadSuccess) {
           return ChatView(
-            toUserId: toUser.id,
-            fromUserId: fromUser.id,
+            toUserId: toUserId,
+            fromUserId: fromUserId,
             messages: state.msgs,
             onSend: (String val) {
               context.read<MessageBloc>().add(
                     SendMsg(Message(
                       message: val,
-                      msgFrom: 'Patient',
-                      patId: fromUser.id,
-                      docId: toUser.id,
+                      chatId: chat.id,
+                      msgFrom: isFromPatient ? 'Patient' : 'Doctor',
+                      patId: fromUserId,
+                      docId: toUserId,
                       timestamp: DateTime.now().toIso8601String(),
                     )),
                   );

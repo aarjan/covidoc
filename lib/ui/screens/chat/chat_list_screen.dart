@@ -36,8 +36,8 @@ class ChatListScreen extends StatelessWidget {
                   context,
                   MaterialPageRoute(
                     builder: (_) => ChatScreen(
-                      fromUser: state.fromUser,
-                      toUser: state.toUser,
+                      chat: state.chatWith,
+                      isFromPatient: state.userType == 'Patient',
                     ),
                   ));
             }
@@ -47,7 +47,7 @@ class ChatListScreen extends StatelessWidget {
               const Flexible(child: ChatListView()),
               const SizedBox(height: 50),
               Text(
-                'Chat with Doctors',
+                'Chat with Users',
                 style: AppFonts.MEDIUM_BLACK3_16,
               ),
               Container(
@@ -55,13 +55,13 @@ class ChatListScreen extends StatelessWidget {
                 margin: const EdgeInsets.all(20),
                 child: TextButton(
                   onPressed: () {
-                    context.read<UserBloc>().add(LoadDoctor());
+                    context.read<UserBloc>().add(LoadUsers());
                   },
-                  child: Text('Load Doctors', style: AppFonts.MEDIUM_WHITE_14),
+                  child: Text('Load Users', style: AppFonts.MEDIUM_WHITE_14),
                 ),
               ),
               const SizedBox(height: 20),
-              const Flexible(child: DoctorListView()),
+              const Flexible(flex: 5, child: DoctorListView()),
             ],
           ),
         ),

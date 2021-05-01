@@ -12,15 +12,20 @@ class MessageRepo {
 
   MessageRepo(this.sessionRepo);
 
-  Future<String> getUserId() async {
-    final user = await sessionRepo.getUser();
-    return user?.id;
+  Future<AppUser> getUser() async {
+    return sessionRepo.getUser();
   }
 
-  Future<List<Chat>> loadChats(String userId) async {
+  Future<List<Chat>> loadChats(List<String> chatIds) async {
+    if (chatIds == null || chatIds.isEmpty) {
+      return [];
+    }
+
     final firestore = FirebaseFirestore.instance;
-    final msgRef =
-        await firestore.collection('user/$userId/chat').limit(10).get();
+    final msgRef = await firestore
+        .collection('chat')
+        .where(FieldPath.documentId, whereIn: chatIds)
+        .get();
 
     if (msgRef == null || msgRef.docs.isEmpty) {
       return [];
@@ -29,11 +34,9 @@ class MessageRepo {
     return msgs;
   }
 
-  Future<List<Message>> loadMessages(String fromUserId, String toUserId) async {
+  Future<List<Message>> loadMessages(String chatId) async {
     final firestore = FirebaseFirestore.instance;
-    final msgRef = await firestore
-        .collection('user/$fromUserId/chat/$toUserId/message')
-        .get();
+    final msgRef = await firestore.collection('chat/$chatId/message').get();
     if (msgRef == null || msgRef.docs.isEmpty) {
       return [];
     }
@@ -41,46 +44,51 @@ class MessageRepo {
     return msgs;
   }
 
-  Future<void> startConversation(
-      {Chat chat, String fromUserId, String toUserId}) async {
+  Future<String> startConversation({Chat chat}) async {
     final firestore = FirebaseFirestore.instance;
-    await firestore.doc('user/$fromUserId/chat/$toUserId').set(chat.toJson());
+    final cRef = await firestore.collection('chat').add(chat.toJson());
+    return cRef.id;
   }
 
-  Future<Message> sendMessage(
-      Message msg, String fromUserId, String toUserId) async {
+  Future<void> addUserChatRecord({String userId, String chatId}) async {
+    final firestore = FirebaseFirestore.instance;
+    await firestore.doc('user/$userId').update({
+      'chatIds': FieldValue.arrayUnion([chatId])
+    });
+  }
+
+  Future<void> cacheUserChatRecord(String chatId) async {
+    final user = await sessionRepo.getUser();
+    final nUser = user.copyWith(chatIds: user.chatIds..add(chatId));
+    await sessionRepo.cacheUser(nUser);
+  }
+
+  Future<Message> sendMessage(Message msg) async {
     final firestore = FirebaseFirestore.instance;
     final mRef = await firestore
-        .collection('user/$fromUserId/chat/$toUserId/message')
+        .collection('chat/${msg.chatId}/message')
         .add(msg.toJson());
     return msg.copyWith(id: mRef.id);
   }
 
-  Future<void> updateLastMsg(
-      String fromUserId, String chatId, String msg) async {
+  Future<void> updateLastMsg(String chatId, String msg) async {
     final firestore = FirebaseFirestore.instance;
-    await firestore.collection('user/$fromUserId/chat').doc(chatId).update({
+    await firestore.doc('chat/$chatId').update({
       'lastMessage': msg,
       'lastTimestmap': DateTime.now().toIso8601String()
     });
   }
 
-  Future<void> editMessage(
-      Message msg, String fromUserId, String toUserId) async {
+  Future<void> editMessage({Message msg}) async {
     final firestore = FirebaseFirestore.instance;
     await firestore
-        .collection('user/$fromUserId/chat/$toUserId/message')
-        .doc(msg.id)
+        .doc('chat/${msg.chatId}/message/${msg.id}')
         .update(msg.toJson());
   }
 
-  Future<void> deleteMessage(
-      Message msg, String fromUserId, String toUserId) async {
+  Future<void> deleteMessage({String msgId, String chatId}) async {
     final firestore = FirebaseFirestore.instance;
-    await firestore
-        .collection('user/$fromUserId/chat/$toUserId/message')
-        .doc(msg.id)
-        .delete();
+    await firestore.doc('chat/$chatId/message/$msgId').delete();
   }
 
   Future<void> uploadFile(String fileName) async {

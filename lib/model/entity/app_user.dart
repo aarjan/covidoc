@@ -15,6 +15,7 @@ class AppUser extends Equatable {
     this.avatar,
     this.fullname,
     this.providerId,
+    this.chatIds = const <String>[],
     this.profileVerification = false,
   });
 
@@ -29,6 +30,8 @@ class AppUser extends Equatable {
   final String avatar;
   final String fullname;
   final String providerId;
+  @JsonKey(defaultValue: <String>[])
+  final List<String> chatIds;
   final Map<String, dynamic> detail;
   @JsonKey(defaultValue: false)
   final bool profileVerification;
@@ -37,9 +40,10 @@ class AppUser extends Equatable {
   List<Object> get props => [
         id,
         type,
-        avatar,
         email,
+        avatar,
         detail,
+        chatIds,
         fullname,
         providerId,
         profileVerification
@@ -57,6 +61,7 @@ class AppUser extends Equatable {
       type: user.type ?? type,
       email: user.email ?? email,
       avatar: user.avatar ?? avatar,
+      chatIds: user.chatIds ?? chatIds,
       fullname: user.fullname ?? fullname,
       providerId: user.providerId ?? providerId,
       profileVerification: user.profileVerification ?? profileVerification,
@@ -70,6 +75,7 @@ class AppUser extends Equatable {
     String avatar,
     String fullname,
     String providerId,
+    List<String> chatIds,
     bool profileVerification,
     Map<String, dynamic> detail,
   }) {
@@ -79,6 +85,7 @@ class AppUser extends Equatable {
       email: email ?? this.email,
       detail: detail ?? this.detail,
       avatar: avatar ?? this.avatar,
+      chatIds: chatIds ?? this.chatIds,
       fullname: fullname ?? this.fullname,
       providerId: providerId ?? this.providerId,
       profileVerification: profileVerification ?? this.profileVerification,

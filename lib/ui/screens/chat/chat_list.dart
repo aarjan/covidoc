@@ -17,7 +17,7 @@ class ChatListView extends StatelessWidget {
     return BlocBuilder<ChatBloc, ChatState>(
       builder: (context, state) {
         if (state is ChatLoadSuccess) {
-          return _ChatItem(state.chats);
+          return _ChatItem(state.chats, state.userType == 'Patient');
         }
         return const Center(child: CircularProgressIndicator());
       },
@@ -26,9 +26,10 @@ class ChatListView extends StatelessWidget {
 }
 
 class _ChatItem extends StatelessWidget {
-  const _ChatItem(this.chats);
+  const _ChatItem(this.chats, this.isFrontPatient);
 
   final List<Chat> chats;
+  final bool isFrontPatient;
 
   @override
   Widget build(BuildContext context) {
@@ -39,21 +40,13 @@ class _ChatItem extends StatelessWidget {
         final chat = chats[index];
         return ListTile(
           onTap: () {
-            context.read<MessageBloc>().add(LoadMsgs(chat.patId, chat.docId));
+            context.read<MessageBloc>().add(LoadMsgs(chat.id));
             Navigator.push(
                 context,
                 MaterialPageRoute(
                     builder: (_) => ChatScreen(
-                          toUser: AppUser(
-                            id: chat.docId,
-                            avatar: chat.docAvatar,
-                            fullname: chat.docName,
-                          ),
-                          fromUser: AppUser(
-                            id: chat.patId,
-                            avatar: chat.patAvatar,
-                            fullname: chat.patName,
-                          ),
+                          chat: chat,
+                          isFromPatient: isFrontPatient,
                         )));
           },
           leading: CircleAvatar(

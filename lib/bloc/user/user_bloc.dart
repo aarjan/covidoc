@@ -10,7 +10,7 @@ class UserEvent extends Equatable {
 
 class LoadUser extends UserEvent {}
 
-class LoadDoctor extends UserEvent {}
+class LoadUsers extends UserEvent {}
 
 class ClearUser extends UserEvent {}
 
@@ -62,8 +62,8 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       case UpdateUser:
         yield* _mapUpdateUserEventToState(event);
         break;
-      case LoadDoctor:
-        yield* _mapLoadDoctorEventToState(event);
+      case LoadUsers:
+        yield* _mapLoadUsersEventToState(event);
         break;
       case ClearUser:
         yield UserInitial();
@@ -93,11 +93,12 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     yield UserLoadSuccess(user: nUser);
   }
 
-  Stream<UserState> _mapLoadDoctorEventToState(LoadDoctor event) async* {
+  Stream<UserState> _mapLoadUsersEventToState(LoadUsers event) async* {
     final user = await repo.getUser();
 
     yield UserLoadInProgress();
-    final doctors = await repo.loadDoctors();
+    final doctors = await repo.loadUsers(
+        userId: user.id, chatIds: user.chatIds, userType: user.type);
     yield UserLoadSuccess(doctors: doctors, user: user);
   }
 }

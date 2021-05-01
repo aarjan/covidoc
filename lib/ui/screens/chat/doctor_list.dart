@@ -20,18 +20,19 @@ class DoctorListView extends StatelessWidget {
             shrinkWrap: true,
             itemCount: state.doctors.length,
             itemBuilder: (context, index) {
-              final user = state.user;
+              final appUser = state.user;
               final doctor = state.doctors[index];
               return _DoctorItem(
                 user: doctor,
                 onConnect: () {
-                  context.read<MessageBloc>().add(LoadMsgs(user.id, doctor.id));
+                  // start of first conversation
+                  context.read<MessageBloc>().add(LoadMsgs(null));
 
                   context.read<ChatBloc>().add(
                         StartChat(Chat(
-                          patId: user.id,
-                          patName: user.fullname,
-                          patAvatar: user.avatar,
+                          patId: appUser.id,
+                          patName: appUser.fullname,
+                          patAvatar: appUser.avatar,
                           docId: doctor.id,
                           docAvatar: doctor.avatar,
                           docName: doctor.fullname,

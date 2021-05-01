@@ -26,31 +26,31 @@ class ChatInitial extends ChatState {}
 class ChatLoadInProgress extends ChatState {}
 
 class ChatLoadSuccess extends ChatState {
+  final Chat chatWith;
   final List<Chat> chats;
-  final AppUser toUser;
-  final AppUser fromUser;
+  final String userType;
   final bool conversationStarted;
 
   ChatLoadSuccess({
     this.chats,
-    this.toUser,
-    this.fromUser,
+    this.userType,
+    this.chatWith,
     this.conversationStarted = false,
   });
 
   @override
-  List<Object> get props => [chats, toUser, fromUser, conversationStarted];
+  List<Object> get props => [chats, chatWith, userType, conversationStarted];
 
   ChatLoadSuccess copyWith({
-    AppUser toUser,
-    AppUser fromUser,
+    Chat chatWith,
     List<Chat> chats,
+    String userType,
     bool conversationStarted,
   }) {
     return ChatLoadSuccess(
       chats: chats ?? this.chats,
-      toUser: toUser ?? this.toUser,
-      fromUser: fromUser ?? this.fromUser,
+      userType: userType ?? this.userType,
+      chatWith: chatWith ?? this.chatWith,
       conversationStarted: conversationStarted ?? this.conversationStarted,
     );
   }
@@ -78,33 +78,27 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       return;
     }
     yield ChatLoadInProgress();
-    final userId = await repo.getUserId();
-    final chats = await repo.loadChats(userId);
-    yield ChatLoadSuccess(chats: chats);
+    final user = await repo.getUser();
+    final chats = await repo.loadChats(user.chatIds);
+    yield ChatLoadSuccess(chats: chats, userType: user.type);
   }
 
   Stream<ChatState> _mapStartChatEventToState(StartChat event) async* {
     if (state is ChatLoadSuccess) {
       final curState = state as ChatLoadSuccess;
       yield ChatLoadInProgress();
-      await repo.startConversation(
+      final chatId = await repo.startConversation(
         chat: event.chat,
-        fromUserId: event.chat.patId,
-        toUserId: event.chat.docId,
       );
-      final fromUser = AppUser(
-        id: event.chat.patId,
-        avatar: event.chat.patAvatar,
-        fullname: event.chat.patName,
-      );
+      final nChat = event.chat.copyWith(id: chatId);
 
-      final toUser = AppUser(
-        id: event.chat.docId,
-        avatar: event.chat.docAvatar,
-        fullname: event.chat.docName,
-      );
-      yield curState.copyWith(
-          conversationStarted: true, fromUser: fromUser, toUser: toUser);
+      // add chatId in patient & doctor records
+      await repo.addUserChatRecord(userId: event.chat.docId, chatId: chatId);
+      await repo.addUserChatRecord(userId: event.chat.patId, chatId: chatId);
+
+      await repo.cacheUserChatRecord(chatId);
+
+      yield curState.copyWith(conversationStarted: true, chatWith: nChat);
     }
   }
 }

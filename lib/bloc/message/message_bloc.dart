@@ -9,13 +9,12 @@ class MessageEvent extends Equatable {
 }
 
 class LoadMsgs extends MessageEvent {
-  final String fromUserId;
-  final String toUserId;
+  final String chatId;
 
-  LoadMsgs(this.fromUserId, this.toUserId);
+  LoadMsgs(this.chatId);
 
   @override
-  List<Object> get props => [fromUserId, toUserId];
+  List<Object> get props => [chatId];
 }
 
 class EditMsg extends MessageEvent {
@@ -90,8 +89,12 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     // if (state is MessageLoadSuccess) {
     //   return;
     // }
+    if (event.chatId == null) {
+      yield MessageLoadSuccess([]);
+      return;
+    }
     yield MessageLoadInProgress();
-    final msgs = await repo.loadMessages(event.fromUserId, event.toUserId);
+    final msgs = await repo.loadMessages(event.chatId);
     yield MessageLoadSuccess(msgs);
   }
 
@@ -100,12 +103,10 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       final curState = state as MessageLoadSuccess;
 
       // yield MessageLoadInProgress();
-      final msg =
-          await repo.sendMessage(event.msg, event.msg.patId, event.msg.docId);
+      final msg = await repo.sendMessage(event.msg);
 
       final nMsgs = List<Message>.from([...curState.msgs, msg]);
-      await repo.updateLastMsg(
-          event.msg.patId, event.msg.docId, event.msg.message);
+      await repo.updateLastMsg(event.msg.chatId, event.msg.message);
       yield MessageLoadSuccess(nMsgs);
     }
   }
@@ -114,7 +115,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     yield MessageLoadInProgress();
     if (state is MessageLoadSuccess) {
       final curMsgs = (state as MessageLoadSuccess).msgs;
-      await repo.editMessage(event.msg, event.msg.patId, event.msg.docId);
+      await repo.editMessage(msg: event.msg);
 
       final newMsgs =
           curMsgs.map((m) => m.id == event.msg.id ? event.msg : m).toList();
@@ -127,7 +128,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     yield MessageLoadInProgress();
     if (state is MessageLoadSuccess) {
       final curMsgs = (state as MessageLoadSuccess).msgs;
-      await repo.editMessage(event.msg, event.msg.patId, event.msg.docId);
+      await repo.deleteMessage(chatId: event.msg.chatId, msgId: event.msg.id);
 
       final newMsgs = curMsgs.where((m) => m.id != event.msg.id).toList();
 
