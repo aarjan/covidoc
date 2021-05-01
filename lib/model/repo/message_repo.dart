@@ -59,7 +59,7 @@ class MessageRepo {
 
   Future<void> cacheUserChatRecord(String chatId) async {
     final user = await sessionRepo.getUser();
-    final nUser = user.copyWith(chatIds: user.chatIds..add(chatId));
+    final nUser = user.copyWith(chatIds: [...user.chatIds, chatId]);
     await sessionRepo.cacheUser(nUser);
   }
 
