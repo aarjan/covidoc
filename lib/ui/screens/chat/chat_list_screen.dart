@@ -44,7 +44,7 @@ class ChatListScreen extends StatelessWidget {
           },
           child: Column(
             children: [
-              const Flexible(child: ChatListView()),
+              const Flexible(flex: 2, child: ChatListView()),
               const SizedBox(height: 50),
               Text(
                 'Chat with Users',
@@ -61,7 +61,7 @@ class ChatListScreen extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 20),
-              const Flexible(flex: 5, child: DoctorListView()),
+              const Flexible(flex: 2, child: DoctorListView()),
             ],
           ),
         ),
