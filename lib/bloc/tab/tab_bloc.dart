@@ -15,7 +15,7 @@ class TabBloc extends Bloc<TabEvent, TabState> {
           yield TabState.CHAT;
           break;
         case 2:
-          yield TabState.GUIDELINES;
+          yield TabState.FORUM;
           break;
         case 3:
           yield TabState.PROFILE;
