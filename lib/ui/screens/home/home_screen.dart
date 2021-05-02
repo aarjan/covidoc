@@ -25,11 +25,11 @@ class HomeScreen extends StatelessWidget {
                 case TabState.CHAT:
                   return const ChatListScreen();
                   break;
-                case TabState.GUIDELINES:
-                  return ForumScreen();
+                case TabState.FORUM:
+                  return const ForumScreen();
                   break;
                 case TabState.PROFILE:
-                  return Container();
+                  return const ProfileScreen();
                   break;
                 default:
                   throw UnimplementedError();
@@ -38,12 +38,6 @@ class HomeScreen extends StatelessWidget {
             bottomNavigationBar: BottomNavBar(
               onSelected: (index) {
                 context.read<TabBloc>().add(OnTabChanged(index));
-
-                if (index == 3) {
-                  context.read<AuthBloc>().add(LoggedOut());
-                  context.read<UserBloc>().add(ClearUser());
-                  Navigator.pushReplacementNamed(context, '/');
-                }
               },
             ),
           );

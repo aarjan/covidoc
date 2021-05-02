@@ -17,6 +17,7 @@ class App extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         primaryColor: AppColors.DEFAULT,
+        accentColor: AppColors.DEFAULT,
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
             primary: Colors.white,
@@ -59,11 +60,12 @@ Widget runWidget() {
 
   final sessionRepo = SessionRepository(LocalPref());
 
-  final authBloc = AuthBloc(AuthRepo(sessionRepo));
-
   final userRepo = UserRepo(sessionRepo);
   final blogRepo = BlogRepo(sessionRepo);
   final msgRepo = MessageRepo(sessionRepo);
+
+  final authBloc = AuthBloc(AuthRepo(sessionRepo))..add(AppStarted());
+  final userBloc = UserBloc(repo: userRepo)..add(LoadUser());
 
   return MultiRepositoryProvider(
     providers: [
@@ -71,12 +73,8 @@ Widget runWidget() {
     ],
     child: MultiBlocProvider(
       providers: [
-        BlocProvider(
-          create: (_) => authBloc..add(AppStarted()),
-        ),
-        BlocProvider(
-          create: (_) => UserBloc(repo: userRepo),
-        ),
+        BlocProvider(create: (_) => authBloc),
+        BlocProvider(create: (_) => userBloc),
         BlocProvider(
           create: (_) => SignInBloc(SignInRepo(sessionRepo), authBloc),
         ),

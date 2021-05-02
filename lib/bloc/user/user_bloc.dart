@@ -33,15 +33,22 @@ class UserInitial extends UserState {}
 
 class UserLoadSuccess extends UserState {
   final AppUser user;
+  final bool userUpdated;
   final List<AppUser> doctors;
 
-  UserLoadSuccess({this.user, this.doctors = const []});
+  UserLoadSuccess(
+      {this.user, this.userUpdated = false, this.doctors = const []});
 
   @override
-  List<Object> get props => [user, doctors];
+  List<Object> get props => [user, doctors, userUpdated];
 
-  UserLoadSuccess copyWith({user, doctors}) {
-    return UserLoadSuccess(user: this.user, doctors: doctors ?? this.doctors);
+  UserLoadSuccess copyWith(
+      {AppUser user, List<AppUser> doctors, bool userUpdated}) {
+    return UserLoadSuccess(
+      user: this.user,
+      doctors: doctors ?? this.doctors,
+      userUpdated: userUpdated ?? this.userUpdated,
+    );
   }
 }
 
@@ -90,7 +97,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
       await repo.updateUser(nUser);
     }
 
-    yield UserLoadSuccess(user: nUser);
+    yield UserLoadSuccess(user: nUser, userUpdated: true);
   }
 
   Stream<UserState> _mapLoadUsersEventToState(LoadUsers event) async* {
