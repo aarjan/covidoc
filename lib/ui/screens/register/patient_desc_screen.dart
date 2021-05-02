@@ -1,10 +1,11 @@
-import 'package:covidoc/model/entity/entity.dart';
-import 'package:covidoc/bloc/user/user_bloc.dart';
-import 'package:covidoc/ui/widgets/widgets.dart';
-import 'package:covidoc/utils/const/const.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:covidoc/ui/screens/register/covid_status_screen.dart';
+
+import 'package:covidoc/utils/const/const.dart';
+import 'package:covidoc/ui/screens/screens.dart';
+import 'package:covidoc/ui/widgets/widgets.dart';
+import 'package:covidoc/model/entity/entity.dart';
+import 'package:covidoc/bloc/user/user_bloc.dart';
 
 class PatientDescScreen extends StatelessWidget {
   static const ROUTE_NAME = '/register/description';
@@ -16,8 +17,7 @@ class PatientDescScreen extends StatelessWidget {
     return BlocListener<UserBloc, UserState>(
       listener: (context, state) {
         if (state is UserLoadSuccess) {
-          Navigator.push(context,
-              MaterialPageRoute(builder: (_) => const CovidStatusScreen()));
+          Navigator.pushNamed(context, CovidStatusScreen.ROUTE_NAME);
         }
       },
       child: PatientDescription(),
@@ -149,43 +149,6 @@ class _PatientDescriptionState extends State<PatientDescription> {
             ],
           ),
         ),
-      ),
-    );
-  }
-}
-
-class FormInput extends StatelessWidget {
-  const FormInput({
-    Key key,
-    this.title,
-    this.onEdit,
-    this.onSave,
-    this.onValidate,
-    this.isNumber = false,
-  }) : super(key: key);
-
-  final String title;
-  final bool isNumber;
-  final void Function() onEdit;
-  final void Function(String) onSave;
-  final String Function(String) onValidate;
-
-  @override
-  Widget build(BuildContext context) {
-    return TextFormField(
-      autofocus: true,
-      onSaved: onSave,
-      validator: onValidate,
-      onEditingComplete: onEdit,
-      keyboardType: isNumber ? TextInputType.number : null,
-      decoration: InputDecoration(
-        hintText: title,
-        hintStyle: AppFonts.MEDIUM_WHITE3_16,
-        filled: true,
-        fillColor: AppColors.WHITE1,
-        border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(8),
-            borderSide: const BorderSide(color: AppColors.WHITE4)),
       ),
     );
   }
