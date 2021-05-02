@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 
-class UserScreen extends StatelessWidget {
+class ProfileScreen extends StatelessWidget {
   static const ROUTE_NAME = '/user';
 
-  const UserScreen();
+  const ProfileScreen();
 
   @override
   Widget build(BuildContext context) {

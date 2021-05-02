@@ -13,8 +13,8 @@ class Routes {
         return getRoute(const SignInScreen());
       case ForumScreen.ROUTE_NAME:
         return getRoute(const ForumScreen());
-      case UserScreen.ROUTE_NAME:
-        return getRoute(const UserScreen());
+      case ProfileScreen.ROUTE_NAME:
+        return getRoute(const ProfileScreen());
       case RegisterScreen.ROUTE_NAME:
         return getRoute(const RegisterScreen());
       case CovidStatusScreen.ROUTE_NAME:
