@@ -26,10 +26,10 @@ class ChatListView extends StatelessWidget {
 }
 
 class _ChatItem extends StatelessWidget {
-  const _ChatItem(this.chats, this.isFrontPatient);
+  const _ChatItem(this.chats, this.isFromPatient);
 
   final List<Chat> chats;
-  final bool isFrontPatient;
+  final bool isFromPatient;
 
   @override
   Widget build(BuildContext context) {
@@ -46,13 +46,14 @@ class _ChatItem extends StatelessWidget {
                 MaterialPageRoute(
                     builder: (_) => ChatScreen(
                           chat: chat,
-                          isFromPatient: isFrontPatient,
+                          isFromPatient: isFromPatient,
                         )));
           },
           leading: CircleAvatar(
-            backgroundImage: CachedNetworkImageProvider(chat.docAvatar),
+            backgroundImage: CachedNetworkImageProvider(
+                isFromPatient ? chat.docAvatar : chat.patAvatar),
           ),
-          title: Text(chat.docName),
+          title: Text(isFromPatient ? chat.docName : chat.patName),
           subtitle: Text(chat.lastMessage ?? 'No Conversation started!'),
           trailing: Text(chat.lastTimestamp?.formattedTime ?? 'Today'),
         );
