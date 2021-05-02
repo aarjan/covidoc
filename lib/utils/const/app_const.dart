@@ -1,4 +1,6 @@
 class AppConst {
+  static const String BLOG_URL = 'https://api.neuroflip.com/api/blog';
+
   static const String CACHE_USER = 'CACHE_USER';
   static const String CACHE_DOCTORS = 'CACHE_DOCTORS';
 

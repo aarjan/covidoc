@@ -1,4 +1,5 @@
 export 'auth/auth.dart';
+export 'blog/blog.dart';
 export 'forum/forum.dart';
 export 'home/home.dart';
 export 'message/message.dart';

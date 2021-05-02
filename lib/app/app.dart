@@ -1,3 +1,4 @@
+import 'package:covidoc/model/repo/blog_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -61,6 +62,7 @@ Widget runWidget() {
   final authBloc = AuthBloc(AuthRepo(sessionRepo));
 
   final userRepo = UserRepo(sessionRepo);
+  final blogRepo = BlogRepo(sessionRepo);
   final msgRepo = MessageRepo(sessionRepo);
 
   return MultiRepositoryProvider(
@@ -80,6 +82,9 @@ Widget runWidget() {
         ),
         BlocProvider(
           create: (context) => MessageBloc(repo: msgRepo),
+        ),
+        BlocProvider(
+          create: (context) => BlogBloc(blogRepo),
         ),
       ],
       child: const App(),

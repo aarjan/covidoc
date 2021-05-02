@@ -17,8 +17,4 @@ class AppConfig {
 
   double blockWidth(double v) => width / (_defaultWidth / v);
   double blockHeight(double v) => height / (_defaultHeight / v);
-
-  final ButtonStyle mStyle = TextButton.styleFrom(
-    
-  );
 }

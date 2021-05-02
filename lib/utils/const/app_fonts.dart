@@ -128,4 +128,7 @@ class AppFonts {
   static final BOLD_BLACK3 = BOLD.copyWith(color: AppColors.BLACK3);
   static final BOLD_BLACK3_22 = BOLD_BLACK3.copyWith(fontSize: 22);
   static final BOLD_BLACK3_16 = BOLD_BLACK3.copyWith(fontSize: 16);
+
+  static final REGULAR_GREEN1 = REGULAR.copyWith(color: AppColors.GREEN1);
+  static final REGULAR_GREEN1_12 = REGULAR_GREEN1.copyWith(fontSize: 12);
 }

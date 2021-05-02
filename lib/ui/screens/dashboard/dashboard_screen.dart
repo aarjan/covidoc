@@ -1,8 +1,11 @@
+import 'package:covidoc/bloc/blog/blog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:covidoc/utils/utils.dart';
 import 'package:covidoc/utils/const/const.dart';
+import 'package:covidoc/ui/screens/screens.dart';
 
 class DashboardScreen extends StatelessWidget {
   static const ROUTE_NAME = '/dashboard';
@@ -97,11 +100,10 @@ class LowerHalf extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: 285,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 30),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
           CardsView(
             onTap: () {
@@ -114,6 +116,8 @@ class LowerHalf extends StatelessWidget {
           const SizedBox(width: 18),
           CardsView(
             onTap: () {
+              context.read<BlogBloc>().add(const LoadFeaturedBlog());
+              Navigator.pushNamed(context, BlogScreen.ROUTE_NAME);
               context.toast('Covid guidelines');
             },
             title: 'Covid Guidelines',
