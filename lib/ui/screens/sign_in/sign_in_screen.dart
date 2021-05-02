@@ -6,6 +6,8 @@ import 'package:flutter_signin_button/button_view.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 class SignInScreen extends StatelessWidget {
+  static const ROUTE_NAME = '/signIn';
+
   const SignInScreen();
 
   @override

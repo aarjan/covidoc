@@ -8,6 +8,8 @@ import 'package:covidoc/utils/utils.dart';
 import 'package:covidoc/ui/screens/register/patient_desc_screen.dart';
 
 class RegisterScreen extends StatelessWidget {
+  static const ROUTE_NAME = '/register';
+
   const RegisterScreen();
   @override
   Widget build(BuildContext context) {

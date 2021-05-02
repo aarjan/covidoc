@@ -4,6 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 class ForumScreen extends StatelessWidget {
+  static const ROUTE_NAME = '/forum';
+
+  const ForumScreen();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

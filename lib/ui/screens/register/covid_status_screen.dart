@@ -7,6 +7,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CovidStatusScreen extends StatelessWidget {
+  static const ROUTE_NAME = '/register/status';
+
   const CovidStatusScreen();
 
   @override

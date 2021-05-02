@@ -1,3 +1,5 @@
+export 'blog/blog_detail_screen.dart';
+export 'blog/blog_screen.dart';
 export 'chat/chat_list_screen.dart';
 export 'chat/chat_screen.dart';
 export 'dashboard/dashboard_screen.dart';

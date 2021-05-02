@@ -7,6 +7,8 @@ import 'package:covidoc/utils/const/const.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ChatScreen extends StatelessWidget {
+  static const ROUTE_NAME = '/chat/message';
+
   const ChatScreen({this.chat, this.isFromPatient});
 
   final Chat chat;

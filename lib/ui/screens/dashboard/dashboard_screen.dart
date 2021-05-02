@@ -5,6 +5,8 @@ import 'package:covidoc/utils/utils.dart';
 import 'package:covidoc/utils/const/const.dart';
 
 class DashboardScreen extends StatelessWidget {
+  static const ROUTE_NAME = '/dashboard';
+
   const DashboardScreen();
   @override
   Widget build(BuildContext context) {

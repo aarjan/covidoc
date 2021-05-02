@@ -10,6 +10,8 @@ import 'chat_screen.dart';
 import 'doctor_list.dart';
 
 class ChatListScreen extends StatelessWidget {
+  static const ROUTE_NAME = '/chat/list';
+
   const ChatListScreen();
 
   @override

@@ -7,6 +7,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:covidoc/ui/screens/register/covid_status_screen.dart';
 
 class PatientDescScreen extends StatelessWidget {
+  static const ROUTE_NAME = '/register/description';
+
   const PatientDescScreen();
 
   @override
