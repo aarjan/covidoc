@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/bloc/user/user_bloc.dart';
 import 'package:covidoc/model/entity/app_user.dart';
@@ -187,6 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               FormInput(
                 title: 'Symptoms',
                 minLines: 5,
+                maxLines: 10,
                 enabled: _enabled,
                 initialValue: _symptoms,
                 onEdit: _node.nextFocus,

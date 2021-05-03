@@ -10,12 +10,14 @@ class FormInput extends StatelessWidget {
     this.onValidate,
     this.initialValue,
     this.minLines = 1,
+    this.maxLines = 1,
     this.enabled = true,
     this.isNumber = false,
   }) : super(key: key);
 
   final String title;
   final int minLines;
+  final int maxLines;
   final bool isNumber;
   final bool enabled;
   final String initialValue;
@@ -29,11 +31,11 @@ class FormInput extends StatelessWidget {
       autofocus: true,
       onSaved: onSave,
       enabled: enabled,
+      minLines: minLines,
+      maxLines: maxLines,
       validator: onValidate,
       onEditingComplete: onEdit,
       initialValue: initialValue,
-      minLines: minLines,
-      maxLines: 5,
       keyboardType: isNumber ? TextInputType.number : null,
       decoration: InputDecoration(
         hintText: title,
