@@ -1,11 +1,13 @@
-import 'package:covidoc/model/entity/entity.dart';
-import 'package:covidoc/bloc/user/user_bloc.dart';
-import 'package:covidoc/utils/const/const.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/utils/utils.dart';
-import 'package:covidoc/ui/screens/register/patient_desc_screen.dart';
+import 'package:covidoc/utils/const/const.dart';
+import 'package:covidoc/ui/screens/screens.dart';
+import 'package:covidoc/model/entity/entity.dart';
 
 class RegisterScreen extends StatelessWidget {
   static const ROUTE_NAME = '/register';
@@ -17,9 +19,15 @@ class RegisterScreen extends StatelessWidget {
       backgroundColor: AppColors.DEFAULT,
       body: BlocListener<UserBloc, UserState>(
           listener: (context, state) {
-            if (state is UserLoadSuccess) {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (_) => const PatientDescScreen()));
+            if (state is UserLoadSuccess && state.userUpdated) {
+              final isPatient =
+                  state.user.type == describeEnum(UserType.Patient);
+              Navigator.pushReplacementNamed(
+                context,
+                isPatient
+                    ? PatientDescScreen.ROUTE_NAME
+                    : DoctorDescScreen.ROUTE_NAME,
+              );
             }
           },
           child: RegisterView()),

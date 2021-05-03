@@ -8,6 +8,7 @@ export 'home/home_screen.dart';
 export 'profile/profile_screen.dart';
 export 'register/covid_status_screen.dart';
 export 'register/covid_symptom_screen.dart';
+export 'register/doctor_desc_screen.dart';
 export 'register/patient_desc_screen.dart';
 export 'register/register_screen.dart';
 export 'sign_in/sign_in_screen.dart';

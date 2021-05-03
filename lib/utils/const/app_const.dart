@@ -14,6 +14,9 @@ class AppConst {
   static const String GENDER_ERROR = 'Please enter a valid gender';
   static const String LOCATION_ERROR = 'Please enter a valid location';
   static const String LANGUAGE_ERROR = 'Please enter a valid language';
+  static const String SPECIALITY_LENGTH_ERROR =
+      'Please enter a valid speciality';
+  static const String PRACTICE_LENGTH_ERROR = 'Please enter a valid practice';
 
   static const Map<int, String> MONTH = {
     1: 'Jan',
