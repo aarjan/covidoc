@@ -46,4 +46,7 @@ flutter:
 
   assets:
     - assets/
+    - assets/chat/
     - assets/forum/
+    - assets/register/
+    - assets/dashboard/

@@ -73,7 +73,9 @@ class UpperHalf extends StatelessWidget {
             ),
           ),
           Positioned(
-              top: 50, right: 0, child: Image.asset('assets/doctor_greet.png')),
+              top: 50,
+              right: 0,
+              child: Image.asset('assets/dashboard/doctor_greet.png')),
           Positioned(
             bottom: 0,
             left: 0,
@@ -95,7 +97,8 @@ class UpperHalf extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text('Ask your query', style: AppFonts.REGULAR_BLACK3_16),
-                      SvgPicture.asset('assets/arrow_forward_rounded.svg'),
+                      SvgPicture.asset(
+                          'assets/dashboard/arrow_forward_rounded.svg'),
                     ],
                   ),
                 ),
@@ -124,7 +127,7 @@ class LowerHalf extends StatelessWidget {
             },
             title: 'Ask a Doctor',
             color: AppColors.PINK,
-            image: 'assets/doctor_ask.svg',
+            image: 'assets/dashboard/doctor_ask.svg',
           ),
           const SizedBox(width: 18),
           CardsView(
@@ -135,7 +138,7 @@ class LowerHalf extends StatelessWidget {
             },
             title: 'Covid Guidelines',
             color: AppColors.PURUPLE,
-            image: 'assets/covid_guidelines.svg',
+            image: 'assets/dashboard/covid_guidelines.svg',
           )
         ],
       ),
@@ -174,7 +177,8 @@ class CardsView extends StatelessWidget {
             Positioned(
               top: 60,
               left: 20,
-              child: SvgPicture.asset('assets/arrow_forward_rounded.svg',
+              child: SvgPicture.asset(
+                  'assets/dashboard/arrow_forward_rounded.svg',
                   color: Colors.white),
             ),
             Positioned(

@@ -66,8 +66,8 @@ class _RegisterViewState extends State<RegisterView> {
               children: [
                 UserWidget(
                   name: 'Patient',
-                  inactiveImg: 'assets/patient.svg',
-                  activeImg: 'assets/patient_highlighted.svg',
+                  inactiveImg: 'assets/register/patient.svg',
+                  activeImg: 'assets/register/patient_highlighted.svg',
                   active: choosen == 0,
                   onTap: () {
                     setState(() {
@@ -78,8 +78,8 @@ class _RegisterViewState extends State<RegisterView> {
                 UserWidget(
                   name: 'Doctor',
                   active: choosen == 1,
-                  inactiveImg: 'assets/doctor.svg',
-                  activeImg: 'assets/doctor_highlighted.svg',
+                  inactiveImg: 'assets/register/doctor.svg',
+                  activeImg: 'assets/register/doctor_highlighted.svg',
                   onTap: () {
                     setState(() {
                       choosen = 1;
