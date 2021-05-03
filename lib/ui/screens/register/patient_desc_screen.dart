@@ -105,18 +105,14 @@ class _PatientDescriptionState extends State<PatientDescription> {
                         title: 'Location',
                         onEdit: _node.nextFocus,
                         onSave: (val) => _location = val.trim(),
-                        onValidate: (val) => val.trim().isEmpty
-                            ? AppConst.FULLNAME_LENGTH_ERROR
-                            : null,
+                        onValidate: (val) =>
+                            val.trim().isEmpty ? AppConst.LOCATION_ERROR : null,
                       ),
                       const SizedBox(height: 16),
                       FormInput(
                         title: 'Language',
                         onEdit: _node.nextFocus,
                         onSave: (val) => _language = val.trim(),
-                        onValidate: (val) => val.trim().isEmpty
-                            ? AppConst.FULLNAME_LENGTH_ERROR
-                            : null,
                       ),
                       const SizedBox(height: 16),
                     ],
