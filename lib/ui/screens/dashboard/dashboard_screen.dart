@@ -1,4 +1,7 @@
+import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/bloc/blog/blog.dart';
+import 'package:covidoc/model/entity/entity.dart';
+import 'package:covidoc/ui/screens/dashboard/shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,12 +17,19 @@ class DashboardScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        padding: EdgeInsets.zero,
-        children: [
-          const UpperHalf(),
-          const LowerHalf(),
-        ],
+      body: BlocBuilder<UserBloc, UserState>(
+        builder: (context, state) {
+          if (state is UserLoadSuccess) {
+            return ListView(
+              padding: EdgeInsets.zero,
+              children: [
+                UpperHalf(user: state.user),
+                const LowerHalf(),
+              ],
+            );
+          }
+          return const DashboardShimmer();
+        },
       ),
     );
   }
@@ -28,7 +38,10 @@ class DashboardScreen extends StatelessWidget {
 class UpperHalf extends StatelessWidget {
   const UpperHalf({
     Key key,
+    this.user,
   }) : super(key: key);
+
+  final AppUser user;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +58,7 @@ class UpperHalf extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Hey! \nRamakrishna',
+                  'Hey! \n${user.fullname}',
                   style: AppFonts.MEDIUM_WHITE_24,
                 ),
                 const SizedBox(height: 10),
