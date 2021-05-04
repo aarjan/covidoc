@@ -121,9 +121,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     final requests = await repo.loadMsgRequests(user.id);
     yield ChatLoadSuccess(
       user: user,
-      chats: chats + chats,
+      chats: chats,
       userType: user.type,
-      requests: requests + requests,
+      requests: requests,
     );
   }
 
