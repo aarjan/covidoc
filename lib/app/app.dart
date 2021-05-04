@@ -21,6 +21,8 @@ class App extends StatelessWidget {
         brightness: Brightness.light,
         primaryColor: AppColors.DEFAULT,
         accentColor: AppColors.DEFAULT,
+        dividerTheme: const DividerThemeData(
+            color: AppColors.WHITE4, thickness: 1, space: 0),
         textButtonTheme: TextButtonThemeData(
           style: TextButton.styleFrom(
             primary: Colors.white,
