@@ -69,6 +69,7 @@ Widget runWidget() {
   final msgRepo = MessageRepo(sessionRepo);
 
   final authBloc = AuthBloc(AuthRepo(sessionRepo))..add(AppStarted());
+  final userBloc = UserBloc(repo: userRepo, authBloc: authBloc);
 
   return MultiRepositoryProvider(
     providers: [
@@ -77,8 +78,7 @@ Widget runWidget() {
     child: MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => authBloc),
-        BlocProvider(
-            create: (_) => UserBloc(repo: userRepo, authBloc: authBloc)),
+        BlocProvider(create: (_) => userBloc),
         BlocProvider(
           create: (_) => SignInBloc(SignInRepo(sessionRepo), authBloc),
         ),
