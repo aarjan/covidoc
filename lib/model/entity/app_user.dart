@@ -65,10 +65,10 @@ class AppUser extends Equatable {
       type: user.type ?? type,
       email: user.email ?? email,
       avatar: user.avatar ?? avatar,
-      chatIds: user.chatIds ?? chatIds,
       fullname: user.fullname ?? fullname,
-      chatUsers: user.chatUsers ?? chatUsers,
       providerId: user.providerId ?? providerId,
+      chatIds: user.chatIds.isEmpty ? chatIds : user.chatIds,
+      chatUsers: user.chatUsers.isEmpty ? chatUsers : user.chatUsers,
       profileVerification: user.profileVerification ?? profileVerification,
     );
   }
