@@ -1,18 +1,58 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:covidoc/ui/screens/screens.dart';
 
 import 'package:covidoc/bloc/bloc.dart';
+import 'package:covidoc/model/repo/repo.dart';
 import 'package:covidoc/utils/const/const.dart';
-import 'package:covidoc/model/repo/message_repo.dart';
+import 'package:covidoc/model/entity/entity.dart';
 
-import 'chat_list.dart';
+import 'chat_request.dart';
 import 'chat_screen.dart';
-import 'doctor_list.dart';
+import 'components.dart';
 
-class ChatListScreen extends StatelessWidget {
+class ChatListScreen extends StatefulWidget {
   static const ROUTE_NAME = '/chat/list';
 
   const ChatListScreen();
+
+  @override
+  _ChatListScreenState createState() => _ChatListScreenState();
+}
+
+class _ChatListScreenState extends State<ChatListScreen>
+    with SingleTickerProviderStateMixin {
+  bool _showAddBtn;
+  ScrollController _scrollController;
+
+  @override
+  void initState() {
+    super.initState();
+    _showAddBtn = false;
+    _scrollController = ScrollController();
+    _scrollController.addListener(() {
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.reverse) {
+        setState(() {
+          _showAddBtn = true;
+        });
+      }
+      if (_scrollController.position.userScrollDirection ==
+          ScrollDirection.forward) {
+        setState(() {
+          _showAddBtn = false;
+        });
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -44,30 +84,112 @@ class ChatListScreen extends StatelessWidget {
                   ));
             }
           },
-          child: Column(
+          child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
+            if (state is ChatLoadSuccess) {
+              if (state.requests.isNotEmpty) {
+                return SingleChildScrollView(
+                  controller: _scrollController,
+                  child: Column(
+                    children: [
+                      AnimatedSize(
+                        vsync: this,
+                        duration: const Duration(milliseconds: 500),
+                        child: Visibility(
+                          visible: !_showAddBtn,
+                          key: const ValueKey('addBtn'),
+                          child: Padding(
+                            padding: const EdgeInsets.all(16),
+                            child: AddQuestionView(
+                              onAdd: () {
+                                showBottomQuestionSheet(context);
+                              },
+                            ),
+                          ),
+                        ),
+                      ),
+                      _ChatListView(
+                          state.chats, state.requests, state.userType),
+                    ],
+                  ),
+                );
+              }
+              return Padding(
+                padding: const EdgeInsets.all(16),
+                child: ChatRequest(user: state.user),
+              );
+            }
+            return const Center(child: CircularProgressIndicator());
+          }),
+        ),
+      ),
+      floatingActionButton: Visibility(
+        visible: _showAddBtn,
+        child: FloatingActionButton(
+          onPressed: () {
+            showBottomQuestionSheet(context);
+          },
+          child: const Icon(Icons.add, color: Colors.white),
+        ),
+      ),
+    );
+  }
+}
+
+class _ChatListView extends StatelessWidget {
+  const _ChatListView(this.chats, this.requests, this.userType);
+  final String userType;
+  final List<Chat> chats;
+  final List<MessageRequest> requests;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+          child: Text(
+            'Recent Chats',
+            style: AppFonts.SEMIBOLD_WHITE3_14,
+          ),
+        ),
+        // Recent Chats
+        ListView.builder(
+          physics: const NeverScrollableScrollPhysics(),
+          itemCount: chats.length,
+          shrinkWrap: true,
+          itemBuilder: (context, index) => Column(
             children: [
-              const Expanded(child: ChatListView()),
-              const SizedBox(height: 50),
-              Text(
-                'Chat with Users',
-                style: AppFonts.MEDIUM_BLACK3_16,
+              ChatItem(
+                chats[index],
+                userType == describeEnum(UserType.Patient),
               ),
-              Container(
-                width: double.infinity,
-                margin: const EdgeInsets.all(20),
-                child: TextButton(
-                  onPressed: () {
-                    context.read<UserBloc>().add(LoadUsers());
-                  },
-                  child: Text('Load Users', style: AppFonts.MEDIUM_WHITE_14),
-                ),
-              ),
-              const SizedBox(height: 20),
-              const Expanded(child: DoctorListView()),
+              const Divider(),
             ],
           ),
         ),
-      ),
+        Padding(
+          padding: const EdgeInsets.fromLTRB(16, 16, 16, 16),
+          child: Text(
+            'Your queries',
+            style: AppFonts.SEMIBOLD_WHITE3_14,
+          ),
+        ),
+        // Recent Queries
+        ListView.separated(
+          shrinkWrap: true,
+          itemCount: requests.length,
+          physics: const NeverScrollableScrollPhysics(),
+          separatorBuilder: (context, index) {
+            return const SizedBox(height: 16);
+          },
+          itemBuilder: (context, index) {
+            return PendingStatus(request: requests[index]);
+          },
+        ),
+        const SizedBox(height: 32)
+      ],
     );
   }
 }

@@ -8,27 +8,27 @@ import 'app_colors.dart';
 class AppFonts {
   const AppFonts();
 
-  static final LIGHT = GoogleFonts.poppins(
+  static final LIGHT = GoogleFonts.dmSans(
     color: AppColors.WHITE,
     fontWeight: FontWeight.w200,
   );
 
-  static final REGULAR = GoogleFonts.poppins(
+  static final REGULAR = GoogleFonts.dmSans(
     color: AppColors.WHITE,
     fontWeight: FontWeight.w400,
   );
 
-  static final MEDIUM = GoogleFonts.poppins(
+  static final MEDIUM = GoogleFonts.dmSans(
     color: AppColors.WHITE,
     fontWeight: FontWeight.w500,
   );
 
-  static final SEMIBOLD = GoogleFonts.poppins(
+  static final SEMIBOLD = GoogleFonts.dmSans(
     color: AppColors.WHITE,
     fontWeight: FontWeight.w600,
   );
 
-  static final BOLD = GoogleFonts.poppins(
+  static final BOLD = GoogleFonts.dmSans(
     color: AppColors.WHITE,
     fontWeight: FontWeight.w700,
   );
@@ -58,6 +58,7 @@ class AppFonts {
   static final REGULAR_BLACK3 = REGULAR.copyWith(color: AppColors.BLACK3);
   static final REGULAR_BLACK3_8 = REGULAR_BLACK3.copyWith(fontSize: 8);
   static final REGULAR_BLACK3_9 = REGULAR_BLACK3.copyWith(fontSize: 9);
+  static final REGULAR_BLACK3_10 = REGULAR_BLACK3.copyWith(fontSize: 10);
   static final REGULAR_BLACK3_12 = REGULAR_BLACK3.copyWith(fontSize: 12);
   static final REGULAR_BLACK3_14 = REGULAR_BLACK3.copyWith(fontSize: 14);
   static final REGULAR_BLACK3_16 = REGULAR_BLACK3.copyWith(fontSize: 16);
@@ -73,6 +74,7 @@ class AppFonts {
 
   static final MEDIUM_WHITE3 = MEDIUM.copyWith(color: AppColors.WHITE3);
   static final MEDIUM_WHITE3_12 = MEDIUM_WHITE3.copyWith(fontSize: 12);
+  static final MEDIUM_WHITE3_14 = MEDIUM_WHITE3.copyWith(fontSize: 14);
   static final MEDIUM_WHITE3_16 = MEDIUM_WHITE3.copyWith(fontSize: 16);
 
   static final MEDIUM_BLACK = MEDIUM.copyWith(color: AppColors.BLACK);
@@ -90,6 +92,9 @@ class AppFonts {
   static final SEMIBOLD_WHITE_14 = SEMIBOLD_WHITE.copyWith(fontSize: 14);
   static final SEMIBOLD_WHITE_16 = SEMIBOLD_WHITE.copyWith(fontSize: 16);
   static final SEMIBOLD_WHITE_24 = SEMIBOLD_WHITE.copyWith(fontSize: 24);
+
+  static final SEMIBOLD_WHITE3 = SEMIBOLD.copyWith(color: AppColors.WHITE3);
+  static final SEMIBOLD_WHITE3_14 = SEMIBOLD_WHITE3.copyWith(fontSize: 14);
 
   static final MEDIUM_BLACK3 = MEDIUM.copyWith(color: AppColors.BLACK3);
   static final MEDIUM_BLACK3_9 = MEDIUM_BLACK3.copyWith(fontSize: 9);
@@ -113,6 +118,7 @@ class AppFonts {
   static final LIGHT_WHITE_26 = LIGHT_WHITE.copyWith(fontSize: 26);
 
   static final BOLD_WHITE_12 = BOLD.copyWith(fontSize: 12);
+  static final BOLD_WHITE_14 = BOLD.copyWith(fontSize: 14);
   static final BOLD_WHITE_18 = BOLD.copyWith(fontSize: 18);
 
   static final REGULAR_WHITE3 = REGULAR.copyWith(color: AppColors.WHITE3);

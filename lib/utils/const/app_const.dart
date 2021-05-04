@@ -17,6 +17,20 @@ class AppConst {
   static const String SPECIALITY_LENGTH_ERROR =
       'Please enter a valid speciality';
   static const String PRACTICE_LENGTH_ERROR = 'Please enter a valid practice';
+  static const String MSG_ERROR =
+      'Your message should be atleast 50 chars long';
+
+  static const String POST_ANONYMOUS_TXT = 'Post as anonymous';
+  static const String REQUEST_SEND_BTN_TXT = 'SEND MESSAGE';
+  static const String REQUEST_CONSULT_BTN_TXT = 'CONSULT WITH A DOCTOR';
+  static const String REQUEST_DONE_BTN_TXT = 'DONE';
+  static const String REQUEST_SUCCESSFULL_TXT =
+      'Your Request has been submitted sucessfully';
+  static const String REQUEST_CONSULT =
+      '''You can ask you queries and one of our doctor will respond to your request.''';
+  static const String REQUEST_WRITE_TXT = 'Describe your queries in detail!';
+
+  static const String NO_CONVERSATION_TXT = 'No Conversation started!';
 
   static const Map<int, String> MONTH = {
     1: 'Jan',
