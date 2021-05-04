@@ -34,6 +34,22 @@ class MessageRepo {
     return msgs;
   }
 
+  Future<List<MessageRequest>> loadMsgRequests(String userId) async {
+    final firestore = FirebaseFirestore.instance;
+    final msgRef = await firestore
+        .collection('messageRequest')
+        .where('postedBy', isEqualTo: userId)
+        .where('resolved', isEqualTo: false)
+        .get();
+
+    if (msgRef == null || msgRef.docs.isEmpty) {
+      return [];
+    }
+    final reqs =
+        msgRef.docs.map((m) => MessageRequest.fromJson(m.data())).toList();
+    return reqs;
+  }
+
   Future<List<Message>> loadMessages(String chatId) async {
     final firestore = FirebaseFirestore.instance;
     final msgRef = await firestore.collection('chat/$chatId/message').get();
@@ -42,6 +58,14 @@ class MessageRepo {
     }
     final msgs = msgRef.docs.map((m) => Message.fromJson(m.data())).toList();
     return msgs;
+  }
+
+  Future<String> sendMsgRequest({MessageRequest request}) async {
+    final firestore = FirebaseFirestore.instance;
+    final mRef =
+        await firestore.collection('messageRequest').add(request.toJson());
+    await firestore.doc('messageRequest/${mRef.id}').update({'id': mRef.id});
+    return mRef.id;
   }
 
   Future<String> startConversation({Chat chat}) async {

@@ -1,4 +1,5 @@
 import 'package:covidoc/model/entity/entity.dart';
+import 'package:covidoc/model/entity/message_request.dart';
 import 'package:covidoc/model/repo/message_repo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,10 +11,22 @@ class ChatEvent extends Equatable {
 
 class LoadChats extends ChatEvent {}
 
+class RequestChat extends ChatEvent {
+  final MessageRequest request;
+
+  RequestChat(this.request);
+
+  @override
+  List<Object> get props => [request];
+}
+
 class StartChat extends ChatEvent {
   final Chat chat;
 
   StartChat(this.chat);
+
+  @override
+  List<Object> get props => [chat];
 }
 
 class ChatState extends Equatable {
@@ -26,31 +39,51 @@ class ChatInitial extends ChatState {}
 class ChatLoadInProgress extends ChatState {}
 
 class ChatLoadSuccess extends ChatState {
+  final AppUser user;
   final Chat chatWith;
-  final List<Chat> chats;
   final String userType;
+  final List<Chat> chats;
+  final bool requestSent;
   final bool conversationStarted;
+  final List<MessageRequest> requests;
 
   ChatLoadSuccess({
-    this.chats,
+    this.user,
     this.userType,
     this.chatWith,
+    this.chats = const [],
+    this.requests = const [],
+    this.requestSent = false,
     this.conversationStarted = false,
   });
 
   @override
-  List<Object> get props => [chats, chatWith, userType, conversationStarted];
+  List<Object> get props => [
+        user,
+        chats,
+        chatWith,
+        userType,
+        requests,
+        requestSent,
+        conversationStarted
+      ];
 
   ChatLoadSuccess copyWith({
+    AppUser user,
     Chat chatWith,
     List<Chat> chats,
     String userType,
+    bool requestSent,
     bool conversationStarted,
+    List<MessageRequest> requests,
   }) {
     return ChatLoadSuccess(
+      user: user ?? this.user,
       chats: chats ?? this.chats,
       userType: userType ?? this.userType,
       chatWith: chatWith ?? this.chatWith,
+      requests: requests ?? this.requests,
+      requestSent: requestSent ?? this.requestSent,
       conversationStarted: conversationStarted ?? this.conversationStarted,
     );
   }
@@ -69,6 +102,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       case StartChat:
         yield* _mapStartChatEventToState(event);
         break;
+      case RequestChat:
+        yield* _mapRequestChatEventToState(event);
+        break;
       default:
     }
   }
@@ -80,7 +116,31 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     yield ChatLoadInProgress();
     final user = await repo.getUser();
     final chats = await repo.loadChats(user.chatIds);
-    yield ChatLoadSuccess(chats: chats, userType: user.type);
+
+    final requests = await repo.loadMsgRequests(user.id);
+    yield ChatLoadSuccess(
+      user: user,
+      chats: chats + chats,
+      userType: user.type,
+      requests: requests + requests,
+    );
+  }
+
+  Stream<ChatState> _mapRequestChatEventToState(RequestChat event) async* {
+    if (state is ChatLoadSuccess) {
+      final curState = state as ChatLoadSuccess;
+      yield ChatLoadInProgress();
+      final reqId = await repo.sendMsgRequest(request: event.request);
+      final nRequest = event.request.copyWith(id: reqId);
+
+      final user = await repo.getUser();
+
+      yield curState.copyWith(
+        user: user,
+        requestSent: true,
+        requests: [...curState.requests, nRequest],
+      );
+    }
   }
 
   Stream<ChatState> _mapStartChatEventToState(StartChat event) async* {
@@ -102,7 +162,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           chatId: chatId,
           fromUserId: event.chat.docId);
 
-      final user = await repo.getUser();
+      final user = curState.user;
       final toUserId =
           user.type == 'Patient' ? event.chat.docId : event.chat.patId;
       await repo.cacheUserChatRecord(user, toUserId, chatId);

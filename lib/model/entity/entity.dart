@@ -4,3 +4,4 @@ export 'blog_response.dart';
 export 'forum.dart';
 export 'forum.dart';
 export 'message.dart';
+export 'message_request.dart';
