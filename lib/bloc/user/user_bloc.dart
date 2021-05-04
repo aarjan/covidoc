@@ -1,4 +1,8 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
+import 'package:covidoc/bloc/auth/auth.dart';
+import 'package:covidoc/bloc/auth/auth_bloc.dart';
 import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/model/repo/user_repo.dart';
 import 'package:equatable/equatable.dart';
@@ -58,7 +62,22 @@ class UserLoadFailure extends UserState {}
 
 class UserBloc extends Bloc<UserEvent, UserState> {
   final UserRepo repo;
-  UserBloc({this.repo}) : super(UserInitial());
+  final AuthBloc authBloc;
+  StreamSubscription authSubscription;
+
+  UserBloc({this.authBloc, this.repo}) : super(UserInitial()) {
+    authSubscription = authBloc.listen((state) {
+      if (state is Authenticated) {
+        add(LoadUser());
+      }
+    });
+  }
+
+  @override
+  Future<void> close() {
+    authSubscription.cancel();
+    return super.close();
+  }
 
   @override
   Stream<UserState> mapEventToState(event) async* {

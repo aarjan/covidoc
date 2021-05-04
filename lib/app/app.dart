@@ -1,5 +1,6 @@
 import 'package:covidoc/model/repo/blog_repo.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:covidoc/ui/router.dart';
@@ -15,7 +16,9 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(
+        brightness: Brightness.light,
         primaryColor: AppColors.DEFAULT,
         accentColor: AppColors.DEFAULT,
         textButtonTheme: TextButtonThemeData(
@@ -31,6 +34,7 @@ class App extends StatelessWidget {
         appBarTheme: const AppBarTheme(
           elevation: 1,
           color: AppColors.WHITE,
+          brightness: Brightness.light,
         ),
       ),
       initialRoute: '/',
@@ -65,7 +69,6 @@ Widget runWidget() {
   final msgRepo = MessageRepo(sessionRepo);
 
   final authBloc = AuthBloc(AuthRepo(sessionRepo))..add(AppStarted());
-  final userBloc = UserBloc(repo: userRepo)..add(LoadUser());
 
   return MultiRepositoryProvider(
     providers: [
@@ -74,7 +77,8 @@ Widget runWidget() {
     child: MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => authBloc),
-        BlocProvider(create: (_) => userBloc),
+        BlocProvider(
+            create: (_) => UserBloc(repo: userRepo, authBloc: authBloc)),
         BlocProvider(
           create: (_) => SignInBloc(SignInRepo(sessionRepo), authBloc),
         ),
