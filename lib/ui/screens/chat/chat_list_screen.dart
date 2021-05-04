@@ -88,12 +88,14 @@ class _ChatListScreenState extends State<ChatListScreen>
             if (state is ChatLoadSuccess) {
               if (state.requests.isNotEmpty) {
                 return SingleChildScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   controller: _scrollController,
                   child: Column(
                     children: [
                       AnimatedSize(
                         vsync: this,
                         duration: const Duration(milliseconds: 500),
+                        curve: Curves.easeIn,
                         child: Visibility(
                           visible: !_showAddBtn,
                           key: const ValueKey('addBtn'),
@@ -147,11 +149,14 @@ class _ChatListView extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-          child: Text(
-            'Recent Chats',
-            style: AppFonts.SEMIBOLD_WHITE3_14,
+        Visibility(
+          visible: chats.isNotEmpty,
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            child: Text(
+              'Recent Chats',
+              style: AppFonts.SEMIBOLD_WHITE3_14,
+            ),
           ),
         ),
         // Recent Chats
