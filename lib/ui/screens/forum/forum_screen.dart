@@ -114,7 +114,7 @@ class AddQuestionView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(15),
       decoration: BoxDecoration(
-        border: Border.all(color: AppColors.WHITE3),
+        border: Border.all(color: AppColors.WHITE5),
         borderRadius: BorderRadius.circular(10),
       ),
       constraints: const BoxConstraints(maxHeight: 110),
@@ -123,6 +123,7 @@ class AddQuestionView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Image.asset('assets/forum/add_img.png'),
+          const SizedBox(width: 10),
           Expanded(
             child: Column(
               mainAxisAlignment: MainAxisAlignment.start,
@@ -130,7 +131,7 @@ class AddQuestionView extends StatelessWidget {
               children: [
                 Text(
                   'Add a new question',
-                  style: AppFonts.SEMIBOLD_BLACK3_16,
+                  style: AppFonts.MEDIUM_BLACK3_16,
                 ),
                 const SizedBox(height: 5),
                 Text(
@@ -138,22 +139,25 @@ class AddQuestionView extends StatelessWidget {
                   'consectetur adipisg elit. In in nisi sed odio',
                   softWrap: true,
                   maxLines: 3,
-                  style: AppFonts.REGULAR_BLACK3_9,
+                  style: AppFonts.REGULAR_BLACK3_10,
                 )
               ],
             ),
           ),
-          const SizedBox(height: 50),
-          Container(
-            decoration: const BoxDecoration(
-              color: AppColors.DEFAULT,
-              shape: BoxShape.circle,
-            ),
-            alignment: Alignment.center,
-            padding: const EdgeInsets.all(15),
-            child: const Icon(
-              Icons.add,
-              color: Colors.white,
+          const SizedBox(width: 15),
+          InkWell(
+            onTap: onAdd,
+            child: Container(
+              decoration: const BoxDecoration(
+                color: AppColors.DEFAULT,
+                shape: BoxShape.circle,
+              ),
+              alignment: Alignment.center,
+              padding: const EdgeInsets.all(15),
+              child: const Icon(
+                Icons.add,
+                color: Colors.white,
+              ),
             ),
           ),
         ],

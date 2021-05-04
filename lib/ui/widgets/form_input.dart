@@ -41,7 +41,7 @@ class FormInput extends StatelessWidget {
         hintText: title,
         labelText: title,
         alignLabelWithHint: true,
-        hintStyle: AppFonts.MEDIUM_WHITE3_16,
+        hintStyle: AppFonts.MEDIUM_WHITE3_14,
         filled: true,
         fillColor: AppColors.WHITE1,
         border: OutlineInputBorder(
