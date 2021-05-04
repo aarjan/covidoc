@@ -127,14 +127,18 @@ class PopupBtn extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
-      onSelected: (val) {
+      onSelected: (_) {
         context.read<AuthBloc>().add(LoggedOut());
         context.read<UserBloc>().add(ClearUser());
         Navigator.pushReplacementNamed(context, '/');
       },
       icon: const Icon(Icons.more_vert_rounded, color: Colors.white),
       itemBuilder: (context) => [
-        const PopupMenuItem(child: Text('Logout'), height: 12),
+        const PopupMenuItem(
+          value: 'logout',
+          height: 12,
+          child: Text('Logout'),
+        ),
       ],
     );
   }

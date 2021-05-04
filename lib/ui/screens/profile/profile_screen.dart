@@ -65,12 +65,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   @override
-  void dispose() {
-    _node.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocConsumer<UserBloc, UserState>(
@@ -105,12 +99,13 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 const Center(child: CircularProgressIndicator())
             ],
           );
-          },
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           if (_enabled) {
             _formKey.currentState.save();
+            FocusScope.of(context).unfocus();
 
             if (_formKey.currentState.validate()) {
               final nUser = AppUser(
