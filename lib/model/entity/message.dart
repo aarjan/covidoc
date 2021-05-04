@@ -13,6 +13,7 @@ class Chat extends Equatable {
     this.patName,
     this.docAvatar,
     this.patAvatar,
+    this.requestId,
     this.lastMessage,
     this.lastTimestamp,
     this.patUnreadCount = 0,
@@ -26,6 +27,7 @@ class Chat extends Equatable {
   final String patName;
   final String docAvatar;
   final String patAvatar;
+  final String requestId;
   final String lastMessage;
   @JsonKey(defaultValue: 0)
   final int patUnreadCount;
@@ -40,6 +42,7 @@ class Chat extends Equatable {
         patId,
         docName,
         patName,
+        requestId,
         docAvatar,
         patAvatar,
         lastMessage,
@@ -58,6 +61,7 @@ class Chat extends Equatable {
     String patId,
     String docName,
     String patName,
+    String requestId,
     String docAvatar,
     String patAvatar,
     String lastMessage,
@@ -71,6 +75,7 @@ class Chat extends Equatable {
       patId: patId ?? this.patId,
       docName: docName ?? this.docName,
       patName: patName ?? this.patName,
+      requestId: requestId ?? this.requestId,
       docAvatar: docAvatar ?? this.docAvatar,
       patAvatar: patAvatar ?? this.patAvatar,
       lastMessage: lastMessage ?? this.lastMessage,

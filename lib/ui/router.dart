@@ -23,8 +23,8 @@ class Routes {
         return getRoute(const CovidSymptomScreen());
       case PatientDescScreen.ROUTE_NAME:
         return getRoute(const PatientDescScreen());
-      case ChatListScreen.ROUTE_NAME:
-        return getRoute(const ChatListScreen());
+      case DocChatListScreen.ROUTE_NAME:
+        return getRoute(const DocChatListScreen());
       case ChatScreen.ROUTE_NAME:
         return getRoute(const ChatScreen());
       case DashboardScreen.ROUTE_NAME:

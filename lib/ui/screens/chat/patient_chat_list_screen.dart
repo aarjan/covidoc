@@ -13,16 +13,16 @@ import 'chat_request.dart';
 import 'chat_screen.dart';
 import 'components.dart';
 
-class ChatListScreen extends StatefulWidget {
+class PatChatListScreen extends StatefulWidget {
   static const ROUTE_NAME = '/chat/list';
 
-  const ChatListScreen();
+  const PatChatListScreen();
 
   @override
-  _ChatListScreenState createState() => _ChatListScreenState();
+  _PatChatListScreenState createState() => _PatChatListScreenState();
 }
 
-class _ChatListScreenState extends State<ChatListScreen>
+class _PatChatListScreenState extends State<PatChatListScreen>
     with SingleTickerProviderStateMixin {
   bool _showAddBtn;
   ScrollController _scrollController;
@@ -68,7 +68,7 @@ class _ChatListScreenState extends State<ChatListScreen>
           BlocProvider(
             create: (context) => ChatBloc(
               repo: context.read<MessageRepo>(),
-            )..add(LoadChats()),
+            )..add(LoadPatientChats()),
           ),
         ],
         child: BlocListener<ChatBloc, ChatState>(

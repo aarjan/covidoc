@@ -30,11 +30,14 @@ class MessageRepo {
     if (msgRef == null || msgRef.docs.isEmpty) {
       return [];
     }
-    final msgs = msgRef.docs.map((m) => Chat.fromJson(m.data())).toList();
+    final msgs = msgRef.docs
+        .map((m) => m == null ? null : Chat.fromJson(m.data()))
+        .toList();
     return msgs;
   }
 
-  Future<List<MessageRequest>> loadMsgRequests(String userId) async {
+  // MessageRequests made by the patient
+  Future<List<MessageRequest>> loadMsgRequestsByUser(String userId) async {
     final firestore = FirebaseFirestore.instance;
     final msgRef = await firestore
         .collection('messageRequest')
@@ -45,9 +48,26 @@ class MessageRepo {
     if (msgRef == null || msgRef.docs.isEmpty) {
       return [];
     }
-    final reqs =
-        msgRef.docs.map((m) => MessageRequest.fromJson(m.data())).toList();
+    final reqs = msgRef.docs
+        .map((m) => m == null ? null : MessageRequest.fromJson(m.data()))
+        .toList();
     return reqs;
+  }
+
+  // MessageRequests made by different patients -> for doctors
+  Future<List<MessageRequest>> loadRequests({limit = 10, offset = 0}) async {
+    final firestore = FirebaseFirestore.instance;
+    final mRef = await firestore
+        .collection('messageRequest')
+        .where('resolved', isEqualTo: false)
+        .limit(limit)
+        .get();
+    if (mRef == null || mRef.docs.isEmpty) {
+      return [];
+    }
+    return mRef.docs
+        .map((m) => m == null ? null : MessageRequest.fromJson(m.data()))
+        .toList();
   }
 
   Future<List<Message>> loadMessages(String chatId) async {
@@ -56,7 +76,9 @@ class MessageRepo {
     if (msgRef == null || msgRef.docs.isEmpty) {
       return [];
     }
-    final msgs = msgRef.docs.map((m) => Message.fromJson(m.data())).toList();
+    final msgs = msgRef.docs
+        .map((m) => m == null ? null : Message.fromJson(m.data()))
+        .toList();
     return msgs;
   }
 
@@ -66,6 +88,11 @@ class MessageRepo {
         await firestore.collection('messageRequest').add(request.toJson());
     await firestore.doc('messageRequest/${mRef.id}').update({'id': mRef.id});
     return mRef.id;
+  }
+
+  Future<void> resolveMsgRequest(String requestId) async {
+    final firestore = FirebaseFirestore.instance;
+    await firestore.doc('messageRequest/$requestId').update({'resolved': true});
   }
 
   Future<String> startConversation({Chat chat}) async {

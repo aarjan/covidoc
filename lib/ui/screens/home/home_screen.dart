@@ -1,3 +1,5 @@
+import 'package:covidoc/model/entity/app_user.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -16,6 +18,11 @@ class HomeScreen extends StatelessWidget {
       create: (context) => TabBloc()..add(const OnTabChanged(0)),
       child: BlocBuilder<TabBloc, TabState>(
         builder: (context, state) {
+          final user = context.select((UserBloc b) =>
+              (b.state is UserLoadSuccess)
+                  ? (b.state as UserLoadSuccess).user
+                  : null);
+
           return Scaffold(
             body: Builder(builder: (context) {
               switch (state) {
@@ -23,7 +30,9 @@ class HomeScreen extends StatelessWidget {
                   return const DashboardScreen();
                   break;
                 case TabState.CHAT:
-                  return const ChatListScreen();
+                  return user.type == describeEnum(UserType.Doctor)
+                      ? const DocChatListScreen()
+                      : const PatChatListScreen();
                   break;
                 case TabState.FORUM:
                   return const ForumScreen();
