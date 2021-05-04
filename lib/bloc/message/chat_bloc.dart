@@ -1,8 +1,9 @@
-import 'package:covidoc/model/entity/entity.dart';
-import 'package:covidoc/model/entity/message_request.dart';
-import 'package:covidoc/model/repo/message_repo.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'package:covidoc/model/entity/entity.dart';
+import 'package:covidoc/model/repo/message_repo.dart';
+import 'package:covidoc/model/entity/message_request.dart';
 
 class ChatEvent extends Equatable {
   @override
