@@ -14,6 +14,6 @@ Future<UserCredential> signInWithFacebook() async {
 }
 
 Future<void> signOutWithFacebook() async {
-  // await FacebookAuth.instance.logOut();
+  await FacebookAuth.instance.logOut();
   await FirebaseAuth.instance.signOut();
 }
