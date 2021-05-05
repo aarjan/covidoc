@@ -3,6 +3,7 @@ class AppConst {
 
   static const String CACHE_USER = 'CACHE_USER';
   static const String CACHE_DOCTORS = 'CACHE_DOCTORS';
+  static const String CACHE_LOGIN_TYPE = 'CACHE_LOGIN_TYPE';
 
   static const String APP_NAME = 'Covidoc';
   static const String APP_VERSION = 'Covidoc v1.0.0';

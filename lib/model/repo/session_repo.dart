@@ -13,6 +13,14 @@ class SessionRepository {
     return pref.flushAll();
   }
 
+  Future<bool> cacheSignInType(String type) {
+    return pref.saveString(AppConst.CACHE_LOGIN_TYPE, type);
+  }
+
+  Future<String> getSignInType() {
+    return pref.getString(AppConst.CACHE_LOGIN_TYPE);
+  }
+
   Future<bool> cacheUser(AppUser user) async {
     return pref.saveString(AppConst.CACHE_USER, jsonEncode(user));
   }

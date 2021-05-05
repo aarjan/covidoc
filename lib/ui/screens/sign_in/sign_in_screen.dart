@@ -47,9 +47,37 @@ class SignInView extends StatelessWidget {
             'Sign In with Google!',
             style: Theme.of(context).textTheme.headline6,
           ),
-          const SizedBox(height: 20),
+          const SizedBox(
+            height: 20,
+          ),
           SignInButton(Buttons.Google, onPressed: () async {
-            context.read<SignInBloc>().add(SignInStarted());
+            context.read<SignInBloc>().add(SignInStarted(SignInType.Google));
+          }),
+          const SizedBox(
+            height: 20,
+          ),
+          Text(
+            'Sign In with Facebook!',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SignInButton(Buttons.FacebookNew, onPressed: () async {
+            context.read<SignInBloc>().add(SignInStarted(SignInType.Facebook));
+          }),
+          const SizedBox(
+            height: 20,
+          ),
+          Text(
+            'Sign In with Twitter!',
+            style: Theme.of(context).textTheme.headline6,
+          ),
+          const SizedBox(
+            height: 20,
+          ),
+          SignInButton(Buttons.Twitter, onPressed: () async {
+            context.read<SignInBloc>().add(SignInStarted(SignInType.Twitter));
           }),
         ],
       ),

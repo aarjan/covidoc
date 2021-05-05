@@ -30,7 +30,6 @@ class AppUser extends Equatable {
   final String email;
   final String avatar;
   final String fullname;
-  final String providerId;
   @JsonKey(defaultValue: <String>[])
   final List<String> chatIds;
   @JsonKey(defaultValue: <String>[])
@@ -38,6 +37,7 @@ class AppUser extends Equatable {
   final Map<String, dynamic> detail;
   @JsonKey(defaultValue: false)
   final bool profileVerification;
+  final Map<String, String> providerId;
 
   @override
   List<Object> get props => [
@@ -79,11 +79,11 @@ class AppUser extends Equatable {
     String email,
     String avatar,
     String fullname,
-    String providerId,
     List<String> chatIds,
     List<String> chatUsers,
     bool profileVerification,
     Map<String, dynamic> detail,
+    Map<String, String> providerId,
   }) {
     return AppUser(
       id: id ?? this.id,

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:covidoc/bloc/auth/auth.dart';
 import 'package:covidoc/model/repo/sign_in_repo.dart';
+import 'package:either_option/either_option.dart';
 
 import 'sign_in.dart';
 
@@ -14,13 +15,14 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     try {
       switch (event.runtimeType) {
         case SignInStarted:
-          final resp = await repo.googleSign();
+          final signInType = (event as SignInStarted).type;
+          final resp = await repo.signIn(signInType);
           yield* resp.fold(
             (f) async* {
               yield SignInFailure(f.toString());
             },
             (user) async* {
-              final nUser = await repo.storeUser(user);
+              final nUser = await repo.storeUser(user, signInType);
               authBloc.add(
                 LoggedIn(profileVerification: nUser.profileVerification),
               );

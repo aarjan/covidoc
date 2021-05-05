@@ -1,9 +1,9 @@
-import 'package:covidoc/core/error/failures.dart';
-import 'package:covidoc/core/social_sign_in/google_signin.dart';
-import 'package:covidoc/model/entity/entity.dart';
-import 'package:covidoc/model/repo/session_repo.dart';
 import 'package:either_option/either_option.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:covidoc/core/error/failures.dart';
+import 'package:covidoc/model/entity/entity.dart';
+import 'package:covidoc/model/repo/session_repo.dart';
+import 'package:covidoc/core/social_sign_in/social_signin.dart';
 
 class AuthRepo {
   final SessionRepository sessionRepo;
@@ -12,7 +12,20 @@ class AuthRepo {
 
   Future<Either<ServerFailure, void>> signOut() async {
     try {
-      await signOutWithGoogle();
+      final type = await sessionRepo.getSignInType();
+      switch (type) {
+        case 'Facebook':
+          await signOutWithFacebook();
+          break;
+        case 'Google':
+          await signOutWithGoogle();
+          break;
+        case 'Twitter':
+          await signOutWithTwitter();
+          break;
+        default:
+      }
+
       await sessionRepo.flushAll();
       return Right(null);
     } catch (e) {

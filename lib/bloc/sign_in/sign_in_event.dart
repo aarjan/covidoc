@@ -5,6 +5,12 @@ class SignInEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class SignInStarted extends SignInEvent {}
+class SignInStarted extends SignInEvent {
+  final SignInType type;
+
+  SignInStarted(this.type);
+}
 
 class SignOutStarted extends SignInEvent {}
+
+enum SignInType { Google, Facebook, Twitter }
