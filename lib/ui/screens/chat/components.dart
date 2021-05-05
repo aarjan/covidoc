@@ -4,10 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:covidoc/bloc/bloc.dart';
+import 'package:covidoc/ui/router.dart';
 import 'package:covidoc/utils/utils.dart';
 import 'package:covidoc/utils/const/const.dart';
-import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/ui/screens/screens.dart';
+import 'package:covidoc/model/entity/entity.dart';
 
 import 'chat_request.dart';
 
@@ -228,13 +229,8 @@ class ChatItem extends StatelessWidget {
     return ListTile(
       onTap: () {
         context.read<MessageBloc>().add(LoadMsgs(chat.id));
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (_) => ChatScreen(
-                      chat: chat,
-                      isFromPatient: isFromPatient,
-                    )));
+        Navigator.push(context,
+            getRoute(ChatScreen(chat: chat, isFromPatient: isFromPatient)));
       },
       leading: CircleAvatar(
         radius: 22,

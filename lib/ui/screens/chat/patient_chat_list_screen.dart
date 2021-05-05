@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:covidoc/ui/screens/screens.dart';
 
 import 'package:covidoc/bloc/bloc.dart';
+import 'package:covidoc/ui/router.dart';
 import 'package:covidoc/model/repo/repo.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/model/entity/entity.dart';
@@ -76,12 +77,9 @@ class _PatChatListScreenState extends State<PatChatListScreen>
             if (state is ChatLoadSuccess && state.conversationStarted) {
               Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => ChatScreen(
+                  getRoute(ChatScreen(
                       chat: state.chatWith,
-                      isFromPatient: state.userType == 'Patient',
-                    ),
-                  ));
+                      isFromPatient: state.userType == 'Patient')));
             }
           },
           child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {

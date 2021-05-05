@@ -1,9 +1,9 @@
-import 'package:covidoc/bloc/bloc.dart';
-import 'package:covidoc/ui/screens/screens.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_signin_button/button_view.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
+
+import 'package:covidoc/bloc/bloc.dart';
+import 'package:covidoc/ui/screens/screens.dart';
 
 class SignInScreen extends StatelessWidget {
   static const ROUTE_NAME = '/signIn';
@@ -22,11 +22,10 @@ class SignInScreen extends StatelessWidget {
           }
           if (state is SignInSuccess) {
             if (state.profileVerification) {
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (_) => const HomeScreen()));
+              Navigator.pushReplacementNamed(context, HomeScreen.ROUTE_NAME);
             } else
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (_) => const RegisterScreen()));
+              Navigator.pushReplacementNamed(
+                  context, RegisterScreen.ROUTE_NAME);
           }
         },
         child: SignInView(),

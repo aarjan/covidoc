@@ -26,7 +26,7 @@ class DoctorDescScreen extends StatelessWidget {
       body: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
           if (state is UserLoadSuccess && state.userUpdated) {
-            Navigator.pushNamed(context, HomeScreen.ROUTE_NAME);
+            Navigator.pushReplacementNamed(context, HomeScreen.ROUTE_NAME);
           }
         },
         child: DocDescription(),
