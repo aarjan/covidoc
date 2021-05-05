@@ -12,7 +12,7 @@ import 'package:covidoc/model/entity/entity.dart';
 
 import 'chat_request.dart';
 
-Future showBottomQuestionSheet(BuildContext context) {
+Future showBottomQuestionSheet(BuildContext context, AppUser user) {
   return showModalBottomSheet(
     context: context,
     isDismissible: true,
@@ -48,7 +48,9 @@ Future showBottomQuestionSheet(BuildContext context) {
               ),
             ),
             const SizedBox(height: 30),
-            const ChatRequest(),
+            ChatRequest(
+              user: user,
+            ),
           ],
         ),
       );

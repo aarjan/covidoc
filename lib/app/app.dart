@@ -90,6 +90,11 @@ Widget runWidget() {
         BlocProvider(
           create: (context) => BlogBloc(blogRepo),
         ),
+        BlocProvider(
+          create: (context) => ChatBloc(
+            repo: context.read<MessageRepo>(),
+          ),
+        ),
       ],
       child: const App(),
     ),

@@ -6,7 +6,6 @@ import 'package:covidoc/ui/screens/screens.dart';
 
 import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/ui/router.dart';
-import 'package:covidoc/model/repo/repo.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/model/entity/entity.dart';
 
@@ -24,13 +23,18 @@ class PatChatListScreen extends StatefulWidget {
 }
 
 class _PatChatListScreenState extends State<PatChatListScreen>
-    with SingleTickerProviderStateMixin {
+    with TickerProviderStateMixin {
+  AppUser _user;
   bool _showAddBtn;
   ScrollController _scrollController;
 
   @override
   void initState() {
     super.initState();
+
+    // load chats
+    context.read<ChatBloc>().add(LoadPatientChats());
+
     _showAddBtn = false;
     _scrollController = ScrollController();
     _scrollController.addListener(() {
@@ -64,69 +68,64 @@ class _PatChatListScreenState extends State<PatChatListScreen>
           style: AppFonts.SEMIBOLD_BLACK3_16,
         ),
       ),
-      body: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => ChatBloc(
-              repo: context.read<MessageRepo>(),
-            )..add(LoadPatientChats()),
-          ),
-        ],
-        child: BlocListener<ChatBloc, ChatState>(
-          listener: (context, state) {
-            if (state is ChatLoadSuccess && state.conversationStarted) {
-              Navigator.push(
-                  context,
-                  getRoute(ChatScreen(
-                      chat: state.chatWith,
-                      isFromPatient: state.userType == 'Patient')));
-            }
-          },
-          child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
-            if (state is ChatLoadSuccess) {
-              if (state.requests.isNotEmpty) {
-                return SingleChildScrollView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  controller: _scrollController,
-                  child: Column(
-                    children: [
-                      AnimatedSize(
-                        vsync: this,
-                        duration: const Duration(milliseconds: 500),
-                        curve: Curves.easeIn,
-                        child: Visibility(
-                          visible: !_showAddBtn,
-                          key: const ValueKey('addBtn'),
-                          child: Padding(
-                            padding: const EdgeInsets.all(16),
-                            child: AddQuestionView(
-                              onAdd: () {
-                                showBottomQuestionSheet(context);
-                              },
-                            ),
+      body: BlocListener<ChatBloc, ChatState>(
+        listener: (context, state) {
+          if (state is ChatLoadSuccess && state.conversationStarted) {
+            Navigator.push(
+                context,
+                getRoute(ChatScreen(
+                    chat: state.chatWith,
+                    isFromPatient: state.userType == 'Patient')));
+          }
+        },
+        child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
+          if (state is ChatLoadSuccess) {
+            // initialize the _user
+            // _user would only be used when scrolled down
+            // i.e. _showAddBtn=true;  only when user state is loaded
+            _user = state.user;
+
+            if (state.requests.isNotEmpty) {
+              return SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                controller: _scrollController,
+                child: Column(
+                  children: [
+                    AnimatedSize(
+                      vsync: this,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeIn,
+                      child: Visibility(
+                        visible: !_showAddBtn,
+                        key: const ValueKey('addBtn'),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                          child: AddQuestionView(
+                            onAdd: () {
+                              showBottomQuestionSheet(context, state.user);
+                            },
                           ),
                         ),
                       ),
-                      _ChatListView(
-                          state.chats, state.requests, state.userType),
-                    ],
-                  ),
-                );
-              }
-              return Padding(
-                padding: const EdgeInsets.all(16),
-                child: ChatRequest(user: state.user),
+                    ),
+                    _ChatListView(state.chats, state.requests, state.userType),
+                  ],
+                ),
               );
             }
-            return const Center(child: CircularProgressIndicator());
-          }),
-        ),
+            return Padding(
+              padding: const EdgeInsets.all(16),
+              child: ChatRequest(user: state.user),
+            );
+          }
+          return const Center(child: CircularProgressIndicator());
+        }),
       ),
       floatingActionButton: Visibility(
         visible: _showAddBtn,
         child: FloatingActionButton(
           onPressed: () {
-            showBottomQuestionSheet(context);
+            showBottomQuestionSheet(context, _user);
           },
           child: const Icon(Icons.add, color: Colors.white),
         ),
@@ -150,7 +149,7 @@ class _ChatListView extends StatelessWidget {
         Visibility(
           visible: chats.isNotEmpty,
           child: Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             child: Text(
               'Recent Chats',
               style: AppFonts.SEMIBOLD_WHITE3_14,

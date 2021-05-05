@@ -8,7 +8,7 @@ import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/model/entity/entity.dart';
 
 class ChatRequest extends StatefulWidget {
-  const ChatRequest({this.user});
+  const ChatRequest({@required this.user}) : assert(user != null);
   final AppUser user;
 
   @override
