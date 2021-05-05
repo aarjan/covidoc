@@ -273,20 +273,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   'Years of Experience',
                   style: AppFonts.MEDIUM_BLACK3_16,
                 )),
-                DropdownButton(
-                  value: _yearsOfExperience ?? years[0],
-                  underline: const SizedBox.shrink(),
-                  items: years
-                      .map((e) => DropdownMenuItem(
-                            value: e,
-                            child: Text(e),
-                          ))
-                      .toList(),
-                  onChanged: (val) {
-                    setState(() {
-                      _yearsOfExperience = val;
-                    });
-                  },
+                IgnorePointer(
+                  ignoring: !_enabled,
+                  child: DropdownButton(
+                    value: _yearsOfExperience ?? years[0],
+                    underline: const SizedBox.shrink(),
+                    items: years
+                        .map((e) => DropdownMenuItem(
+                              value: e,
+                              child: Text(e),
+                            ))
+                        .toList(),
+                    onChanged: (val) {
+                      setState(() {
+                        _yearsOfExperience = val;
+                      });
+                    },
+                  ),
                 )
               ]),
               const SizedBox(height: 50),
