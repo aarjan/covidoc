@@ -48,8 +48,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     _symptoms = _symptoms ?? user.detail['symptoms'];
     _practice = _practice ?? user.detail['practice'];
     _speciality = _speciality ?? user.detail['speciality'];
-    _yearsOfExperience =
-        _yearsOfExperience ?? user.detail['_yearsOfExperience'];
+    _yearsOfExperience = _yearsOfExperience ?? user.detail['yearsOfExperience'];
   }
 
   void updateState(int val) {
@@ -276,7 +275,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 IgnorePointer(
                   ignoring: !_enabled,
                   child: DropdownButton(
-                    value: _yearsOfExperience ?? years[0],
+                    value: _yearsOfExperience,
                     underline: const SizedBox.shrink(),
                     items: years
                         .map((e) => DropdownMenuItem(
