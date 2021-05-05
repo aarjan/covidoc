@@ -1,11 +1,12 @@
+import 'package:covidoc/env.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 
 Future<UserCredential> signInWithTwitter() async {
   // Create a TwitterLogin instance
   final twitterLogin = TwitterLogin(
-    consumerKey: 'DXGMtogow1D1Nta7xFoO22T8T',
-    consumerSecret: 'n8Ty6tdckqybahFzAL5saRwyuqYOloBUPzZ3dzDbqfbkUqO2RS',
+    consumerKey: APP_ENV['TWITTER_API_KEY'],
+    consumerSecret: APP_ENV['TWITTER_API_SECRET'],
   );
 
   // Trigger the sign-in flow

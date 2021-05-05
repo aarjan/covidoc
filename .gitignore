@@ -127,3 +127,4 @@ app.*.map.json
 
 _*
 *.g.dart
+env.dart
