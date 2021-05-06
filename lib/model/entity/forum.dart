@@ -8,19 +8,44 @@ class Forum extends Equatable {
   const Forum({
     this.id,
     this.title,
-    this.userId,
     this.addedBy,
-    this.documents,
+    this.ansCount,
+    this.imageUrls,
+    this.timestamp,
+    this.addedByUserId,
+    this.addedByAvatar,
+    this.tags = const <String>[],
+    this.recentUsersAvatar = const <String>[],
   });
 
   final String id;
   final String title;
-  final String userId;
   final String addedBy;
-  final String documents;
+  final String ansCount;
+  final String imageUrls;
+  final DateTime timestamp;
+  final String addedByUserId;
+  final String addedByAvatar;
+
+  @JsonKey(defaultValue: <String>[])
+  final List<String> tags;
+  @JsonKey(defaultValue: <String>[])
+  final List<String> recentUsersAvatar;
 
   @override
-  List<Object> get props => [id, title, userId, addedBy, documents];
+  List<Object> get props => [
+        id,
+        tags,
+        title,
+        addedBy,
+        ansCount,
+        imageUrls,
+        imageUrls,
+        timestamp,
+        addedByAvatar,
+        addedByUserId,
+        recentUsersAvatar
+      ];
 
   factory Forum.fromJson(Map<String, dynamic> json) => _$ForumFromJson(json);
 
@@ -29,16 +54,26 @@ class Forum extends Equatable {
   Forum copyWith({
     String id,
     String title,
-    String userId,
     String addedBy,
-    String documents,
+    String ansCount,
+    String imageUrls,
+    List<String> tags,
+    DateTime timestamp,
+    String addedByUserId,
+    String addedByAvatar,
+    List<String> recentUsersAvatar,
   }) {
     return Forum(
       id: id ?? this.id,
+      tags: tags ?? this.tags,
       title: title ?? this.title,
-      userId: userId ?? this.userId,
       addedBy: addedBy ?? this.addedBy,
-      documents: documents ?? this.documents,
+      ansCount: ansCount ?? this.ansCount,
+      imageUrls: imageUrls ?? this.imageUrls,
+      timestamp: timestamp ?? this.timestamp,
+      addedByUserId: addedByUserId ?? this.addedByUserId,
+      addedByAvatar: addedByAvatar ?? this.addedByAvatar,
+      recentUsersAvatar: recentUsersAvatar ?? this.recentUsersAvatar,
     );
   }
 }
@@ -48,21 +83,22 @@ class Answer extends Equatable {
   const Answer({
     this.id,
     this.title,
-    this.userId,
     this.addedBy,
-    this.documents,
+    this.imageUrls,
     this.questionId,
+    this.addedByUserId,
   });
 
   final String id;
   final String title;
   final String addedBy;
-  final String userId;
-  final String documents;
+  final String imageUrls;
   final String questionId;
+  final String addedByUserId;
 
   @override
-  List<Object> get props => [id, questionId, title, addedBy, userId, documents];
+  List<Object> get props =>
+      [id, questionId, title, addedByUserId, addedBy, imageUrls];
 
   factory Answer.fromJson(Map<String, dynamic> json) => _$AnswerFromJson(json);
 
@@ -71,17 +107,17 @@ class Answer extends Equatable {
   Answer copyWith({
     String id,
     String title,
-    String userId,
     String addedBy,
-    String documents,
+    String addedByUserId,
+    String imageUrls,
     String questionId,
   }) {
     return Answer(
       id: id ?? this.id,
       title: title ?? this.title,
-      userId: userId ?? this.userId,
       addedBy: addedBy ?? this.addedBy,
-      documents: documents ?? this.documents,
+      addedByUserId: addedByUserId ?? this.addedByUserId,
+      imageUrls: imageUrls ?? this.imageUrls,
       questionId: questionId ?? this.questionId,
     );
   }

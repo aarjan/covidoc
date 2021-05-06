@@ -20,11 +20,9 @@ Future showBottomQuestionSheet(BuildContext context, AppUser user) {
     enableDrag: true,
     clipBehavior: Clip.antiAliasWithSaveLayer,
     shape: const RoundedRectangleBorder(
-        side: BorderSide.none,
-        borderRadius: BorderRadius.only(
-          topLeft: Radius.circular(20),
-          topRight: Radius.circular(20),
-        )),
+      side: BorderSide.none,
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
     builder: (context) {
       return DraggableScrollableSheet(
         initialChildSize: 0.75,

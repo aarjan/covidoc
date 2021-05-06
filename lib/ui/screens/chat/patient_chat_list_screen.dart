@@ -8,6 +8,7 @@ import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/ui/router.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/model/entity/entity.dart';
+import 'package:covidoc/ui/screens/forum/components/add_question.dart';
 
 import 'chat_request.dart';
 import 'chat_screen.dart';

@@ -63,6 +63,7 @@ class AppFonts {
   static final REGULAR_BLACK3_14 = REGULAR_BLACK3.copyWith(fontSize: 14);
   static final REGULAR_BLACK3_16 = REGULAR_BLACK3.copyWith(fontSize: 16);
   static final REGULAR_BLACK3_18 = REGULAR_BLACK3.copyWith(fontSize: 18);
+  static final REGULAR_BLACK3_20 = REGULAR_BLACK3.copyWith(fontSize: 20);
   static final REGULAR_BLACK3_24 = REGULAR_BLACK3.copyWith(fontSize: 24);
 
   static final MEDIUM_WHITE_8 = MEDIUM.copyWith(fontSize: 8);
@@ -120,6 +121,13 @@ class AppFonts {
   static final BOLD_WHITE_12 = BOLD.copyWith(fontSize: 12);
   static final BOLD_WHITE_14 = BOLD.copyWith(fontSize: 14);
   static final BOLD_WHITE_18 = BOLD.copyWith(fontSize: 18);
+
+  static final REGULAR_WHITE2 = REGULAR.copyWith(color: AppColors.WHITE2);
+  static final REGULAR_WHITE2_9 = REGULAR_WHITE2.copyWith(fontSize: 9);
+  static final REGULAR_WHITE2_10 = REGULAR_WHITE2.copyWith(fontSize: 10);
+  static final REGULAR_WHITE2_11 = REGULAR_WHITE2.copyWith(fontSize: 11);
+  static final REGULAR_WHITE2_12 = REGULAR_WHITE2.copyWith(fontSize: 12);
+  static final REGULAR_WHITE2_14 = REGULAR_WHITE3.copyWith(fontSize: 14);
 
   static final REGULAR_WHITE3 = REGULAR.copyWith(color: AppColors.WHITE3);
   static final REGULAR_WHITE3_9 = REGULAR_WHITE3.copyWith(fontSize: 9);
