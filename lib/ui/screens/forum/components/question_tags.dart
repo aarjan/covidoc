@@ -3,13 +3,18 @@ import 'package:flutter_tags/flutter_tags.dart';
 import 'package:covidoc/utils/const/const.dart';
 
 class QuestionTags extends StatefulWidget {
+  final void Function(String) onAdd;
+  final void Function(String) onRemove;
+
+  const QuestionTags({Key key, this.onAdd, this.onRemove}) : super(key: key);
+
   @override
   _QuestionTagsState createState() => _QuestionTagsState();
 }
 
 class _QuestionTagsState extends State<QuestionTags> {
   final GlobalKey<TagsState> _tagStateKey = GlobalKey<TagsState>();
-  List<String> _itemlist = [];
+  final List<String> _itemlist = [];
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +33,12 @@ class _QuestionTagsState extends State<QuestionTags> {
             // required
             _itemlist.add(str);
           });
+          widget.onAdd(str);
         },
       ),
       itemCount: _itemlist.length, // required
       itemBuilder: (int index) {
-        final item = _itemlist[index];
+        final title = _itemlist[index];
 
         return Padding(
           padding: const EdgeInsets.only(top: 6, bottom: 10, left: 6),
@@ -45,7 +51,7 @@ class _QuestionTagsState extends State<QuestionTags> {
             elevation: 0,
             key: Key(index.toString()),
             index: index, // required
-            title: item,
+            title: title,
             textStyle: AppFonts.REGULAR_BLACK3_14,
             combine: ItemTagsCombine.withTextBefore, // OR null,
             removeButton: ItemTagsRemoveButton(
@@ -60,6 +66,8 @@ class _QuestionTagsState extends State<QuestionTags> {
                   // required
                   _itemlist.removeAt(index);
                 });
+
+                widget.onRemove(title);
                 return true;
               },
             ), // OR null,
@@ -67,6 +75,7 @@ class _QuestionTagsState extends State<QuestionTags> {
               setState(() {
                 _itemlist.removeAt(index);
               });
+              widget.onRemove(item.title);
             },
           ),
         );

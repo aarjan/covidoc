@@ -1,32 +1,59 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:covidoc/utils/utils.dart';
+import 'package:covidoc/bloc/forum/forum.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/ui/widgets/widgets.dart';
+import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/ui/widgets/dropdown.dart';
 
 import 'attached_images.dart';
 import 'question_tags.dart';
 
-class AddQuestionModal extends StatefulWidget {
-  const AddQuestionModal({
-    Key key,
-    this.tags,
-    this.images,
-  }) : super(key: key);
-
-  final List<String> tags;
-  final List<String> images;
+class AddQuestionModal extends StatelessWidget {
+  const AddQuestionModal();
 
   @override
-  _AddQuestionModalState createState() => _AddQuestionModalState();
+  Widget build(BuildContext context) {
+    return BlocConsumer<ForumBloc, ForumState>(
+      listener: (context, state) {
+        if (state is ForumLoadSuccess) {
+          Navigator.pop(context);
+        }
+      },
+      builder: (context, state) {
+        return Stack(
+          children: [
+            const _AddQuestion(),
+            if (state is ForumLoadInProgress)
+              const Center(
+                child: CircularProgressIndicator(),
+              ),
+          ],
+        );
+      },
+    );
+  }
 }
 
-class _AddQuestionModalState extends State<AddQuestionModal> {
+class _AddQuestion extends StatefulWidget {
+  const _AddQuestion({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  _AddQuestionState createState() => _AddQuestionState();
+}
+
+class _AddQuestionState extends State<_AddQuestion> {
+  String _question;
+  final List<String> _tags = [];
   final List<File> _attachedImages = [];
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
@@ -95,20 +122,27 @@ class _AddQuestionModalState extends State<AddQuestionModal> {
                     children: [
                       SizedBox(
                         height: 150,
-                        child: TextField(
-                          expands: true,
-                          maxLines: null,
-                          minLines: null,
-                          decoration: InputDecoration(
-                            disabledBorder: InputBorder.none,
-                            errorBorder: InputBorder.none,
-                            enabledBorder: InputBorder.none,
-                            focusedBorder: InputBorder.none,
-                            hintText: 'Type your Question here',
-                            hintStyle: AppFonts.REGULAR_WHITE3_14,
+                        child: Form(
+                          key: _formKey,
+                          child: TextFormField(
+                            expands: true,
+                            maxLines: null,
+                            minLines: null,
+                            validator: (val) => val.trim().isEmpty
+                                ? 'Question cannot be empty!'
+                                : null,
+                            onSaved: (str) => _question = str,
+                            decoration: InputDecoration(
+                              disabledBorder: InputBorder.none,
+                              errorBorder: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              hintText: 'Type your Question here',
+                              hintStyle: AppFonts.REGULAR_WHITE3_14,
+                            ),
+                            textAlign: TextAlign.left,
+                            textAlignVertical: TextAlignVertical.top,
                           ),
-                          textAlign: TextAlign.left,
-                          textAlignVertical: TextAlignVertical.top,
                         ),
                       ),
                       // --------------------------------------------------
@@ -200,7 +234,14 @@ class _AddQuestionModalState extends State<AddQuestionModal> {
               border: Border.all(color: AppColors.WHITE5),
               borderRadius: BorderRadius.circular(10),
             ),
-            child: QuestionTags(),
+            child: QuestionTags(
+              onAdd: (str) {
+                _tags.add(str);
+              },
+              onRemove: (str) {
+                _tags.remove(str);
+              },
+            ),
           ),
 
           const SizedBox(
@@ -249,7 +290,18 @@ class _AddQuestionModalState extends State<AddQuestionModal> {
                 Flexible(
                   child: DefaultButton(
                     onTap: () {
-                      Navigator.of(context).pop();
+                      _formKey.currentState.save();
+                      if (_formKey.currentState.validate()) {
+                        final forum = Forum(
+                          tags: _tags,
+                          title: _question,
+                          category: 'Category1',
+                          timestamp: DateTime.now(),
+                        );
+                        context
+                            .read<ForumBloc>()
+                            .add(AddForum(forum, _attachedImages));
+                      }
                     },
                     title: 'Submit',
                   ),

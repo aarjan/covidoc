@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/model/repo/forum_repo.dart';
 import 'package:equatable/equatable.dart';
@@ -15,12 +17,28 @@ class ForumState extends Equatable {
 
 class LoadForum extends ForumEvent {}
 
+class AddImages extends ForumEvent {
+  final String forumId;
+  final List<File> images;
+
+  AddImages(this.forumId, this.images);
+}
+
 class AddForum extends ForumEvent {
   final Forum forum;
-  AddForum(this.forum);
+  final List<File> images;
+  AddForum(this.forum, this.images);
 
   @override
-  List<Object> get props => [forum];
+  List<Object> get props => [forum, images];
+}
+
+class DeleteForum extends ForumEvent {
+  final String forumId;
+  DeleteForum(this.forumId);
+
+  @override
+  List<Object> get props => [forumId];
 }
 
 class UpdateForum extends ForumEvent {
@@ -31,30 +49,31 @@ class UpdateForum extends ForumEvent {
   List<Object> get props => [forum];
 }
 
-class AddAnswer extends ForumEvent {
-  final Answer answer;
-  AddAnswer(this.answer);
-
-  @override
-  List<Object> get props => [answer];
-}
-
-class UpdateAnswer extends ForumEvent {
-  final Answer answer;
-  UpdateAnswer(this.answer);
-
-  @override
-  List<Object> get props => [answer];
-}
-
 class ForumInitial extends ForumState {}
 
 class ForumLoadInProgress extends ForumState {}
 
 class ForumLoadSuccess extends ForumState {
   final List<Forum> forums;
+  final List<String> categories;
+  final List<String> uploadedImgUrls;
 
-  ForumLoadSuccess(this.forums);
+  ForumLoadSuccess({this.forums, this.categories, this.uploadedImgUrls});
+
+  @override
+  List<Object> get props => [forums, categories, uploadedImgUrls];
+
+  ForumLoadSuccess copyWith({
+    List<Forum> forums,
+    List<String> categories,
+    List<String> uploadedImgUrls,
+  }) {
+    return ForumLoadSuccess(
+      forums: forums ?? this.forums,
+      categories: categories ?? this.categories,
+      uploadedImgUrls: uploadedImgUrls ?? this.uploadedImgUrls,
+    );
+  }
 }
 
 class ForumLoadFailure extends ForumState {
@@ -73,31 +92,79 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
   Stream<ForumState> mapEventToState(ForumEvent event) async* {
     switch (event.runtimeType) {
       case LoadForum:
-        yield ForumLoadInProgress();
-        final forums = await repo.getForums();
-        yield ForumLoadSuccess(forums);
+        yield* _mapLoadForumEventToState(event);
+        break;
+      case AddImages:
+        yield* _mapAddImagesEventToState(event);
         break;
       case UpdateForum:
-        yield ForumLoadInProgress();
-        await repo.updateForum((event as UpdateForum).forum);
-        yield state as ForumLoadSuccess;
+        yield* _mapUpdateForumEventToState(event);
         break;
       case AddForum:
-        yield ForumLoadInProgress();
-        await repo.addForum((event as AddForum).forum);
-        yield state as ForumLoadSuccess;
+        yield* _mapAddForumEventToState(event);
         break;
-      case AddAnswer:
-        yield ForumLoadInProgress();
-        await repo.addAnswer((event as AddAnswer).answer);
-        yield state as ForumLoadSuccess;
-        break;
-      case UpdateAnswer:
-        yield ForumLoadInProgress();
-        await repo.updateAnswer((event as UpdateAnswer).answer);
-        yield state as ForumLoadSuccess;
+      case DeleteForum:
+        yield* _mapDeleteForumEventToState(event);
         break;
       default:
     }
+  }
+
+  Stream<ForumState> _mapAddImagesEventToState(AddImages event) async* {
+    if (state is ForumLoadSuccess) {
+      final curState = state as ForumLoadSuccess;
+      yield ForumLoadInProgress();
+
+      final imgUrls = <String>[];
+      for (final f in event.images) {
+        final url = await repo.uploadImage(f);
+        imgUrls.add(url);
+      }
+      yield curState.copyWith(uploadedImgUrls: imgUrls);
+    }
+  }
+
+  Stream<ForumState> _mapLoadForumEventToState(LoadForum event) async* {
+    yield ForumLoadInProgress();
+    final forums = await repo.getForums();
+    final categories = ['Category1', 'Category2', 'Category3'];
+    yield ForumLoadSuccess(forums: forums, categories: categories);
+  }
+
+  Stream<ForumState> _mapAddForumEventToState(AddForum event) async* {
+    if (state is ForumLoadSuccess) {
+      final curState = (state as ForumLoadSuccess);
+      yield ForumLoadInProgress();
+
+      // Add images
+      final imgUrls = <String>[];
+      for (final f in event.images) {
+        final url = await repo.uploadImage(f);
+        imgUrls.add(url);
+      }
+      final user = await repo.getUser();
+
+      final nForum = event.forum.copyWith(
+        imageUrls: imgUrls,
+        addedById: user.id,
+        addedByType: user.type,
+        addedByAvatar: user.avatar,
+        addedByName: user.fullname,
+      );
+
+      final forum = await repo.addForum(nForum);
+
+      final nForums = List<Forum>.from([...curState.forums, forum]);
+
+      yield curState.copyWith(forums: nForums);
+    }
+  }
+
+  Stream<ForumState> _mapDeleteForumEventToState(DeleteForum event) async* {}
+
+  Stream<ForumState> _mapUpdateForumEventToState(UpdateForum event) async* {
+    yield ForumLoadInProgress();
+    await repo.updateForum(event.forum);
+    yield state as ForumLoadSuccess;
   }
 }

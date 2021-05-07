@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/utils/const/const.dart';
+import 'package:covidoc/ui/screens/screens.dart';
 
 import 'components/components.dart';
 
@@ -38,6 +41,8 @@ class _ForumScreenState extends State<ForumScreen>
         });
       }
     });
+
+    context.read<ForumBloc>().add(LoadForum());
   }
 
   @override
@@ -49,45 +54,61 @@ class _ForumScreenState extends State<ForumScreen>
           IconButton(icon: const Icon(Icons.search), onPressed: () {}),
         ],
       ),
-      body: SingleChildScrollView(
-        controller: _scrollController,
-        padding: const EdgeInsets.symmetric(horizontal: 20),
-        physics: const AlwaysScrollableScrollPhysics(),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const SizedBox(
-              height: 20,
-            ),
-            AnimatedSize(
-              vsync: this,
-              curve: Curves.easeIn,
-              duration: const Duration(milliseconds: 400),
-              child: Visibility(
-                visible: !_showAddBtn,
-                child: AddQuestionView(
-                  onAdd: () {
-                    showAddQuestionModal(context);
-                  },
-                ),
-              ),
-            ),
-            const SizedBox(
-              height: 20,
-            ),
-            const DropdownFilter(),
-            ListView.builder(
-              itemCount: 10,
-              shrinkWrap: true,
-              padding: EdgeInsets.zero,
-              physics: const NeverScrollableScrollPhysics(),
-              itemBuilder: (context, index) {
-                return const QuestionItem();
-              },
-            ),
-          ],
-        ),
-      ),
+      body: BlocBuilder<ForumBloc, ForumState>(builder: (context, state) {
+        if (state is ForumLoadSuccess) {
+          return SingleChildScrollView(
+              controller: _scrollController,
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  AnimatedSize(
+                    vsync: this,
+                    curve: Curves.easeIn,
+                    duration: const Duration(milliseconds: 400),
+                    child: Visibility(
+                      visible: !_showAddBtn,
+                      child: AddQuestionView(
+                        onAdd: () {
+                          showAddQuestionModal(context);
+                        },
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  const DropdownFilter(),
+                  ListView.builder(
+                    itemCount: state.forums.length,
+                    shrinkWrap: true,
+                    padding: EdgeInsets.zero,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return QuestionItem(
+                        question: state.forums[index],
+                        onTap: () {
+                          context
+                              .read<AnswerBloc>()
+                              .add(LoadAnswers(state.forums[index]));
+
+                          Navigator.pushNamed(
+                              context, ForumDiscussScreen.ROUTE_NAME);
+                        },
+                      );
+                    },
+                  ),
+                ],
+              ));
+        }
+        return const Center(
+          child: CircularProgressIndicator(),
+        );
+      }),
       floatingActionButton: Visibility(
         visible: _showAddBtn,
         child: FloatingActionButton(
@@ -110,10 +131,7 @@ class _ForumScreenState extends State<ForumScreen>
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         builder: (context) {
-          return const AddQuestionModal(
-            tags: [],
-            images: [],
-          );
+          return const AddQuestionModal();
         });
   }
 }
