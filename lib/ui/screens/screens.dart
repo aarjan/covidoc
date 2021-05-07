@@ -4,6 +4,7 @@ export 'chat/chat_screen.dart';
 export 'chat/doctor_chat_list_screen.dart';
 export 'chat/patient_chat_list_screen.dart';
 export 'dashboard/dashboard_screen.dart';
+export 'forum/forum_discuss_screen.dart';
 export 'forum/forum_screen.dart';
 export 'home/home_screen.dart';
 export 'profile/profile_screen.dart';

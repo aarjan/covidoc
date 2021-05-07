@@ -69,8 +69,10 @@ Widget runWidget() {
   final userRepo = UserRepo(sessionRepo);
   final blogRepo = BlogRepo(sessionRepo);
   final msgRepo = MessageRepo(sessionRepo);
+  final forumRepo = ForumRepo(sessionRepo);
 
   final authBloc = AuthBloc(AuthRepo(sessionRepo))..add(AppStarted());
+
   final userBloc = UserBloc(repo: userRepo, authBloc: authBloc);
 
   return MultiRepositoryProvider(
@@ -91,9 +93,13 @@ Widget runWidget() {
           create: (context) => BlogBloc(blogRepo),
         ),
         BlocProvider(
-          create: (context) => ChatBloc(
-            repo: context.read<MessageRepo>(),
-          ),
+          create: (context) => ChatBloc(repo: msgRepo),
+        ),
+        BlocProvider(
+          create: (context) => ForumBloc(forumRepo),
+        ),
+        BlocProvider(
+          create: (context) => AnswerBloc(forumRepo),
         ),
       ],
       child: const App(),

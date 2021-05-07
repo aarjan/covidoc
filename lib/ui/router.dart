@@ -29,6 +29,8 @@ class Routes {
         return getRoute(const ChatScreen());
       case DashboardScreen.ROUTE_NAME:
         return getRoute(const DashboardScreen());
+      case ForumDiscussScreen.ROUTE_NAME:
+        return getRoute(const ForumDiscussScreen());
       default:
 
         /// [TODO]: Show 404 page
