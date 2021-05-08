@@ -23,7 +23,7 @@ class LoadAnswers extends AnswerEvent {
 
 class AddAnswer extends AnswerEvent {
   final Answer answer;
-  final List<File> images;
+  final List<Photo> images;
 
   AddAnswer({this.answer, this.images});
 
@@ -33,10 +33,11 @@ class AddAnswer extends AnswerEvent {
 
 class UpdateAnswer extends AnswerEvent {
   final Answer answer;
-  UpdateAnswer(this.answer);
+  final List<Photo> images;
+  UpdateAnswer({this.answer, this.images});
 
   @override
-  List<Object> get props => [answer];
+  List<Object> get props => [answer, images];
 }
 
 class DeleteAnswer extends AnswerEvent {
@@ -125,13 +126,26 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
       final curState = state as AnswerLoadSuccess;
 
       yield AnswerLoadInProgress();
+
+      // Add images
+      final imgUrls = <String>[];
+      for (final f in event.images) {
+        final url = await repo.uploadImage(f.file);
+        imgUrls.add(url);
+      }
+
       final user = await repo.getUser();
 
       final nAnswer = event.answer.copyWith(
+        imageUrls: imgUrls,
+
+        // user data
         addedById: user.id,
         addedByType: user.type,
         addedByAvatar: user.avatar,
         addedByName: user.fullname,
+        createdAt: DateTime.now().toUtc(),
+        updatedAt: DateTime.now().toUtc(),
       );
       final addUserAvatar = curState.question.recentUsersAvatar.length < 4;
 
@@ -146,10 +160,47 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
   }
 
   Stream<AnswerState> _mapUpdateAnswerEventToState(UpdateAnswer event) async* {
-    yield AnswerLoadInProgress();
-    await repo.updateAnswer(event.answer);
-    yield state as AnswerLoadSuccess;
+    if (state is AnswerLoadSuccess) {
+      final curState = state as AnswerLoadSuccess;
+      yield AnswerLoadInProgress();
+
+      // Add images
+      final imgUrls = <String>[];
+      for (final f in event.images) {
+        if (f.source == PhotoSource.File) {
+          final url = await repo.uploadImage(f.file);
+          imgUrls.add(url);
+        } else {
+          imgUrls.add(f.url);
+        }
+      }
+
+      final nAnswer = event.answer.copyWith(
+        imageUrls: imgUrls,
+        updatedAt: DateTime.now().toUtc(),
+      );
+
+      await repo.updateAnswer(nAnswer);
+
+      yield curState.copyWith(
+          answers: curState.answers
+              .map((a) => a.id == event.answer.id ? nAnswer : a)
+              .toList());
+    }
   }
 
-  Stream<AnswerState> _mapDeleteAnswerEventToState(DeleteAnswer event) async* {}
+  Stream<AnswerState> _mapDeleteAnswerEventToState(DeleteAnswer event) async* {
+    if (state is AnswerLoadSuccess) {
+      final curState = state as AnswerLoadSuccess;
+      yield AnswerLoadInProgress();
+
+      await repo.delAnswer(event.forumId, event.answerId);
+
+      //[TODO:] remove currentAvatar from recentUsersAvatar
+      final nAnswers =
+          curState.answers.where((f) => f.id != event.answerId).toList();
+
+      yield curState.copyWith(answers: nAnswers);
+    }
+  }
 }

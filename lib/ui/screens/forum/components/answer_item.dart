@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/utils/utils.dart';
 import 'package:covidoc/utils/const/const.dart';
+import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/model/entity/entity.dart';
+
+import 'image_slider.dart';
+import 'update_answer_modal.dart';
 
 class AnswerItem extends StatelessWidget {
   final Answer answer;
@@ -16,35 +22,30 @@ class AnswerItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Row(
+            CircleAvatar(
+              radius: 18.0,
+              backgroundImage: CachedNetworkImageProvider(answer.addedByAvatar),
+            ),
+            const SizedBox(
+              width: 10,
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                CircleAvatar(
-                  radius: 18.0,
-                  backgroundImage:
-                      CachedNetworkImageProvider(answer.addedByAvatar),
+                Text(
+                  answer.addedByName,
+                  style: AppFonts.REGULAR_BLACK3_14,
                 ),
                 const SizedBox(
-                  width: 10,
+                  height: 5.0,
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      answer.addedByName,
-                      style: AppFonts.REGULAR_BLACK3_14,
-                    ),
-                    const SizedBox(
-                      height: 5.0,
-                    ),
-                    Text(answer.timestamp.formattedTime,
-                        style: AppFonts.REGULAR_WHITE2_10),
-                  ],
-                )
+                Text(answer.updatedAt.formattedTime,
+                    style: AppFonts.REGULAR_WHITE2_10),
               ],
             ),
+            const Spacer(),
             Visibility(
               visible: answer.isBestAnswer ?? false,
               child: Container(
@@ -56,6 +57,7 @@ class AnswerItem extends StatelessWidget {
                 child: Text('Best Answer', style: AppFonts.REGULAR_DEFAULT_10),
               ),
             ),
+            _DiscussionPopUpMenu(answer: answer),
           ],
         ),
         const SizedBox(
@@ -65,10 +67,115 @@ class AnswerItem extends StatelessWidget {
           answer.title,
           style: AppFonts.REGULAR_BLACK3_14,
         ),
+        if (answer.imageUrls.isNotEmpty)
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) =>
+                          ImageGallerySlider(images: answer.imageUrls)));
+            },
+            child: ImageSlider(images: answer.imageUrls),
+          ),
         const Divider(
           height: 20.0,
           thickness: 1.5,
         )
+      ],
+    );
+  }
+}
+
+class _DiscussionPopUpMenu extends StatelessWidget {
+  const _DiscussionPopUpMenu({
+    Key key,
+    @required this.answer,
+  }) : super(key: key);
+
+  final Answer answer;
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<String>(
+      onSelected: (str) {
+        switch (str) {
+          case 'delete':
+            context
+                .read<AnswerBloc>()
+                .add(DeleteAnswer(answer.questionId, answer.id));
+            break;
+          case 'edit':
+            showModalBottomSheet(
+                context: context,
+                isScrollControlled: true,
+                backgroundColor: Colors.white,
+                shape: const RoundedRectangleBorder(
+                  side: BorderSide.none,
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                ),
+                builder: (context) {
+                  return UpdateAnswerModal(
+                    text: answer.title,
+                    images: answer.imageUrls
+                        .map((e) => Photo(source: PhotoSource.Network, url: e))
+                        .toList(),
+                    onSend: (str, images) {
+                      final nAnswer = answer.copyWith(title: str);
+
+                      context
+                          .read<AnswerBloc>()
+                          .add(UpdateAnswer(answer: nAnswer, images: images));
+
+                      Navigator.pop(context);
+                    },
+                  );
+                });
+            break;
+          case 'report':
+            showModalBottomSheet(
+              context: context,
+              isScrollControlled: true,
+              backgroundColor: Colors.white,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+              ),
+              builder: (context) {
+                return ReportForumModal(
+                  onSubmit: (String report, String reportType) {
+                    Navigator.pop(context);
+                  },
+                );
+              },
+            );
+            break;
+          default:
+        }
+      },
+      icon: const Align(
+        alignment: Alignment.centerRight,
+        child: Icon(
+          Icons.more_vert,
+          size: 20,
+        ),
+      ),
+      padding: EdgeInsets.zero,
+      itemBuilder: (context) => [
+        const PopupMenuItem(
+          child: Text('Edit'),
+          value: 'edit',
+          height: 36,
+        ),
+        const PopupMenuItem(
+          child: Text('Delete'),
+          value: 'delete',
+          height: 36,
+        ),
+        const PopupMenuItem(
+          child: Text('Report'),
+          value: 'report',
+          height: 36,
+        ),
       ],
     );
   }
