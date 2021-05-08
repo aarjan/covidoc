@@ -170,7 +170,7 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
                               validator: (val) => val.trim().isEmpty
                                   ? 'Question cannot be empty!'
                                   : null,
-                              onSaved: (str) => _question = str,
+                              onSaved: (str) => _question = str.trim(),
                               decoration: InputDecoration(
                                 disabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
