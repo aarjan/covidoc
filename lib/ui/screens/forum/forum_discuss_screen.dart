@@ -1,15 +1,13 @@
-import 'package:covidoc/bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
+import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/utils/utils.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/model/entity/entity.dart';
 
-import 'components/answer_item.dart';
-import 'components/image_slider.dart';
+import 'components/components.dart';
 
 class ForumDiscussScreen extends StatelessWidget {
   static const ROUTE_NAME = '/forum/discuss';
@@ -123,7 +121,7 @@ class ForumDiscussView extends StatelessWidget {
                       width: 30,
                     ),
                     Text(
-                      question.timestamp.formattedTime,
+                      question.updatedAt.formattedTime,
                       style: AppFonts.REGULAR_WHITE2_10,
                     ),
                     const Spacer(),
@@ -159,36 +157,9 @@ class ForumDiscussView extends StatelessWidget {
                 const SizedBox(
                   height: 30.0,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      '${question.ansCount} Discussion',
-                      style: AppFonts.REGULAR_BLACK3_14,
-                    ),
-                    InkWell(
-                      onTap: () {},
-                      child: Row(
-                        children: [
-                          Icon(
-                            Icons.warning,
-                            color: Colors.yellow[800],
-                            size: 12,
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            'Report This Question',
-                            style: TextStyle(
-                                fontSize: 10,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.yellow[800]),
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
+                Text(
+                  '${question.ansCount} Discussion',
+                  style: AppFonts.REGULAR_BLACK3_14,
                 ),
                 const Divider(
                   thickness: 1.0,
@@ -210,90 +181,18 @@ class ForumDiscussView extends StatelessWidget {
             ),
           ),
         ),
-        SendMsg(
-          onSend: (str) {
+        AddAnswerField(
+          onSend: (str, photos) {
             final answer = Answer(
               title: str,
               questionId: question.id,
-              timestamp: DateTime.now(),
             );
-            context.read<AnswerBloc>().add(AddAnswer(answer: answer));
+            context
+                .read<AnswerBloc>()
+                .add(AddAnswer(answer: answer, images: photos));
           },
         )
       ],
-    );
-  }
-}
-
-class SendMsg extends StatefulWidget {
-  const SendMsg({
-    Key key,
-    this.onSend,
-  }) : super(key: key);
-
-  final void Function(String) onSend;
-
-  @override
-  _SendMsgState createState() => _SendMsgState();
-}
-
-class _SendMsgState extends State<SendMsg> {
-  String _txt;
-  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: EdgeInsets.fromLTRB(
-          10, 10, 10, MediaQuery.of(context).viewInsets.bottom),
-      margin: const EdgeInsets.only(bottom: 10),
-      decoration: const BoxDecoration(
-        border: Border(
-          top: BorderSide(color: AppColors.WHITE4),
-        ),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Expanded(
-            child: Form(
-              key: _formKey,
-              child: TextFormField(
-                autofocus: false,
-                onSaved: (val) => _txt = val,
-                decoration: InputDecoration(
-                  hintText: 'Type here',
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 10),
-                  hintStyle: AppFonts.REGULAR_WHITE3_14,
-                  border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      borderSide: const BorderSide(color: AppColors.WHITE4)),
-                ),
-              ),
-            ),
-          ),
-          const SizedBox(
-            width: 10,
-          ),
-          InkWell(
-            onTap: () {
-              _formKey.currentState.save();
-              if (_formKey.currentState.validate()) {
-                widget.onSend(_txt);
-              }
-            },
-            borderRadius: BorderRadius.circular(10),
-            child: Ink(
-              decoration: BoxDecoration(
-                color: AppColors.DEFAULT,
-                borderRadius: BorderRadius.circular(10),
-              ),
-              padding: const EdgeInsets.all(11),
-              child: SvgPicture.asset('assets/forum/send.svg'),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

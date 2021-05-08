@@ -1,3 +1,4 @@
+export 'add_answer.dart';
 export 'add_question.dart';
 export 'add_update_question_modal.dart';
 export 'answer_item.dart';
