@@ -15,7 +15,7 @@ class ForumRepo {
     final fRef = await firestore
         .collection('forum')
         .limit(20)
-        .orderBy('timestamp', descending: true)
+        .orderBy('updatedAt', descending: true)
         .get();
     if (fRef != null && fRef.docs.isNotEmpty) {
       return fRef.docs
@@ -30,7 +30,7 @@ class ForumRepo {
     final fRef = await firestore
         .collection('forum/$questionId/answer')
         .limit(20)
-        .orderBy('timestamp', descending: true)
+        .orderBy('updatedAt', descending: false)
         .get();
 
     if (fRef != null && fRef.docs.isNotEmpty) {
@@ -63,6 +63,9 @@ class ForumRepo {
     final aRef = await firestore
         .collection('forum/${answer.questionId}/answer')
         .add(answer.toJson());
+    await firestore
+        .doc('forum/${answer.questionId}/answer/${aRef.id}')
+        .update({'id': aRef.id});
 
     // increase the answer count & recentUsersAvatar
     final avatars = addAvatar ? [answer.addedByAvatar] : [];

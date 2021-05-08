@@ -40,7 +40,7 @@ class QuestionItem extends StatelessWidget {
                   textAlign: TextAlign.start,
                   style: AppFonts.REGULAR_BLACK3_14,
                 ),
-                DiscussionPopUpMenu(question: question)
+                _DiscussionPopUpMenu(question: question)
               ],
             ),
             const SizedBox(
@@ -53,7 +53,7 @@ class QuestionItem extends StatelessWidget {
                 SvgPicture.asset('assets/forum/calendar.svg'),
                 const SizedBox(width: 6),
                 Text(
-                  question.timestamp.formattedTime,
+                  question.updatedAt.formattedTime,
                   style: AppFonts.REGULAR_WHITE2_10,
                 ),
                 const SizedBox(width: 20),
@@ -119,8 +119,8 @@ class QuestionItem extends StatelessWidget {
   }
 }
 
-class DiscussionPopUpMenu extends StatelessWidget {
-  const DiscussionPopUpMenu({
+class _DiscussionPopUpMenu extends StatelessWidget {
+  const _DiscussionPopUpMenu({
     Key key,
     @required this.question,
   }) : super(key: key);
@@ -172,7 +172,10 @@ class DiscussionPopUpMenu extends StatelessWidget {
       },
       icon: const Align(
         alignment: Alignment.centerRight,
-        child: Icon(Icons.more_vert),
+        child: Icon(
+          Icons.more_vert,
+          size: 20,
+        ),
       ),
       padding: EdgeInsets.zero,
       itemBuilder: (context) => [

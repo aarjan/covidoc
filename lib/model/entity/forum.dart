@@ -9,7 +9,8 @@ class Forum extends Equatable {
     this.id,
     this.title,
     this.category,
-    this.timestamp,
+    this.createdAt,
+    this.updatedAt,
     this.addedById,
     this.addedByType,
     this.addedByName,
@@ -25,7 +26,8 @@ class Forum extends Equatable {
   final String title;
   final String category;
   final String addedById;
-  final DateTime timestamp;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   final String addedByType;
   final String addedByName;
   final String addedByAvatar;
@@ -54,7 +56,8 @@ class Forum extends Equatable {
         ansCount,
         category,
         imageUrls,
-        timestamp,
+        createdAt,
+        updatedAt,
         addedById,
         addedByName,
         addedByType,
@@ -74,7 +77,8 @@ class Forum extends Equatable {
     String category,
     String addedById,
     List<String> tags,
-    DateTime timestamp,
+    DateTime createdAt,
+    DateTime updatedAt,
     String addedByName,
     String addedByType,
     String addedByAvatar,
@@ -89,7 +93,8 @@ class Forum extends Equatable {
       isPinned: isPinned ?? this.isPinned,
       ansCount: ansCount ?? this.ansCount,
       imageUrls: imageUrls ?? this.imageUrls,
-      timestamp: timestamp ?? this.timestamp,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
       addedById: addedById ?? this.addedById,
       addedByName: addedByName ?? this.addedByName,
       addedByType: addedByType ?? this.addedByType,
@@ -104,32 +109,37 @@ class Answer extends Equatable {
   const Answer({
     this.id,
     this.title,
-    this.imageUrls,
-    this.timestamp,
+    this.createdAt,
+    this.updatedAt,
     this.questionId,
     this.addedById,
     this.addedByName,
     this.addedByType,
     this.isBestAnswer,
     this.addedByAvatar,
+    this.imageUrls = const <String>[],
   });
 
   final String id;
   final String title;
   final String addedById;
-  final String imageUrls;
   final String questionId;
   final bool isBestAnswer;
-  final DateTime timestamp;
+  final DateTime createdAt;
+  final DateTime updatedAt;
   final String addedByName;
   final String addedByType;
   final String addedByAvatar;
+
+  @JsonKey(defaultValue: <String>[])
+  final List<String> imageUrls;
 
   @override
   List<Object> get props => [
         id,
         title,
-        timestamp,
+        createdAt,
+        updatedAt,
         imageUrls,
         addedById,
         questionId,
@@ -147,20 +157,22 @@ class Answer extends Equatable {
     String id,
     String title,
     String addedById,
-    String imageUrls,
     String questionId,
     bool isBestAnswer,
-    DateTime timestamp,
+    DateTime createdAt,
+    DateTime updatedAt,
     String addedByName,
     String addedByType,
     String addedByAvatar,
+    List<String> imageUrls,
   }) {
     return Answer(
       id: id ?? this.id,
       title: title ?? this.title,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
       imageUrls: imageUrls ?? this.imageUrls,
       addedById: addedById ?? this.addedById,
-      timestamp: timestamp ?? this.timestamp,
       questionId: questionId ?? this.questionId,
       addedByType: addedByType ?? this.addedByType,
       addedByName: addedByName ?? this.addedByName,

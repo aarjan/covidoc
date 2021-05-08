@@ -151,6 +151,8 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
         addedByType: user.type,
         addedByAvatar: user.avatar,
         addedByName: user.fullname,
+        createdAt: DateTime.now().toUtc(),
+        updatedAt: DateTime.now().toUtc(),
       );
 
       final forum = await repo.addForum(nForum);
@@ -179,6 +181,7 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
 
       final nForum = event.forum.copyWith(
         imageUrls: imgUrls,
+        updatedAt: DateTime.now().toUtc(),
       );
 
       await repo.updateForum(nForum);
