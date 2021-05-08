@@ -14,8 +14,9 @@ import 'package:covidoc/ui/widgets/dropdown.dart';
 import 'attached_images.dart';
 import 'question_tags.dart';
 
-class AddQuestionModal extends StatelessWidget {
-  const AddQuestionModal();
+class AddUpdateQuestionModal extends StatelessWidget {
+  final Forum question;
+  const AddUpdateQuestionModal({this.question});
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +29,10 @@ class AddQuestionModal extends StatelessWidget {
       builder: (context, state) {
         return Stack(
           children: [
-            const _AddQuestion(),
+            _AddUpdateQuestion(
+              question: question,
+              updateQuestion: question != null,
+            ),
             if (state is ForumLoadInProgress)
               const Center(
                 child: CircularProgressIndicator(),
@@ -40,20 +44,40 @@ class AddQuestionModal extends StatelessWidget {
   }
 }
 
-class _AddQuestion extends StatefulWidget {
-  const _AddQuestion({
+class _AddUpdateQuestion extends StatefulWidget {
+  final Forum question;
+  final bool updateQuestion;
+
+  const _AddUpdateQuestion({
     Key key,
+    this.question,
+    this.updateQuestion,
   }) : super(key: key);
 
   @override
-  _AddQuestionState createState() => _AddQuestionState();
+  _AddUpdateQuestionState createState() => _AddUpdateQuestionState();
 }
 
-class _AddQuestionState extends State<_AddQuestion> {
+class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
   String _question;
   final List<String> _tags = [];
-  final List<File> _attachedImages = [];
+  final List<Photo> _attachedImages = [];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  ScrollController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _tags.addAll(widget.question.tags);
+    _question = widget.question.title;
+    _controller = ScrollController();
+    for (final e in widget.question.imageUrls) {
+      _attachedImages.add(Photo(
+        source: PhotoSource.Network,
+        url: e,
+      ));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +143,7 @@ class _AddQuestionState extends State<_AddQuestion> {
                 // --------------------------------------------------
                 Expanded(
                   child: ListView(
+                    controller: _controller,
                     children: [
                       SizedBox(
                         height: 150,
@@ -128,6 +153,7 @@ class _AddQuestionState extends State<_AddQuestion> {
                             expands: true,
                             maxLines: null,
                             minLines: null,
+                            initialValue: _question,
                             validator: (val) => val.trim().isEmpty
                                 ? 'Question cannot be empty!'
                                 : null,
@@ -156,7 +182,7 @@ class _AddQuestionState extends State<_AddQuestion> {
                           mainAxisAlignment: MainAxisAlignment.end,
                           children: [
                             AttachedImages(
-                              imgFile: _attachedImages[index],
+                              photo: _attachedImages[index],
                               onRemove: () {
                                 _attachedImages.removeAt(index);
                                 setState(() {});
@@ -235,6 +261,7 @@ class _AddQuestionState extends State<_AddQuestion> {
               borderRadius: BorderRadius.circular(10),
             ),
             child: QuestionTags(
+              tags: _tags,
               onAdd: (str) {
                 _tags.add(str);
               },
@@ -292,15 +319,28 @@ class _AddQuestionState extends State<_AddQuestion> {
                     onTap: () {
                       _formKey.currentState.save();
                       if (_formKey.currentState.validate()) {
-                        final forum = Forum(
-                          tags: _tags,
-                          title: _question,
-                          category: 'Category1',
-                          timestamp: DateTime.now(),
-                        );
-                        context
-                            .read<ForumBloc>()
-                            .add(AddForum(forum, _attachedImages));
+                        if (widget.updateQuestion) {
+                          final forum = widget.question.copyWith(
+                            tags: _tags,
+                            title: _question,
+                            category: 'Category1',
+                            timestamp: DateTime.now(),
+                          );
+                          context
+                              .read<ForumBloc>()
+                              .add(UpdateForum(forum, _attachedImages));
+                        } else {
+                          final forum = Forum(
+                            tags: _tags,
+                            title: _question,
+                            category: 'Category1',
+                            timestamp: DateTime.now(),
+                          );
+
+                          context
+                              .read<ForumBloc>()
+                              .add(AddForum(forum, _attachedImages));
+                        }
                       }
                     },
                     title: 'Submit',
@@ -323,8 +363,13 @@ class _AddQuestionState extends State<_AddQuestion> {
         await picker.getImage(source: ImageSource.gallery, imageQuality: 80);
     if (pickedFile != null) {
       setState(() {
-        _attachedImages.add(File(pickedFile.path));
+        _attachedImages.add(Photo(
+          file: File(pickedFile.path),
+          source: PhotoSource.File,
+        ));
       });
     }
+    await _controller.animateTo(_controller.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
   }
 }

@@ -5,3 +5,4 @@ export 'forum.dart';
 export 'forum.dart';
 export 'message.dart';
 export 'message_request.dart';
+export 'photo.dart';

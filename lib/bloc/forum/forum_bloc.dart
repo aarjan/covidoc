@@ -26,7 +26,7 @@ class AddImages extends ForumEvent {
 
 class AddForum extends ForumEvent {
   final Forum forum;
-  final List<File> images;
+  final List<Photo> images;
   AddForum(this.forum, this.images);
 
   @override
@@ -43,10 +43,11 @@ class DeleteForum extends ForumEvent {
 
 class UpdateForum extends ForumEvent {
   final Forum forum;
-  UpdateForum(this.forum);
+  final List<Photo> images;
+  UpdateForum(this.forum, this.images);
 
   @override
-  List<Object> get props => [forum];
+  List<Object> get props => [forum, images];
 }
 
 class ForumInitial extends ForumState {}
@@ -139,7 +140,7 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
       // Add images
       final imgUrls = <String>[];
       for (final f in event.images) {
-        final url = await repo.uploadImage(f);
+        final url = await repo.uploadImage(f.file);
         imgUrls.add(url);
       }
       final user = await repo.getUser();
@@ -160,11 +161,44 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
     }
   }
 
-  Stream<ForumState> _mapDeleteForumEventToState(DeleteForum event) async* {}
-
   Stream<ForumState> _mapUpdateForumEventToState(UpdateForum event) async* {
-    yield ForumLoadInProgress();
-    await repo.updateForum(event.forum);
-    yield state as ForumLoadSuccess;
+    if (state is ForumLoadSuccess) {
+      final curState = state as ForumLoadSuccess;
+      yield ForumLoadInProgress();
+
+      // Add images
+      final imgUrls = <String>[];
+      for (final f in event.images) {
+        if (f.source == PhotoSource.File) {
+          final url = await repo.uploadImage(f.file);
+          imgUrls.add(url);
+        } else {
+          imgUrls.add(f.url);
+        }
+      }
+
+      final nForum = event.forum.copyWith(
+        imageUrls: imgUrls,
+      );
+
+      await repo.updateForum(nForum);
+
+      yield curState.copyWith(
+          forums: curState.forums
+              .map((f) => f.id == event.forum.id ? nForum : f)
+              .toList());
+    }
+  }
+
+  Stream<ForumState> _mapDeleteForumEventToState(DeleteForum event) async* {
+    if (state is ForumLoadSuccess) {
+      final curState = state as ForumLoadSuccess;
+      yield ForumLoadInProgress();
+
+      await repo.delQuestion(event.forumId);
+
+      yield curState.copyWith(
+          forums: curState.forums.where((f) => f.id != event.forumId).toList());
+    }
   }
 }

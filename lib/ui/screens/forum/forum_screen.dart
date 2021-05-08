@@ -131,7 +131,7 @@ class _ForumScreenState extends State<ForumScreen>
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         builder: (context) {
-          return const AddQuestionModal();
+          return const AddUpdateQuestionModal();
         });
   }
 }

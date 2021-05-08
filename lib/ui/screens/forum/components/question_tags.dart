@@ -4,9 +4,11 @@ import 'package:covidoc/utils/const/const.dart';
 
 class QuestionTags extends StatefulWidget {
   final void Function(String) onAdd;
+  final List<String> tags;
   final void Function(String) onRemove;
 
-  const QuestionTags({Key key, this.onAdd, this.onRemove}) : super(key: key);
+  const QuestionTags({Key key, this.onAdd, this.onRemove, this.tags})
+      : super(key: key);
 
   @override
   _QuestionTagsState createState() => _QuestionTagsState();
@@ -15,6 +17,12 @@ class QuestionTags extends StatefulWidget {
 class _QuestionTagsState extends State<QuestionTags> {
   final GlobalKey<TagsState> _tagStateKey = GlobalKey<TagsState>();
   final List<String> _itemlist = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _itemlist.addAll(widget.tags);
+  }
 
   @override
   Widget build(BuildContext context) {
