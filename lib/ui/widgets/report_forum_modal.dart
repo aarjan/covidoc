@@ -83,7 +83,7 @@ class _ReportBottomSheetState extends State<ReportForumModal> {
           child: TextFormField(
             maxLines: 4,
             autofocus: true,
-            onSaved: (val) => _report = val,
+            onSaved: (val) => _report = val.trim(),
             validator: (val) =>
                 val.trim().isEmpty ? 'Message cannot be empty' : null,
             style: AppFonts.REGULAR_BLACK3_14,
