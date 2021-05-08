@@ -87,11 +87,13 @@ class _AddAnswerState extends State<AddAnswerField> {
                   key: _formKey,
                   child: TextFormField(
                     autofocus: false,
-                    onSaved: (val) => _txt = val,
+                    onSaved: (val) => _txt = val.trim(),
+                    minLines: 1,
+                    maxLines: 5,
                     decoration: InputDecoration(
                       hintText: 'Type here',
-                      contentPadding:
-                          const EdgeInsets.symmetric(horizontal: 10),
+                      contentPadding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 10),
                       hintStyle: AppFonts.REGULAR_WHITE3_14,
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -117,7 +119,7 @@ class _AddAnswerState extends State<AddAnswerField> {
               InkWell(
                 onTap: () {
                   _formKey.currentState.save();
-                  if (_formKey.currentState.validate()) {
+                  if (_formKey.currentState.validate() && _txt.isNotEmpty) {
                     widget.onSend(_txt, _attachedImages);
                   }
                 },
