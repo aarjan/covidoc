@@ -1,5 +1,6 @@
 import 'package:covidoc/bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:readmore/readmore.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,6 +25,7 @@ class QuestionItem extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Ink(
+        width: double.infinity,
         padding: const EdgeInsets.only(top: 20, bottom: 10),
         decoration: const BoxDecoration(
             border: Border(bottom: BorderSide(color: AppColors.WHITE4))),
@@ -31,14 +33,18 @@ class QuestionItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
-                  question.title,
-                  maxLines: 2,
-                  softWrap: true,
-                  textAlign: TextAlign.start,
-                  style: AppFonts.REGULAR_BLACK3_14,
+                Expanded(
+                  child: ReadMoreText(
+                    question.title,
+                    trimLines: 2,
+                    colorClickableText: AppColors.DEFAULT,
+                    trimMode: TrimMode.Line,
+                    trimCollapsedText: 'Show more',
+                    trimExpandedText: 'Show less',
+                    style: AppFonts.REGULAR_BLACK3_14,
+                    moreStyle: AppFonts.MEDIUM_DEFAULT_14,
+                  ),
                 ),
                 _DiscussionPopUpMenu(question: question)
               ],

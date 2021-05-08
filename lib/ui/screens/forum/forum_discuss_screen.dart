@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:readmore/readmore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -85,9 +86,15 @@ class ForumDiscussView extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
+                ReadMoreText(
                   question.title,
+                  trimLines: 4,
+                  colorClickableText: AppColors.DEFAULT,
+                  trimMode: TrimMode.Line,
+                  trimCollapsedText: 'Show more',
+                  trimExpandedText: 'Show less',
                   style: AppFonts.MEDIUM_BLACK3_16,
+                  moreStyle: AppFonts.MEDIUM_DEFAULT_16,
                 ),
                 const SizedBox(
                   height: 10.0,

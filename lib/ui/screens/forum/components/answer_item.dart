@@ -7,6 +7,7 @@ import 'package:covidoc/utils/utils.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/model/entity/entity.dart';
+import 'package:readmore/readmore.dart';
 
 import 'image_slider.dart';
 import 'update_answer_modal.dart';
@@ -63,9 +64,15 @@ class AnswerItem extends StatelessWidget {
         const SizedBox(
           height: 15.0,
         ),
-        Text(
+        ReadMoreText(
           answer.title,
+          trimLines: 2,
+          colorClickableText: AppColors.DEFAULT,
+          trimMode: TrimMode.Line,
+          trimCollapsedText: 'Show more',
+          trimExpandedText: 'Show less',
           style: AppFonts.REGULAR_BLACK3_14,
+          moreStyle: AppFonts.MEDIUM_DEFAULT_14,
         ),
         if (answer.imageUrls.isNotEmpty)
           GestureDetector(

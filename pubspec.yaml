@@ -31,6 +31,7 @@ dependencies:
   flutter_svg: ^0.19.1
   flutter_tags: ^0.4.9+1
   photo_view: ^0.10.3
+  readmore: ^1.0.1
   carousel_slider: ^3.0.0
   flutter_facebook_auth: ^2.0.2
   flutter_twitter_login: ^1.1.0
