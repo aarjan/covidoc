@@ -200,7 +200,11 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
       final nAnswers =
           curState.answers.where((f) => f.id != event.answerId).toList();
 
-      yield curState.copyWith(answers: nAnswers);
+      yield curState.copyWith(
+        answers: nAnswers,
+        question: curState.question
+            .copyWith(ansCount: curState.question.ansCount - 1),
+      );
     }
   }
 }

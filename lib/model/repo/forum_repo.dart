@@ -79,6 +79,11 @@ class ForumRepo {
   Future<void> delAnswer(String questionId, String answerId) async {
     final firestore = FirebaseFirestore.instance;
     await firestore.doc('forum/$questionId/answer/$answerId').delete();
+
+    // increase the answer count
+    await firestore
+        .doc('forum/$questionId')
+        .update({'ansCount': FieldValue.increment(-1)});
   }
 
   Future<void> updateAnswer(Answer answer) async {
