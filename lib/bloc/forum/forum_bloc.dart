@@ -155,7 +155,7 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
 
       final forum = await repo.addForum(nForum);
 
-      final nForums = List<Forum>.from([...curState.forums, forum]);
+      final nForums = List<Forum>.from([forum, ...curState.forums]);
 
       yield curState.copyWith(forums: nForums);
     }
