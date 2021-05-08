@@ -60,10 +60,10 @@ class _AddUpdateQuestion extends StatefulWidget {
 
 class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
   String _question;
+  ScrollController _controller;
   final List<String> _tags = [];
   final List<Photo> _attachedImages = [];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  ScrollController _controller;
 
   @override
   void initState() {
@@ -190,21 +190,12 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
                         // --------------------------------------------------
                         ...List.generate(
                           _attachedImages.length,
-                          (index) => Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              AttachedImages(
-                                photo: _attachedImages[index],
-                                onRemove: () {
-                                  _attachedImages.removeAt(index);
-                                  setState(() {});
-                                },
-                              ),
-                              const SizedBox(
-                                height: 15,
-                              )
-                            ],
+                          (index) => AttachedImages(
+                            photo: _attachedImages[index],
+                            onRemove: () {
+                              _attachedImages.removeAt(index);
+                              setState(() {});
+                            },
                           ),
                         ),
                       ],
@@ -212,13 +203,19 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
                   ),
                 ),
                 // --------------------------------------------------
-                // ATTACH IMAGE BUTTOM
+                // ATTACH IMAGE BUTTON
                 // --------------------------------------------------
                 Material(
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () async {
                       await getImage();
+
+                      // animate to bottom
+                      await _controller.animateTo(
+                          _controller.position.maxScrollExtent + 50,
+                          duration: const Duration(milliseconds: 500),
+                          curve: Curves.easeIn);
                     },
                     borderRadius: BorderRadius.circular(10),
                     child: Ink(
@@ -338,7 +335,6 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
                             tags: _tags,
                             title: _question,
                             category: 'Category1',
-                            timestamp: DateTime.now(),
                           );
                           context
                               .read<ForumBloc>()
@@ -348,7 +344,6 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
                             tags: _tags,
                             title: _question,
                             category: 'Category1',
-                            timestamp: DateTime.now(),
                           );
 
                           context
@@ -383,7 +378,5 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
         ));
       });
     }
-    await _controller.animateTo(_controller.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 500), curve: Curves.easeIn);
   }
 }

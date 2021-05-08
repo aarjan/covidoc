@@ -31,6 +31,7 @@ class AttachedImages extends StatelessWidget {
         color: AppColors.WHITE4,
         borderRadius: BorderRadius.circular(10),
       ),
+      margin: const EdgeInsets.only(bottom: 15),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
