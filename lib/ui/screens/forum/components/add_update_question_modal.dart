@@ -68,14 +68,23 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
   @override
   void initState() {
     super.initState();
-    _tags.addAll(widget.question.tags);
-    _question = widget.question.title;
     _controller = ScrollController();
-    for (final e in widget.question.imageUrls) {
-      _attachedImages.add(Photo(
-        source: PhotoSource.Network,
-        url: e,
-      ));
+    initValues();
+  }
+
+  void initValues() {
+    // Initialize values if passed forum is not null
+    if (widget.question != null) {
+      _question = widget.question.title;
+
+      _tags.addAll(widget.question.tags);
+
+      for (final e in widget.question.imageUrls) {
+        _attachedImages.add(Photo(
+          source: PhotoSource.Network,
+          url: e,
+        ));
+      }
     }
   }
 
@@ -142,59 +151,64 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
                 //  TEXTFIELD FOR THE QUESTION
                 // --------------------------------------------------
                 Expanded(
-                  child: ListView(
+                  child: Scrollbar(
+                    isAlwaysShown: true,
+                    radius: const Radius.circular(6),
                     controller: _controller,
-                    children: [
-                      SizedBox(
-                        height: 150,
-                        child: Form(
-                          key: _formKey,
-                          child: TextFormField(
-                            expands: true,
-                            maxLines: null,
-                            minLines: null,
-                            initialValue: _question,
-                            validator: (val) => val.trim().isEmpty
-                                ? 'Question cannot be empty!'
-                                : null,
-                            onSaved: (str) => _question = str,
-                            decoration: InputDecoration(
-                              disabledBorder: InputBorder.none,
-                              errorBorder: InputBorder.none,
-                              enabledBorder: InputBorder.none,
-                              focusedBorder: InputBorder.none,
-                              hintText: 'Type your Question here',
-                              hintStyle: AppFonts.REGULAR_WHITE3_14,
+                    child: ListView(
+                      controller: _controller,
+                      children: [
+                        SizedBox(
+                          height: 150,
+                          child: Form(
+                            key: _formKey,
+                            child: TextFormField(
+                              expands: true,
+                              maxLines: null,
+                              minLines: null,
+                              initialValue: _question,
+                              validator: (val) => val.trim().isEmpty
+                                  ? 'Question cannot be empty!'
+                                  : null,
+                              onSaved: (str) => _question = str,
+                              decoration: InputDecoration(
+                                disabledBorder: InputBorder.none,
+                                errorBorder: InputBorder.none,
+                                enabledBorder: InputBorder.none,
+                                focusedBorder: InputBorder.none,
+                                hintText: 'Type your Question here',
+                                hintStyle: AppFonts.REGULAR_WHITE3_14,
+                              ),
+                              textAlign: TextAlign.left,
+                              textAlignVertical: TextAlignVertical.top,
                             ),
-                            textAlign: TextAlign.left,
-                            textAlignVertical: TextAlignVertical.top,
                           ),
                         ),
-                      ),
-                      // --------------------------------------------------
-                      // GENERATE
-                      // ATTACHED IMAGE CONTAINER FROM THE IMAGEURL LIST
-                      // --------------------------------------------------
-                      ...List.generate(
-                        _attachedImages.length,
-                        (index) => Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            AttachedImages(
-                              photo: _attachedImages[index],
-                              onRemove: () {
-                                _attachedImages.removeAt(index);
-                                setState(() {});
-                              },
-                            ),
-                            const SizedBox(
-                              height: 15,
-                            )
-                          ],
+                        // --------------------------------------------------
+                        // GENERATE
+                        // ATTACHED IMAGE CONTAINER FROM THE IMAGEURL LIST
+                        // --------------------------------------------------
+                        ...List.generate(
+                          _attachedImages.length,
+                          (index) => Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              AttachedImages(
+                                photo: _attachedImages[index],
+                                onRemove: () {
+                                  _attachedImages.removeAt(index);
+                                  setState(() {});
+                                },
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              )
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
                 // --------------------------------------------------
