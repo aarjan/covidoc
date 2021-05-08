@@ -29,6 +29,7 @@ class _ImageSliderState extends State<ImageSlider> {
           CarouselSlider.builder(
             itemCount: widget.images.length,
             options: CarouselOptions(
+              enableInfiniteScroll: false,
               onPageChanged: (index, reason) {
                 setState(() {
                   _current = index;
@@ -92,7 +93,6 @@ class ImageGallerySlider extends StatelessWidget {
             imageProvider: CachedNetworkImageProvider(images[index]),
             initialScale: PhotoViewComputedScale.contained * 0.8,
             maxScale: 2.0,
-            heroAttributes: PhotoViewHeroAttributes(tag: images[index]),
           );
         },
         itemCount: images.length,
