@@ -63,8 +63,8 @@ class _ImageSliderState extends State<ImageSlider> {
                     shape: BoxShape.circle,
                     border: Border.all(color: Colors.grey[300]),
                     color: _current == index
-                        ? Colors.transparent
-                        : Colors.grey[300],
+                        ? Colors.grey[300]
+                        : Colors.transparent,
                   ),
                 );
               }).toList(),
