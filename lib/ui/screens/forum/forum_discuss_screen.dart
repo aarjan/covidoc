@@ -9,6 +9,7 @@ import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/model/entity/entity.dart';
 
 import 'components/answer_item.dart';
+import 'components/image_slider.dart';
 
 class ForumDiscussScreen extends StatelessWidget {
   static const ROUTE_NAME = '/forum/discuss';
@@ -77,7 +78,6 @@ class ForumDiscussView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.min,
-      // mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         Expanded(
           child: SingleChildScrollView(
@@ -95,15 +95,15 @@ class ForumDiscussView extends StatelessWidget {
                   height: 10.0,
                 ),
                 if (question.imageUrls.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 10),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(16),
-                      child: CachedNetworkImage(
-                        imageUrl: question.imageUrls[0],
-                        fit: BoxFit.fitWidth,
-                      ),
-                    ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => ImageGallerySlider(
+                                  images: question.imageUrls)));
+                    },
+                    child: ImageSlider(images: question.imageUrls),
                   ),
                 Row(
                   children: [
@@ -199,7 +199,6 @@ class ForumDiscussView extends StatelessWidget {
                 ),
                 ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
-                    scrollDirection: Axis.vertical,
                     shrinkWrap: true,
                     itemCount: answers.length,
                     itemBuilder: (context, index) {
