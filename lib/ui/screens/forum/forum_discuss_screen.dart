@@ -10,10 +10,18 @@ import 'package:covidoc/model/entity/entity.dart';
 
 import 'components/components.dart';
 
-class ForumDiscussScreen extends StatelessWidget {
+class ForumDiscussScreen extends StatefulWidget {
   static const ROUTE_NAME = '/forum/discuss';
 
   const ForumDiscussScreen();
+
+  @override
+  _ForumDiscussScreenState createState() => _ForumDiscussScreenState();
+}
+
+class _ForumDiscussScreenState extends State<ForumDiscussScreen> {
+  Forum _question;
+  List<Answer> _answers;
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +59,16 @@ class ForumDiscussScreen extends StatelessWidget {
         },
         builder: (context, state) {
           if (state is AnswerLoadSuccess) {
-            return ForumDiscussView(
-                question: state.question, answers: state.answers);
+            _question = state.question;
+            _answers = state.answers;
           }
-          return const Center(
-            child: CircularProgressIndicator(),
+          return Stack(
+            children: [
+              if (_question != null)
+                ForumDiscussView(question: _question, answers: _answers),
+              if (state is AnswerLoadInProgress)
+                const Center(child: CircularProgressIndicator())
+            ],
           );
         },
       ),
