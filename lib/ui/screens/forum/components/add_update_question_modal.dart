@@ -9,7 +9,7 @@ import 'package:covidoc/bloc/forum/forum.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/model/entity/entity.dart';
-import 'package:covidoc/ui/widgets/dropdown.dart';
+import 'package:covidoc/ui/widgets/dropdown_filter.dart';
 
 import 'attached_images.dart';
 import 'question_tags.dart';
@@ -60,6 +60,7 @@ class _AddUpdateQuestion extends StatefulWidget {
 
 class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
   String _question;
+  String _category;
   ScrollController _controller;
   final List<String> _tags = [];
   final List<Photo> _attachedImages = [];
@@ -288,11 +289,15 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
           // --------------------------------------------------------
           // CATEGORY DROPDOWN
           // --------------------------------------------------------
-          Dropdown(
+          DropdownFilter(
             title: 'Category',
             borderRadius: 10,
             verticalPadding: 15,
-            onPressed: () {},
+            items: ['Category1', 'Category2', 'Category3'],
+            onItemSelected: (String val) {
+              _category = val;
+              setState(() {});
+            },
           ),
           const SizedBox(
             height: 25,
@@ -334,7 +339,7 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
                           final forum = widget.question.copyWith(
                             tags: _tags,
                             title: _question,
-                            category: 'Category1',
+                            category: _category,
                           );
                           context
                               .read<ForumBloc>()

@@ -82,7 +82,7 @@ class _ForumScreenState extends State<ForumScreen>
                   const SizedBox(
                     height: 20,
                   ),
-                  const DropdownFilter(),
+                  const Filters(),
                   ListView.builder(
                     itemCount: state.forums.length,
                     shrinkWrap: true,
