@@ -28,6 +28,7 @@ class AddAnswerField extends StatefulWidget {
 
 class _AddAnswerState extends State<AddAnswerField> {
   String _txt;
+  FocusScopeNode currentFocus;
   final List<Photo> _attachedImages = [];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -49,11 +50,16 @@ class _AddAnswerState extends State<AddAnswerField> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    currentFocus = FocusScope.of(context);
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Padding(
       padding: EdgeInsets.fromLTRB(
           10, 0, 10, MediaQuery.of(context).viewInsets.bottom),
-      // width: double.infinity,
       child: Column(
         children: [
           ...List.generate(
@@ -119,8 +125,17 @@ class _AddAnswerState extends State<AddAnswerField> {
               InkWell(
                 onTap: () {
                   _formKey.currentState.save();
-                  if (_formKey.currentState.validate() && _txt.isNotEmpty) {
+
+                  if (_formKey.currentState.validate() &&
+                      (_txt.isNotEmpty || _attachedImages.isNotEmpty)) {
+                    // remove focus from Textformfield
+                    if (!currentFocus.hasPrimaryFocus) {
+                      currentFocus.unfocus();
+                    }
+
                     widget.onSend(_txt, _attachedImages);
+
+                    _formKey.currentState.reset();
                   }
                 },
                 borderRadius: BorderRadius.circular(10),
