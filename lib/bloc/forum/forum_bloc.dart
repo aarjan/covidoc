@@ -15,7 +15,14 @@ class ForumState extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadForum extends ForumEvent {}
+class LoadForum extends ForumEvent {
+  final String category;
+
+  LoadForum({this.category});
+
+  @override
+  List<Object> get props => [category];
+}
 
 class AddImages extends ForumEvent {
   final String forumId;
@@ -127,7 +134,7 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
 
   Stream<ForumState> _mapLoadForumEventToState(LoadForum event) async* {
     yield ForumLoadInProgress();
-    final forums = await repo.getForums();
+    final forums = await repo.getForums(category: event.category);
     final categories = ['Category1', 'Category2', 'Category3'];
     yield ForumLoadSuccess(forums: forums, categories: categories);
   }

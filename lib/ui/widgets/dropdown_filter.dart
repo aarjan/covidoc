@@ -8,6 +8,7 @@ class DropdownFilter extends StatefulWidget {
     this.items,
     this.fillColor,
     this.onItemSelected,
+    this.selectedCategory,
     this.borderRadius = 6,
     this.verticalPadding = 10,
     this.horizontalPadding = 15,
@@ -18,6 +19,7 @@ class DropdownFilter extends StatefulWidget {
   final List<String> items;
   final double borderRadius;
   final double verticalPadding;
+  final String selectedCategory;
   final double horizontalPadding;
   final void Function(String val) onItemSelected;
 
@@ -27,6 +29,12 @@ class DropdownFilter extends StatefulWidget {
 
 class _DropdownFilterState extends State<DropdownFilter> {
   String _val;
+
+  @override
+  void initState() {
+    super.initState();
+    _val = widget.selectedCategory;
+  }
 
   @override
   Widget build(BuildContext context) {
