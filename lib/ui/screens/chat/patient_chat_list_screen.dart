@@ -10,9 +10,8 @@ import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/ui/screens/forum/components/add_question.dart';
 
-import 'chat_request.dart';
 import 'chat_screen.dart';
-import 'components.dart';
+import 'components/components.dart';
 
 class PatChatListScreen extends StatefulWidget {
   static const ROUTE_NAME = '/chat/list';
@@ -195,4 +194,48 @@ class _ChatListView extends StatelessWidget {
       ],
     );
   }
+}
+
+Future showBottomQuestionSheet(BuildContext context, AppUser user) {
+  return showModalBottomSheet(
+    context: context,
+    isDismissible: true,
+    isScrollControlled: true,
+    enableDrag: true,
+    clipBehavior: Clip.antiAliasWithSaveLayer,
+    shape: const RoundedRectangleBorder(
+      side: BorderSide.none,
+      borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+    ),
+    builder: (context) {
+      return DraggableScrollableSheet(
+        initialChildSize: 0.75,
+        maxChildSize: 0.95,
+        minChildSize: 0.75,
+        expand: false,
+        builder: (context, scrollController) => ListView(
+          controller: scrollController,
+          shrinkWrap: true,
+          padding: const EdgeInsets.all(16),
+          children: [
+            Align(
+              alignment: Alignment.center,
+              child: Container(
+                height: 2,
+                width: 50,
+                decoration: BoxDecoration(
+                  color: AppColors.WHITE3,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            const SizedBox(height: 30),
+            ChatRequest(
+              user: user,
+            ),
+          ],
+        ),
+      );
+    },
+  );
 }

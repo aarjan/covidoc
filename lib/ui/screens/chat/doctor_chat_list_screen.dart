@@ -10,7 +10,7 @@ import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/model/entity/entity.dart';
 
 import 'chat_screen.dart';
-import 'components.dart';
+import 'components/components.dart';
 
 class DocChatListScreen extends StatefulWidget {
   static const ROUTE_NAME = '/chat/list';
