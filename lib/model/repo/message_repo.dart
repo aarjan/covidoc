@@ -70,9 +70,19 @@ class MessageRepo {
         .toList();
   }
 
-  Future<List<Message>> loadMessages(String chatId) async {
+  Future<List<Message>> loadMessages(String chatId, {int lastTimestamp}) async {
     final firestore = FirebaseFirestore.instance;
-    final msgRef = await firestore.collection('chat/$chatId/message').get();
+    var query = firestore
+        .collection('chat/$chatId/message')
+        .limit(10)
+        .orderBy('timestamp', descending: true);
+
+    if (lastTimestamp != null) {
+      query = query.startAfter([lastTimestamp]);
+    }
+
+    final msgRef = await query.get();
+
     if (msgRef == null || msgRef.docs.isEmpty) {
       return [];
     }
@@ -132,7 +142,7 @@ class MessageRepo {
     final firestore = FirebaseFirestore.instance;
     await firestore.doc('chat/$chatId').update({
       'lastMessage': msg,
-      'lastTimestmap': DateTime.now().toIso8601String()
+      'lastTimestmap': DateTime.now().toUtc().millisecondsSinceEpoch,
     });
   }
 

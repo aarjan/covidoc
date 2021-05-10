@@ -11,7 +11,7 @@ class MessageEvent extends Equatable {
 class LoadMsgs extends MessageEvent {
   final String chatId;
 
-  LoadMsgs(this.chatId);
+  LoadMsgs({this.chatId});
 
   @override
   List<Object> get props => [chatId];
@@ -54,12 +54,23 @@ class MessageInitial extends MessageState {}
 class MessageLoadInProgress extends MessageState {}
 
 class MessageLoadSuccess extends MessageState {
+  final String chatId;
+  final bool hasReachedEnd;
   final List<Message> msgs;
 
-  MessageLoadSuccess(this.msgs);
+  MessageLoadSuccess({this.msgs, this.chatId, this.hasReachedEnd = false});
 
   @override
-  List<Object> get props => [msgs];
+  List<Object> get props => [msgs, chatId, hasReachedEnd];
+
+  MessageLoadSuccess copyWith(
+      {List<Message> msgs, String chatId, bool hasReachedEnd}) {
+    return MessageLoadSuccess(
+      msgs: msgs ?? this.msgs,
+      chatId: chatId ?? this.chatId,
+      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
+    );
+  }
 }
 
 class MessageBloc extends Bloc<MessageEvent, MessageState> {
@@ -86,16 +97,34 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   }
 
   Stream<MessageState> _mapLoadMsgsEventToState(LoadMsgs event) async* {
-    // if (state is MessageLoadSuccess) {
-    //   return;
-    // }
+    // start of conversation
     if (event.chatId == null) {
-      yield MessageLoadSuccess([]);
+      yield MessageLoadSuccess(msgs: []);
       return;
     }
+    if (state is MessageLoadSuccess &&
+        (state as MessageLoadSuccess).chatId == event.chatId) {
+      final curState = (state as MessageLoadSuccess);
+
+      // If currentState has no message
+      // OR, currentState has reached end of the message list
+      if (curState.msgs.isEmpty || curState.hasReachedEnd) {
+        return;
+      }
+
+      yield MessageLoadInProgress();
+      final msgs = await repo.loadMessages(event.chatId,
+          lastTimestamp: curState.msgs.last.timestamp.millisecondsSinceEpoch);
+
+      yield curState.copyWith(
+          msgs: [...curState.msgs, ...msgs], hasReachedEnd: msgs.isEmpty);
+
+      return;
+    }
+
     yield MessageLoadInProgress();
     final msgs = await repo.loadMessages(event.chatId);
-    yield MessageLoadSuccess(msgs);
+    yield MessageLoadSuccess(msgs: msgs, chatId: event.chatId);
   }
 
   Stream<MessageState> _mapSendMsgEventToState(SendMsg event) async* {
@@ -105,9 +134,9 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       // yield MessageLoadInProgress();
       final msg = await repo.sendMessage(event.msg);
 
-      final nMsgs = List<Message>.from([...curState.msgs, msg]);
+      final nMsgs = List<Message>.from([msg, ...curState.msgs]);
       await repo.updateLastMsg(event.msg.chatId, event.msg.message);
-      yield MessageLoadSuccess(nMsgs);
+      yield MessageLoadSuccess(msgs: nMsgs);
     }
   }
 
@@ -120,7 +149,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       final newMsgs =
           curMsgs.map((m) => m.id == event.msg.id ? event.msg : m).toList();
 
-      yield MessageLoadSuccess(newMsgs);
+      yield MessageLoadSuccess(msgs: newMsgs);
     }
   }
 
@@ -132,7 +161,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
 
       final newMsgs = curMsgs.where((m) => m.id != event.msg.id).toList();
 
-      yield MessageLoadSuccess(newMsgs);
+      yield MessageLoadSuccess(msgs: newMsgs);
     }
   }
 }
