@@ -6,6 +6,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/utils/utils.dart';
 import 'package:covidoc/utils/const/const.dart';
+import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/model/entity/entity.dart';
 
 import 'components/components.dart';

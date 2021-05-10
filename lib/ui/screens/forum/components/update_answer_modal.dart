@@ -8,8 +8,6 @@ import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/model/entity/entity.dart';
 
-import 'attached_images.dart';
-
 class UpdateAnswerModal extends StatefulWidget {
   final String text;
   final List<Photo> images;

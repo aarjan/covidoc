@@ -13,7 +13,6 @@ import 'package:covidoc/model/entity/entity.dart';
 
 import 'add_update_question_modal.dart';
 import 'discussion_count.dart';
-import 'image_slider.dart';
 
 class QuestionItem extends StatelessWidget {
   final Forum question;

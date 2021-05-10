@@ -9,7 +9,6 @@ import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/model/entity/entity.dart';
 import 'package:readmore/readmore.dart';
 
-import 'image_slider.dart';
 import 'update_answer_modal.dart';
 
 class AnswerItem extends StatelessWidget {

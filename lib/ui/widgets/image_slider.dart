@@ -90,21 +90,20 @@ class ImageGallerySlider extends StatelessWidget {
         scrollPhysics: const BouncingScrollPhysics(),
         builder: (BuildContext context, int index) {
           return PhotoViewGalleryPageOptions(
-            imageProvider: CachedNetworkImageProvider(images[index]),
-            initialScale: PhotoViewComputedScale.contained * 0.8,
+            imageProvider: CachedNetworkImageProvider(
+              images[index],
+            ),
+            initialScale: PhotoViewComputedScale.contained,
             maxScale: 2.0,
+            heroAttributes: PhotoViewHeroAttributes(tag: images[index]),
           );
         },
         itemCount: images.length,
         loadingBuilder: (context, event) => Center(
-          child: SizedBox(
-            width: 20.0,
-            height: 20.0,
-            child: CircularProgressIndicator(
-              value: event == null
-                  ? 0
-                  : event.cumulativeBytesLoaded / event.expectedTotalBytes,
-            ),
+          child: CircularProgressIndicator(
+            value: event == null
+                ? 0
+                : event.cumulativeBytesLoaded / event.expectedTotalBytes,
           ),
         ),
       ),

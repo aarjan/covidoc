@@ -11,7 +11,6 @@ import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/ui/widgets/dropdown_filter.dart';
 
-import 'attached_images.dart';
 import 'question_tags.dart';
 
 class AddUpdateQuestionModal extends StatelessWidget {

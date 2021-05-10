@@ -1,12 +1,11 @@
 import 'dart:io';
-
-import 'package:covidoc/model/entity/entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:covidoc/utils/const/const.dart';
 import 'package:image_picker/image_picker.dart';
 
-import 'attached_images.dart';
+import 'package:covidoc/utils/const/const.dart';
+import 'package:covidoc/ui/widgets/widgets.dart';
+import 'package:covidoc/model/entity/entity.dart';
 
 class AddAnswerField extends StatefulWidget {
   const AddAnswerField({
