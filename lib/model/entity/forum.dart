@@ -1,9 +1,11 @@
+import 'package:covidoc/utils/utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'forum.g.dart';
 
 @JsonSerializable()
+@DateTimeConverter()
 class Forum extends Equatable {
   const Forum({
     this.id,

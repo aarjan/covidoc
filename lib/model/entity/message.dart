@@ -1,92 +1,13 @@
+import 'package:covidoc/utils/utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'message.g.dart';
 
-@JsonSerializable()
-class Chat extends Equatable {
-  const Chat({
-    this.id,
-    this.docId,
-    this.patId,
-    this.docName,
-    this.patName,
-    this.docAvatar,
-    this.patAvatar,
-    this.requestId,
-    this.lastMessage,
-    this.lastTimestamp,
-    this.patUnreadCount = 0,
-    this.docUnreadCount = 0,
-  });
-
-  final String id;
-  final String docId;
-  final String patId;
-  final String docName;
-  final String patName;
-  final String docAvatar;
-  final String patAvatar;
-  final String requestId;
-  final String lastMessage;
-  @JsonKey(defaultValue: 0)
-  final int patUnreadCount;
-  @JsonKey(defaultValue: 0)
-  final int docUnreadCount;
-  final DateTime lastTimestamp;
-
-  @override
-  List<Object> get props => [
-        id,
-        docId,
-        patId,
-        docName,
-        patName,
-        requestId,
-        docAvatar,
-        patAvatar,
-        lastMessage,
-        lastTimestamp,
-        patUnreadCount,
-        docUnreadCount,
-      ];
-
-  factory Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);
-
-  Map<String, dynamic> toJson() => _$ChatToJson(this);
-
-  Chat copyWith({
-    String id,
-    String docId,
-    String patId,
-    String docName,
-    String patName,
-    String requestId,
-    String docAvatar,
-    String patAvatar,
-    String lastMessage,
-    int patUnreadCount,
-    int docUnreadCount,
-    DateTime lastTimestamp,
-  }) {
-    return Chat(
-      id: id ?? this.id,
-      docId: docId ?? this.docId,
-      patId: patId ?? this.patId,
-      docName: docName ?? this.docName,
-      patName: patName ?? this.patName,
-      requestId: requestId ?? this.requestId,
-      docAvatar: docAvatar ?? this.docAvatar,
-      patAvatar: patAvatar ?? this.patAvatar,
-      lastMessage: lastMessage ?? this.lastMessage,
-      lastTimestamp: lastTimestamp ?? this.lastTimestamp,
-      patUnreadCount: patUnreadCount ?? this.patUnreadCount,
-      docUnreadCount: docUnreadCount ?? this.docUnreadCount,
-    );
-  }
-}
+enum MessageType { Text, Audio }
 
 @JsonSerializable()
+@DateTimeConverter()
 class Message extends Equatable {
   const Message({
     this.id,
@@ -95,7 +16,9 @@ class Message extends Equatable {
     this.patId,
     this.message,
     this.msgFrom,
+    this.msgType,
     this.documents,
+    this.readStatus,
     this.timestamp,
   });
 
@@ -105,12 +28,25 @@ class Message extends Equatable {
   final String chatId;
   final String message;
   final String msgFrom;
+  final bool readStatus;
   final String documents;
-  final String timestamp;
+
+  final DateTime timestamp;
+  final MessageType msgType;
 
   @override
-  List<Object> get props =>
-      [docId, id, chatId, msgFrom, patId, message, documents, timestamp];
+  List<Object> get props => [
+        id,
+        docId,
+        patId,
+        chatId,
+        msgFrom,
+        message,
+        msgType,
+        documents,
+        timestamp,
+        readStatus,
+      ];
 
   factory Message.fromJson(Map<String, dynamic> json) =>
       _$MessageFromJson(json);
@@ -126,6 +62,8 @@ class Message extends Equatable {
     String msgFrom,
     String documents,
     String timestamp,
+    String readStatus,
+    MessageType msgType,
   }) {
     return Message(
       id: id ?? this.id,
@@ -134,8 +72,10 @@ class Message extends Equatable {
       chatId: chatId ?? this.chatId,
       message: message ?? this.message,
       msgFrom: msgFrom ?? this.msgFrom,
+      msgType: msgType ?? this.msgType,
       timestamp: timestamp ?? this.timestamp,
       documents: documents ?? this.documents,
+      readStatus: readStatus ?? this.readStatus,
     );
   }
 }

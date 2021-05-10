@@ -1,6 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'const/app_const.dart';
@@ -124,10 +125,23 @@ Future<void> launchURL(String url) async {
 }
 
 extension DateTimeExtension on DateTime {
+  String get formattedTimes =>
+      '${hour.padInt}:${minute.padInt} ${hour > 12 ? "PM" : "AM"}';
+
   String get formattedTime => '${day.padInt} ${AppConst.MONTH[month]} $year '
       '${hour.padInt}:${minute.padInt}';
 
   String get formattedDate => '${day.padInt} ${AppConst.MONTH[month]} $year';
 
   String get formattedDay => '${day.padInt} ${AppConst.MONTH[month]}';
+}
+
+class DateTimeConverter implements JsonConverter<DateTime, int> {
+  const DateTimeConverter();
+
+  @override
+  DateTime fromJson(int json) => DateTime.fromMillisecondsSinceEpoch(json);
+
+  @override
+  int toJson(DateTime object) => object.millisecondsSinceEpoch;
 }

@@ -1,9 +1,11 @@
+import 'package:covidoc/utils/utils.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'message_request.g.dart';
 
 @JsonSerializable()
+@DateTimeConverter()
 class MessageRequest extends Equatable {
   final String id;
   final String message;
