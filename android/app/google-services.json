@@ -15,6 +15,30 @@
       },
       "oauth_client": [
         {
+          "client_id": "27585759843-amo29baa8p4goc4r7bi5ia39ecl21g6f.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neuroflip.covidoc",
+            "certificate_hash": "9985427f2ccfd103762bcd804fd7dc40f822e67b"
+          }
+        },
+        {
+          "client_id": "27585759843-brq9ocl1b8cio040m4k71etbfv5sbrsu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neuroflip.covidoc",
+            "certificate_hash": "48f07c1a96cda56920c2fc1624ae2947674f6412"
+          }
+        },
+        {
+          "client_id": "27585759843-l97pcuimlaelek2b2i108ogs2lmqdnve.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neuroflip.covidoc",
+            "certificate_hash": "7bbfc7af9ab91221dfe6d35bc0d44de1fb4fd216"
+          }
+        },
+        {
           "client_id": "27585759843-nb0ed7eotsldinnkgn9itaqgb6modpc2.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -52,11 +76,64 @@
       },
       "oauth_client": [
         {
+          "client_id": "27585759843-3cmdjngqquj2a60krgrlsh70cnehpc9r.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neuroflip.covidoc.dev",
+            "certificate_hash": "7bbfc7af9ab91221dfe6d35bc0d44de1fb4fd216"
+          }
+        },
+        {
           "client_id": "27585759843-a0ckrc73ed6rct0ju2lncisvf1vhva7s.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
             "package_name": "com.neuroflip.covidoc.dev",
             "certificate_hash": "b2d6f2bc090731c1b69d0a8295ac1f1f5a4b2fd6"
+          }
+        },
+        {
+          "client_id": "27585759843-sm8r744vhj3p5c3ake7mgeu70vlhcri6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.neuroflip.covidoc.dev",
+            "certificate_hash": "48f07c1a96cda56920c2fc1624ae2947674f6412"
+          }
+        },
+        {
+          "client_id": "27585759843-u9t3soevcmgu8j2c1g19o0bce6ud2h1d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA9mTIfcwGiv_in54eyND3aaKOTgCn-hK0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "27585759843-u9t3soevcmgu8j2c1g19o0bce6ud2h1d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:27585759843:android:d081d35c0540bdf334c656",
+        "android_client_info": {
+          "package_name": "com.own.covid_disscuss"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "27585759843-ve6lr1utdmqdvld0ml5b1l8mv4v8ja1j.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.own.covid_disscuss",
+            "certificate_hash": "288f4e5918b662c1913b8d08c84731a42061fe70"
           }
         },
         {
