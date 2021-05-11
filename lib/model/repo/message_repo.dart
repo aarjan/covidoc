@@ -31,7 +31,8 @@ class MessageRepo {
       return [];
     }
     final msgs = msgRef.docs
-        .map((m) => m == null ? null : Chat.fromJson(m.data()))
+        .map((m) =>
+            m == null ? null : Chat.fromJson(m.data()).copyWith(id: m.id))
         .toList();
     return msgs;
   }
@@ -49,7 +50,9 @@ class MessageRepo {
       return [];
     }
     final reqs = msgRef.docs
-        .map((m) => m == null ? null : MessageRequest.fromJson(m.data()))
+        .map((m) => m == null
+            ? null
+            : MessageRequest.fromJson(m.data()).copyWith(id: m.id))
         .toList();
     return reqs;
   }
@@ -66,7 +69,9 @@ class MessageRepo {
       return [];
     }
     return mRef.docs
-        .map((m) => m == null ? null : MessageRequest.fromJson(m.data()))
+        .map((m) => m == null
+            ? null
+            : MessageRequest.fromJson(m.data()).copyWith(id: m.id))
         .toList();
   }
 
@@ -87,7 +92,8 @@ class MessageRepo {
       return [];
     }
     final msgs = msgRef.docs
-        .map((m) => m == null ? null : Message.fromJson(m.data()))
+        .map((m) =>
+            m == null ? null : Message.fromJson(m.data()).copyWith(id: m.id))
         .toList();
     return msgs;
   }
@@ -96,7 +102,6 @@ class MessageRepo {
     final firestore = FirebaseFirestore.instance;
     final mRef =
         await firestore.collection('messageRequest').add(request.toJson());
-    await firestore.doc('messageRequest/${mRef.id}').update({'id': mRef.id});
     return mRef.id;
   }
 
@@ -108,7 +113,6 @@ class MessageRepo {
   Future<String> startConversation({Chat chat}) async {
     final firestore = FirebaseFirestore.instance;
     final cRef = await firestore.collection('chat').add(chat.toJson());
-    await firestore.doc('chat/${cRef.id}').update({'id': cRef.id});
     return cRef.id;
   }
 
@@ -153,9 +157,14 @@ class MessageRepo {
         .update(msg.toJson());
   }
 
-  Future<void> deleteMessage({String msgId, String chatId}) async {
+  Future<void> deleteMessage({List<String> msgIds, String chatId}) async {
     final firestore = FirebaseFirestore.instance;
-    await firestore.doc('chat/$chatId/message/$msgId').delete();
+    final batch = firestore.batch();
+
+    for (final id in msgIds) {
+      batch.delete(firestore.doc('chat/$chatId/message/$id'));
+    }
+    await batch.commit();
   }
 
   Future<void> uploadFile(String fileName) async {

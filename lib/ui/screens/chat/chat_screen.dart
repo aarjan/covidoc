@@ -1,10 +1,9 @@
-import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:covidoc/bloc/bloc.dart';
+import 'package:covidoc/utils/utils.dart';
 import 'package:covidoc/model/entity/entity.dart';
-import 'package:flutter/material.dart';
-
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'components/chat_app_bar.dart';
 import 'components/chat_input.dart';
@@ -25,8 +24,11 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   String userType;
   List<Message> _msgs;
+  int _deleteCount = 0;
+  bool _deleteMode = false;
   bool _hasReachedEnd = false;
   ScrollController _controller;
+  final List<String> msgIds = [];
 
   @override
   void initState() {
@@ -39,6 +41,19 @@ class _ChatScreenState extends State<ChatScreen> {
           context.read<MessageBloc>().add(LoadMsgs(chatId: widget.chat.id));
         }
       });
+  }
+
+  void onLongPress(bool onSelected, String msgId) {
+    if (onSelected) {
+      _deleteCount++;
+      msgIds.add(msgId);
+    } else {
+      _deleteCount--;
+      msgIds.remove(msgId);
+    }
+    _deleteMode = _deleteCount > 0;
+
+    setState(() {});
   }
 
   @override
@@ -64,7 +79,21 @@ class _ChatScreenState extends State<ChatScreen> {
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.white,
-        flexibleSpace: ChatAppBar(name: fullname, active: true, imgUrl: avatar),
+        flexibleSpace: ChatAppBar(
+          name: fullname,
+          active: true,
+          imgUrl: avatar,
+          deleteMode: _deleteMode,
+          deleteCount: _deleteCount,
+          onDelete: () {
+            context.read<MessageBloc>().add(
+                  DeleteMsg(chatId: widget.chat.id, msgIds: msgIds),
+                );
+            _deleteMode = false;
+            _deleteCount = 0;
+            setState(() {});
+          },
+        ),
       ),
       body: BlocBuilder<MessageBloc, MessageState>(builder: (context, state) {
         if (state is MessageLoadSuccess) {
@@ -82,15 +111,23 @@ class _ChatScreenState extends State<ChatScreen> {
                       shrinkWrap: true,
                       controller: _controller,
                       itemCount: _msgs.length,
-                      padding: EdgeInsets.fromLTRB(
-                          16, 6, 16, MediaQuery.of(context).viewInsets.bottom),
+                      padding: EdgeInsets.only(
+                          bottom: MediaQuery.of(context).viewInsets.bottom),
                       itemBuilder: (context, index) {
                         final msg = _msgs[index];
                         final isSender = msg.msgFrom == userType;
                         if (isSender) {
-                          return SenderContent(msg: msg);
+                          return SenderContent(
+                            key: ValueKey(msg.id),
+                            msg: msg,
+                            onLongPress: onLongPress,
+                          );
                         } else {
-                          return ReceiverContent(msg: msg);
+                          return ReceiverContent(
+                            key: ValueKey(msg.id),
+                            msg: msg,
+                            onLongPress: onLongPress,
+                          );
                         }
                       },
                     ),

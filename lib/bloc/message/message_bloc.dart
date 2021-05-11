@@ -27,12 +27,13 @@ class EditMsg extends MessageEvent {
 }
 
 class DeleteMsg extends MessageEvent {
-  final Message msg;
+  final String chatId;
+  final List<String> msgIds;
 
-  DeleteMsg(this.msg);
+  DeleteMsg({this.msgIds, this.chatId});
 
   @override
-  List<Object> get props => [msg];
+  List<Object> get props => [msgIds, chatId];
 }
 
 class SendMsg extends MessageEvent {
@@ -132,6 +133,8 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     if (state is MessageLoadSuccess) {
       final curState = state as MessageLoadSuccess;
 
+      yield MessageLoadInProgress();
+
       // Add images
       final documents = <String>[];
       for (final f in event.images) {
@@ -140,7 +143,6 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       }
       final nMsg = event.msg.copyWith(documents: documents);
 
-      yield MessageLoadInProgress();
       final msg = await repo.sendMessage(nMsg);
 
       final nMsgs = List<Message>.from([msg, ...curState.msgs]);
@@ -150,9 +152,11 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   }
 
   Stream<MessageState> _mapEditMsgEventToState(EditMsg event) async* {
-    yield MessageLoadInProgress();
     if (state is MessageLoadSuccess) {
       final curMsgs = (state as MessageLoadSuccess).msgs;
+
+      yield MessageLoadInProgress();
+
       await repo.editMessage(msg: event.msg);
 
       final newMsgs =
@@ -163,12 +167,15 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   }
 
   Stream<MessageState> _mapDeleteMsgEventToState(DeleteMsg event) async* {
-    yield MessageLoadInProgress();
     if (state is MessageLoadSuccess) {
       final curMsgs = (state as MessageLoadSuccess).msgs;
-      await repo.deleteMessage(chatId: event.msg.chatId, msgId: event.msg.id);
 
-      final newMsgs = curMsgs.where((m) => m.id != event.msg.id).toList();
+      yield MessageLoadInProgress();
+
+      await repo.deleteMessage(chatId: event.chatId, msgIds: event.msgIds);
+
+      final newMsgs =
+          curMsgs.where((m) => !event.msgIds.contains(m.id)).toList();
 
       yield MessageLoadSuccess(msgs: newMsgs);
     }
