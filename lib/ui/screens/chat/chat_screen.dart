@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:readmore/readmore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:covidoc/bloc/bloc.dart';
-import 'package:covidoc/utils/utils.dart';
+import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/model/entity/entity.dart';
 
 import 'components/chat_app_bar.dart';
@@ -28,6 +29,7 @@ class _ChatScreenState extends State<ChatScreen> {
   bool _deleteMode = false;
   bool _hasReachedEnd = false;
   ScrollController _controller;
+  bool _clearReqmsg = false;
   final List<String> msgIds = [];
 
   @override
@@ -83,8 +85,10 @@ class _ChatScreenState extends State<ChatScreen> {
           name: fullname,
           active: true,
           imgUrl: avatar,
+          userId: toUserId,
           deleteMode: _deleteMode,
           deleteCount: _deleteCount,
+          msgRequest: widget.chat.consultReqMessage,
           onDelete: () {
             context.read<MessageBloc>().add(
                   DeleteMsg(chatId: widget.chat.id, msgIds: msgIds),
@@ -150,6 +154,37 @@ class _ChatScreenState extends State<ChatScreen> {
                   ),
                 ],
               ),
+            if (!_clearReqmsg)
+              Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: AppColors.GREEN1,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: ReadMoreText(
+                          widget.chat.consultReqMessage,
+                          trimLines: 4,
+                          trimMode: TrimMode.Line,
+                          trimCollapsedText: 'Show more',
+                          trimExpandedText: 'Show less',
+                          style: AppFonts.REGULAR_BLACK3_14,
+                          colorClickableText: AppColors.DEFAULT,
+                          moreStyle: AppFonts.MEDIUM_DEFAULT_14,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close_rounded),
+                        onPressed: () {
+                          _clearReqmsg = true;
+                          setState(() {});
+                        },
+                      )
+                    ],
+                  )),
             if (state is MessageLoadInProgress)
               const Center(
                 child: CircularProgressIndicator(),

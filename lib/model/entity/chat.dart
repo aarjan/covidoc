@@ -18,6 +18,7 @@ class Chat extends Equatable {
     this.requestId,
     this.lastMessage,
     this.lastTimestamp,
+    this.consultReqMessage,
     this.patUnreadCount = 0,
     this.docUnreadCount = 0,
   });
@@ -36,6 +37,7 @@ class Chat extends Equatable {
   @JsonKey(defaultValue: 0)
   final int docUnreadCount;
   final DateTime lastTimestamp;
+  final String consultReqMessage;
 
   @override
   List<Object> get props => [
@@ -51,6 +53,7 @@ class Chat extends Equatable {
         lastTimestamp,
         patUnreadCount,
         docUnreadCount,
+        consultReqMessage,
       ];
 
   factory Chat.fromJson(Map<String, dynamic> json) => _$ChatFromJson(json);
@@ -70,6 +73,7 @@ class Chat extends Equatable {
     int patUnreadCount,
     int docUnreadCount,
     DateTime lastTimestamp,
+    String consultReqMessage,
   }) {
     return Chat(
       id: id ?? this.id,
@@ -84,6 +88,7 @@ class Chat extends Equatable {
       lastTimestamp: lastTimestamp ?? this.lastTimestamp,
       patUnreadCount: patUnreadCount ?? this.patUnreadCount,
       docUnreadCount: docUnreadCount ?? this.docUnreadCount,
+      consultReqMessage: consultReqMessage ?? this.consultReqMessage,
     );
   }
 }

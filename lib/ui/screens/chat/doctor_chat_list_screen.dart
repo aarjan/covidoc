@@ -132,6 +132,7 @@ class _ChatListView extends StatelessWidget {
                         docAvatar: user.avatar,
                         docName: user.fullname,
                         patId: request.postedBy,
+                        consultReqMessage: request.message,
                         patName: request.patDetail['fullname'],
                         patAvatar: request.patDetail['avatar'],
                       )),
