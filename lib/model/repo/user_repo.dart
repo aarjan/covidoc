@@ -39,6 +39,15 @@ class UserRepo {
     return [];
   }
 
+  Future<AppUser> loadUser(String userId) async {
+    final firestore = FirebaseFirestore.instance;
+    final uRef = await firestore.doc('user/$userId').get();
+    if (uRef != null && uRef.exists) {
+      return AppUser.fromJson(uRef.data());
+    }
+    return null;
+  }
+
   Future<AppUser> getUser() async {
     return sessionRepo.getUser();
   }

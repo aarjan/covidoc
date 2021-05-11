@@ -78,6 +78,7 @@ Widget runWidget() {
   return MultiRepositoryProvider(
     providers: [
       RepositoryProvider(create: (_) => msgRepo),
+      RepositoryProvider(create: (_) => userRepo),
     ],
     child: MultiBlocProvider(
       providers: [

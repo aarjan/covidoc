@@ -12,7 +12,14 @@ class UserEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadUser extends UserEvent {}
+class LoadUser extends UserEvent {
+  final String userId;
+
+  LoadUser({this.userId});
+
+  @override
+  List<Object> get props => [userId];
+}
 
 class LoadUsers extends UserEvent {}
 
@@ -83,7 +90,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
   Stream<UserState> mapEventToState(event) async* {
     switch (event.runtimeType) {
       case LoadUser:
-        yield* _mapLoadUserEventToState();
+        yield* _mapLoadUserEventToState(event);
         break;
       case UpdateUser:
         yield* _mapUpdateUserEventToState(event);
@@ -98,9 +105,14 @@ class UserBloc extends Bloc<UserEvent, UserState> {
     }
   }
 
-  Stream<UserState> _mapLoadUserEventToState() async* {
+  Stream<UserState> _mapLoadUserEventToState(LoadUser event) async* {
     yield UserLoadInProgress();
-    final user = await repo.getUser();
+    AppUser user;
+    if (event.userId != null) {
+      user = await repo.loadUser(event.userId);
+    } else {
+      user = await repo.getUser();
+    }
     yield UserLoadSuccess(user: user);
   }
 

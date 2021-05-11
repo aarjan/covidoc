@@ -3,6 +3,7 @@ export 'blog/blog_screen.dart';
 export 'chat/chat_screen.dart';
 export 'chat/doctor_chat_list_screen.dart';
 export 'chat/patient_chat_list_screen.dart';
+export 'chat/user_profile_screen.dart';
 export 'dashboard/dashboard_screen.dart';
 export 'forum/forum_discuss_screen.dart';
 export 'forum/forum_screen.dart';
