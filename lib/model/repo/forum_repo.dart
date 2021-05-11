@@ -22,7 +22,8 @@ class ForumRepo {
 
     if (fRef != null && fRef.docs.isNotEmpty) {
       return fRef.docs
-          ?.map((e) => e == null ? null : Forum.fromJson(e.data()))
+          ?.map((e) =>
+              e == null ? null : Forum.fromJson(e.data()).copyWith(id: e.id))
           ?.toList();
     }
     return [];
@@ -38,7 +39,8 @@ class ForumRepo {
 
     if (fRef != null && fRef.docs.isNotEmpty) {
       return fRef.docs
-          ?.map((e) => e == null ? null : Answer.fromJson(e.data()))
+          ?.map((e) =>
+              e == null ? null : Answer.fromJson(e.data()).copyWith(id: e.id))
           ?.toList();
     }
     return [];
@@ -47,7 +49,6 @@ class ForumRepo {
   Future<Forum> addForum(Forum forum) async {
     final firestore = FirebaseFirestore.instance;
     final fRef = await firestore.collection('forum').add(forum.toJson());
-    await firestore.doc('forum/${fRef.id}').update({'id': fRef.id});
     return forum.copyWith(id: fRef.id);
   }
 
@@ -66,9 +67,6 @@ class ForumRepo {
     final aRef = await firestore
         .collection('forum/${answer.questionId}/answer')
         .add(answer.toJson());
-    await firestore
-        .doc('forum/${answer.questionId}/answer/${aRef.id}')
-        .update({'id': aRef.id});
 
     // increase the answer count & recentUsersAvatar
     final avatars = addAvatar ? [answer.addedByAvatar] : [];
