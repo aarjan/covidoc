@@ -121,7 +121,7 @@ class ChatMessagePopupMenu extends StatelessWidget {
       itemBuilder: (context) => [
         PopupMenuItem(
           value: 'profile',
-          child: Text('View Profile', style: AppFonts.REGULAR_BLACK3_14),
+          child: Text('View Profile', style: AppFonts.REGULAR_BLACK3_16),
         )
       ],
     );
