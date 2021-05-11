@@ -145,3 +145,11 @@ class DateTimeConverter implements JsonConverter<DateTime, int> {
   @override
   int toJson(DateTime object) => object.millisecondsSinceEpoch;
 }
+
+String getCovidStatus(int status) {
+  return status == 0
+      ? 'Positive'
+      : status == 1
+          ? 'Negative'
+          : 'Not Tested';
+}
