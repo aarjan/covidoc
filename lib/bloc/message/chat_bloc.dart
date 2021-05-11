@@ -192,7 +192,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       yield ChatLoadInProgress();
 
       // resolve the message request as resolved
-      await repo.resolveMsgRequest(event.chat.requestId);
+      await repo.resolveMsgRequest(
+        requestId: event.chat.requestId,
+        docId: event.chat.docId,
+        docDetail: {
+          'fullname': event.chat.docName,
+          'avatar': event.chat.docAvatar,
+        },
+      );
 
       final chatId = await repo.startConversation(
         chat: event.chat,

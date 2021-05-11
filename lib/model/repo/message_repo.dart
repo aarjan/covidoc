@@ -105,9 +105,14 @@ class MessageRepo {
     return mRef.id;
   }
 
-  Future<void> resolveMsgRequest(String requestId) async {
+  Future<void> resolveMsgRequest(
+      {String requestId, String docId, Map<String, dynamic> docDetail}) async {
     final firestore = FirebaseFirestore.instance;
-    await firestore.doc('messageRequest/$requestId').update({'resolved': true});
+    await firestore.doc('messageRequest/$requestId').update({
+      'docId': docId,
+      'resolved': true,
+      'docDetail': docDetail,
+    });
   }
 
   Future<String> startConversation({Chat chat}) async {
