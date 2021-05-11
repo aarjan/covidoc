@@ -62,8 +62,6 @@ class App extends StatelessWidget {
 }
 
 Widget runWidget() {
-  WidgetsFlutterBinding.ensureInitialized();
-
   final sessionRepo = SessionRepository(LocalPref());
 
   final userRepo = UserRepo(sessionRepo);
