@@ -151,7 +151,33 @@ class UserProfile extends StatelessWidget {
               ),
               const Divider(),
               isPatient ? PatientInfo(user.detail) : DoctorInfo(user.detail),
-              const Divider(),
+              const Divider(
+                thickness: 10,
+              ),
+              ListTile(
+                onTap: () {},
+                leading: Icon(Icons.block, color: Colors.red[800]),
+                title: Text(
+                  'Block',
+                  style: AppFonts.MEDIUM_BLACK3_14
+                      .copyWith(color: Colors.red[800]),
+                ),
+              ),
+              const Divider(
+                thickness: 10,
+              ),
+              ListTile(
+                onTap: () {},
+                leading: Icon(Icons.thumb_down, color: Colors.red[800]),
+                title: Text(
+                  'Report Contact',
+                  style: AppFonts.MEDIUM_BLACK3_14
+                      .copyWith(color: Colors.red[800]),
+                ),
+              ),
+              const Divider(
+                thickness: 10,
+              ),
               const SizedBox(
                 height: 60,
               ),
