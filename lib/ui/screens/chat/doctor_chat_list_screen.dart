@@ -133,6 +133,7 @@ class _ChatListView extends StatelessWidget {
                         docName: user.fullname,
                         patId: request.postedBy,
                         consultReqMessage: request.message,
+                        lastTimestamp: DateTime.now().toUtc(),
                         patName: request.patDetail['fullname'],
                         patAvatar: request.patDetail['avatar'],
                       )),

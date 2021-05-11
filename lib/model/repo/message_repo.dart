@@ -190,7 +190,7 @@ class MessageRepo {
 
   Future<String> uploadImage(File img) async {
     final storage = FirebaseStorage.instance;
-    final ref = storage.ref().child('image${DateTime.now()}');
+    final ref = storage.ref().child('image${DateTime.now().toUtc()}');
     final res = await ref.putFile(img);
     return res.ref.getDownloadURL();
   }

@@ -57,7 +57,7 @@ class _ChatRequestState extends State<ChatRequest> {
                   'fullname': widget.user.fullname,
                   'gender': widget.user.detail['gender'],
                 },
-                postedAt: DateTime.now(),
+                postedAt: DateTime.now().toUtc(),
                 postedAnonymously: anonymous,
               );
 

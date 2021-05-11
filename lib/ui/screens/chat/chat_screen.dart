@@ -143,7 +143,7 @@ class _ChatScreenState extends State<ChatScreen> {
                         docId: toUserId,
                         patId: fromUserId,
                         chatId: widget.chat.id,
-                        timestamp: DateTime.now(),
+                        timestamp: DateTime.now().toUtc(),
                         msgFrom: widget.isFromPatient ? 'Patient' : 'Doctor',
                       );
 
