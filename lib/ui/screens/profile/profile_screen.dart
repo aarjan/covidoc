@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -82,6 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           return Stack(
             children: [
               CustomScrollView(
+                physics: const BouncingScrollPhysics(),
                 slivers: [
                   mAppBar(_user),
                   SliverList(
@@ -299,19 +301,47 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   SliverAppBar mAppBar(AppUser user) {
     return SliverAppBar(
-      pinned: true,
-      expandedHeight: 200,
+      stretch: true,
+      leading: null,
       actions: [
         const PopupBtn(),
       ],
-      leading: null,
-      leadingWidth: 0,
+      pinned: true,
       automaticallyImplyLeading: false,
+      expandedHeight: 300.0,
       backgroundColor: AppColors.DEFAULT,
       flexibleSpace: FlexibleSpaceBar(
+        stretchModes: <StretchMode>[
+          StretchMode.zoomBackground,
+          StretchMode.blurBackground,
+          StretchMode.fadeTitle,
+        ],
         centerTitle: false,
-        titlePadding: const EdgeInsets.only(left: 20, bottom: 10),
-        title: ProfileTitleBar(user: user),
+        title: Text(
+          user.fullname,
+          style: AppFonts.BOLD_WHITE_18,
+        ),
+        background: Stack(
+          fit: StackFit.expand,
+          children: [
+            CachedNetworkImage(
+              imageUrl: user.avatar,
+              fit: BoxFit.cover,
+            ),
+            const DecoratedBox(
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment(0.0, 0.5),
+                  end: Alignment(0.0, 0.0),
+                  colors: <Color>[
+                    Color(0x60000000),
+                    Color(0x00000000),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
