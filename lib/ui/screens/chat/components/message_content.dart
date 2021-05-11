@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:cached_network_image/cached_network_image.dart';
 
 import 'package:covidoc/utils/utils.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/model/entity/entity.dart';
+import 'package:covidoc/ui/widgets/image_slider.dart';
 
 class SenderContent extends StatelessWidget {
   const SenderContent({
@@ -23,7 +25,7 @@ class SenderContent extends StatelessWidget {
           Container(
             margin: const EdgeInsets.only(top: 10),
             constraints: const BoxConstraints(maxWidth: 250),
-            padding: const EdgeInsets.fromLTRB(20, 10, 10, 10),
+            padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
             decoration: const BoxDecoration(
                 color: AppColors.DEFAULT,
                 borderRadius: BorderRadius.only(
@@ -36,6 +38,53 @@ class SenderContent extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.end,
               mainAxisSize: MainAxisSize.min,
               children: [
+                if (msg.documents.isNotEmpty)
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) =>
+                                  ImageGallerySlider(images: msg.documents)));
+                    },
+                    child: Hero(
+                      tag: msg.documents.first,
+                      child: Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          ClipRRect(
+                            clipBehavior: Clip.hardEdge,
+                            borderRadius: BorderRadius.circular(10),
+                            child: CachedNetworkImage(
+                              imageUrl: msg.documents[0],
+                              width: 200,
+                              height: 200,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          Visibility(
+                            visible: msg.documents.length > 1,
+                            child: Container(
+                              alignment: Alignment.center,
+                              width: 200,
+                              height: 200,
+                              decoration: BoxDecoration(
+                                color: Colors.black12,
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                              child: Text(
+                                '+ ${msg.documents.length - 1}',
+                                style: AppFonts.BOLD_WHITE_30,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                const SizedBox(
+                  height: 6,
+                ),
                 Text(msg.message,
                     softWrap: true, style: AppFonts.REGULAR_WHITE_14),
                 const SizedBox(

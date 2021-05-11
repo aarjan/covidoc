@@ -17,7 +17,7 @@ class Message extends Equatable {
     this.message,
     this.msgFrom,
     this.msgType,
-    this.documents,
+    this.documents = const <String>[],
     this.readStatus,
     this.timestamp,
   });
@@ -29,10 +29,12 @@ class Message extends Equatable {
   final String message;
   final String msgFrom;
   final bool readStatus;
-  final String documents;
 
   final DateTime timestamp;
   final MessageType msgType;
+
+  @JsonKey(defaultValue: <String>[])
+  final List<String> documents;
 
   @override
   List<Object> get props => [
@@ -60,10 +62,10 @@ class Message extends Equatable {
     String chatId,
     String message,
     String msgFrom,
-    String documents,
     String timestamp,
     String readStatus,
     MessageType msgType,
+    List<String> documents,
   }) {
     return Message(
       id: id ?? this.id,

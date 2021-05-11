@@ -96,7 +96,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                   ),
                   ChatInput(
-                    onSend: (str) {
+                    onSend: (str, photos) {
                       final msg = Message(
                         message: str,
                         docId: toUserId,
@@ -106,7 +106,9 @@ class _ChatScreenState extends State<ChatScreen> {
                         msgFrom: widget.isFromPatient ? 'Patient' : 'Doctor',
                       );
 
-                      context.read<MessageBloc>().add(SendMsg(msg));
+                      context
+                          .read<MessageBloc>()
+                          .add(SendMsg(msg: msg, images: photos));
                     },
                   ),
                 ],

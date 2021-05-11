@@ -173,4 +173,11 @@ class MessageRepo {
       // e.g, e.code == 'canceled'
     }
   }
+
+  Future<String> uploadImage(File img) async {
+    final storage = FirebaseStorage.instance;
+    final ref = storage.ref().child('image${DateTime.now()}');
+    final res = await ref.putFile(img);
+    return res.ref.getDownloadURL();
+  }
 }

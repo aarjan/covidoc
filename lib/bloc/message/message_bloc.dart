@@ -37,11 +37,12 @@ class DeleteMsg extends MessageEvent {
 
 class SendMsg extends MessageEvent {
   final Message msg;
+  final List<Photo> images;
 
-  SendMsg(this.msg);
+  SendMsg({this.msg, this.images});
 
   @override
-  List<Object> get props => [msg];
+  List<Object> get props => [msg, images];
 }
 
 class MessageState extends Equatable {
@@ -131,8 +132,16 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
     if (state is MessageLoadSuccess) {
       final curState = state as MessageLoadSuccess;
 
-      // yield MessageLoadInProgress();
-      final msg = await repo.sendMessage(event.msg);
+      // Add images
+      final documents = <String>[];
+      for (final f in event.images) {
+        final url = await repo.uploadImage(f.file);
+        documents.add(url);
+      }
+      final nMsg = event.msg.copyWith(documents: documents);
+
+      yield MessageLoadInProgress();
+      final msg = await repo.sendMessage(nMsg);
 
       final nMsgs = List<Message>.from([msg, ...curState.msgs]);
       await repo.updateLastMsg(event.msg.chatId, event.msg.message);
