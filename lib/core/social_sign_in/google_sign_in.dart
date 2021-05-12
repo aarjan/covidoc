@@ -1,9 +1,15 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
+import 'package:covidoc/core/error/failures.dart';
+
 Future<UserCredential> signInWithGoogle() async {
   // Trigger the authentication flow
   final googleUser = await GoogleSignIn().signIn();
+
+  if (googleUser == null) {
+    throw ServerFailure('Login cancelled by user');
+  }
 
   // Obtain the auth details from the request
   final googleAuth = await googleUser.authentication;

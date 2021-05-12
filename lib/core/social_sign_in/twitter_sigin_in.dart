@@ -2,30 +2,32 @@ import 'package:covidoc/env.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
 
-Future<UserCredential> signInWithTwitter() async {
+class TwitterSignIn {
   // Create a TwitterLogin instance
-  final twitterLogin = TwitterLogin(
+  static final twitterLogin = TwitterLogin(
     consumerKey: APP_ENV['TWITTER_API_KEY'],
     consumerSecret: APP_ENV['TWITTER_API_SECRET'],
   );
 
-  // Trigger the sign-in flow
-  final result = await twitterLogin.authorize();
+  static Future<UserCredential> signInWithTwitter() async {
+    // Trigger the sign-in flow
+    final result = await twitterLogin.authorize();
 
-  // Get the Logged In session
-  final twitterSession = result.session;
+    // Get the Logged In session
+    final twitterSession = result.session;
 
-  // Create a credential from the access token
-  final twitterAuthCredential = TwitterAuthProvider.credential(
-    accessToken: twitterSession.token,
-    secret: twitterSession.secret,
-  );
+    // Create a credential from the access token
+    final twitterAuthCredential = TwitterAuthProvider.credential(
+      accessToken: twitterSession.token,
+      secret: twitterSession.secret,
+    );
+    // Once signed in, return the UserCredential
+    return await FirebaseAuth.instance
+        .signInWithCredential(twitterAuthCredential);
+  }
 
-  // Once signed in, return the UserCredential
-  return await FirebaseAuth.instance
-      .signInWithCredential(twitterAuthCredential);
-}
-
-Future signOutWithTwitter() async {
-  await FirebaseAuth.instance.signOut();
+  static Future signOutWithTwitter() async {
+    await twitterLogin.logOut();
+    await FirebaseAuth.instance.signOut();
+  }
 }

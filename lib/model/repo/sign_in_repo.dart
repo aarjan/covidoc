@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:either_option/either_option.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import 'package:covidoc/core/error/failures.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -25,7 +26,7 @@ class SignInRepo {
           userCreds = await signInWithGoogle();
           break;
         case SignInType.Twitter:
-          userCreds = await signInWithTwitter();
+          userCreds = await TwitterSignIn.signInWithTwitter();
           break;
         default:
       }
@@ -40,6 +41,10 @@ class SignInRepo {
         },
       );
       return Right(user);
+    } on ServerFailure catch (e) {
+      return Left(e);
+    } on FacebookAuthException catch (e) {
+      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }

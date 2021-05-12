@@ -21,7 +21,7 @@ class AuthRepo {
           await signOutWithGoogle();
           break;
         case 'Twitter':
-          await signOutWithTwitter();
+          await TwitterSignIn.signOutWithTwitter();
           break;
         default:
       }

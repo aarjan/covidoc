@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:covidoc/bloc/auth/auth.dart';
 import 'package:covidoc/model/repo/sign_in_repo.dart';
-import 'package:either_option/either_option.dart';
 
 import 'sign_in.dart';
 
