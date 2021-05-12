@@ -22,19 +22,19 @@ class MessageRepo {
     }
 
     final firestore = FirebaseFirestore.instance;
-    final msgRef = await firestore
-        .collection('chat')
-        .where(FieldPath.documentId, whereIn: chatIds)
-        .get();
+    final msgRef = firestore.collection('chat');
 
-    if (msgRef == null || msgRef.docs.isEmpty) {
+    final chats = <Chat>[];
+    for (final id in chatIds) {
+      final doc = await msgRef.doc(id).get();
+      if (doc != null && doc.exists) {
+        chats.add(Chat.fromJson(doc.data()).copyWith(id: doc.id));
+      }
+    }
+    if (chats.isEmpty) {
       return [];
     }
-    final msgs = msgRef.docs
-        .map((m) =>
-            m == null ? null : Chat.fromJson(m.data()).copyWith(id: m.id))
-        .toList();
-    return msgs;
+    return chats;
   }
 
   // MessageRequests made by the patient
