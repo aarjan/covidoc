@@ -106,9 +106,9 @@ class _ChatScreenState extends State<ChatScreen> {
         }
         return Stack(
           children: [
-            if (_msgs != null)
-              Column(
-                children: [
+            Column(
+              children: [
+                if (_msgs != null)
                   Expanded(
                     child: ListView.builder(
                       reverse: true,
@@ -135,25 +135,27 @@ class _ChatScreenState extends State<ChatScreen> {
                         }
                       },
                     ),
-                  ),
-                  ChatInput(
-                    onSend: (str, photos) {
-                      final msg = Message(
-                        message: str,
-                        docId: toUserId,
-                        patId: fromUserId,
-                        chatId: widget.chat.id,
-                        timestamp: DateTime.now().toUtc(),
-                        msgFrom: widget.isFromPatient ? 'Patient' : 'Doctor',
-                      );
+                  )
+                else
+                  const Spacer(),
+                ChatInput(
+                  onSend: (str, photos) {
+                    final msg = Message(
+                      message: str,
+                      docId: toUserId,
+                      patId: fromUserId,
+                      chatId: widget.chat.id,
+                      timestamp: DateTime.now().toUtc(),
+                      msgFrom: widget.isFromPatient ? 'Patient' : 'Doctor',
+                    );
 
-                      context
-                          .read<MessageBloc>()
-                          .add(SendMsg(msg: msg, images: photos));
-                    },
-                  ),
-                ],
-              ),
+                    context
+                        .read<MessageBloc>()
+                        .add(SendMsg(msg: msg, images: photos));
+                  },
+                ),
+              ],
+            ),
             if (!_clearReqmsg)
               Container(
                   width: double.infinity,
