@@ -195,12 +195,11 @@ class PatientInfo extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final covidStatus = getCovidStatus(detail['covidStatus'] as int);
-
     return Column(
       children: [
         ListTile(
-          title: Text(covidStatus, style: AppFonts.MEDIUM_BLACK3_14),
+          title: Text(detail['covidStatus'].toString(),
+              style: AppFonts.MEDIUM_BLACK3_14),
           subtitle: Text('CovidStatus', style: AppFonts.REGULAR_WHITE2_11),
         ),
         const Divider(),
