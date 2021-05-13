@@ -139,6 +139,9 @@ class _ChatListView extends StatelessWidget {
                         patAvatar: request.patDetail['avatar'],
                       )),
                     );
+                // remove the current requests from the list
+                // on starting the conversation
+                requests.removeAt(index);
               },
             );
           },
