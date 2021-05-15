@@ -214,7 +214,7 @@ class PatientInfo extends StatelessWidget {
 
 class DoctorInfo extends StatelessWidget {
   const DoctorInfo(this.detail);
-  final Map<String, String> detail;
+  final Map<String, dynamic> detail;
 
   @override
   Widget build(BuildContext context) {
