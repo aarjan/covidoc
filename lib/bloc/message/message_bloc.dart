@@ -138,8 +138,13 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       // Add images
       final documents = <String>[];
       for (final f in event.images) {
-        final url = await repo.uploadImage(f.file);
-        documents.add(url);
+        if (event.msg.msgType == MessageType.Audio) {
+          final url = await repo.uploadAudio(f.file);
+          documents.add(url);
+        } else {
+          final url = await repo.uploadImage(f.file);
+          documents.add(url);
+        }
       }
       final nMsg = event.msg.copyWith(documents: documents);
 

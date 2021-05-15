@@ -194,4 +194,13 @@ class MessageRepo {
     final res = await ref.putFile(img);
     return res.ref.getDownloadURL();
   }
+
+  Future<String> uploadAudio(File img) async {
+    final storage = FirebaseStorage.instance;
+    final fileName = img.path.substring(img.path.lastIndexOf('/') + 1);
+
+    final ref = storage.ref().child('audio/$fileName');
+    final res = await ref.putFile(img);
+    return res.ref.getDownloadURL();
+  }
 }

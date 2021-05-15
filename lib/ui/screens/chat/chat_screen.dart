@@ -139,12 +139,13 @@ class _ChatScreenState extends State<ChatScreen> {
                 else
                   const Spacer(),
                 ChatInput(
-                  onSend: (str, photos) {
+                  onSend: (str, photos, msgType) {
                     final msg = Message(
                       message: str,
                       docId: toUserId,
                       patId: fromUserId,
                       chatId: widget.chat.id,
+                      msgType: msgType,
                       timestamp: DateTime.now().toUtc(),
                       msgFrom: widget.isFromPatient ? 'Patient' : 'Doctor',
                     );

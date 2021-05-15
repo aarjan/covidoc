@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
@@ -26,6 +27,8 @@ class _SenderContentState extends State<SenderContent> {
 
   @override
   Widget build(BuildContext context) {
+    final txtMsg = widget.msg.msgType == MessageType.Text;
+
     return InkWell(
       onLongPress: () {
         setState(() {
@@ -57,57 +60,16 @@ class _SenderContentState extends State<SenderContent> {
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   if (widget.msg.documents.isNotEmpty)
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (_) => ImageGallerySlider(
-                                    images: widget.msg.documents)));
-                      },
-                      child: Hero(
-                        tag: widget.msg.documents.first,
-                        child: Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            ClipRRect(
-                              clipBehavior: Clip.hardEdge,
-                              borderRadius: BorderRadius.circular(10),
-                              child: CachedNetworkImage(
-                                imageUrl: widget.msg.documents[0],
-                                width: 200,
-                                height: 200,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                            Visibility(
-                              visible: widget.msg.documents.length > 1,
-                              child: Container(
-                                alignment: Alignment.center,
-                                width: 200,
-                                height: 200,
-                                decoration: BoxDecoration(
-                                  color: Colors.black12,
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Text(
-                                  '+ ${widget.msg.documents.length - 1}',
-                                  style: AppFonts.BOLD_WHITE_30,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6.0),
+                      child: buildDocuments(context, widget.msg),
                     ),
-                  const SizedBox(
-                    height: 6,
-                  ),
-                  Text(widget.msg.message,
-                      softWrap: true, style: AppFonts.REGULAR_WHITE_14),
-                  const SizedBox(
-                    height: 6,
-                  ),
+                  if (txtMsg)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: Text(widget.msg.message,
+                          softWrap: true, style: AppFonts.REGULAR_WHITE_14),
+                    ),
                   Row(
                     mainAxisSize: MainAxisSize.min,
                     mainAxisAlignment: MainAxisAlignment.end,
@@ -132,6 +94,62 @@ class _SenderContentState extends State<SenderContent> {
   }
 }
 
+Widget buildDocuments(BuildContext context, Message msg) {
+  // Return SoundPlayer if msgType == Audio
+  if (msg.msgType == MessageType.Audio) {
+    return SoundPlayerUI.fromLoader(
+      (context) async => Track(
+        trackPath: msg.documents[0],
+      ),
+      backgroundColor: AppColors.GREEN1,
+    );
+  }
+
+  // Show Images
+  return GestureDetector(
+    onTap: () {
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => ImageGallerySlider(images: msg.documents)));
+    },
+    child: Hero(
+      tag: msg.documents.first,
+      child: Stack(
+        alignment: Alignment.center,
+        children: [
+          ClipRRect(
+            clipBehavior: Clip.hardEdge,
+            borderRadius: BorderRadius.circular(10),
+            child: CachedNetworkImage(
+              imageUrl: msg.documents[0],
+              width: 200,
+              height: 200,
+              fit: BoxFit.cover,
+            ),
+          ),
+          Visibility(
+            visible: msg.documents.length > 1,
+            child: Container(
+              alignment: Alignment.center,
+              width: 200,
+              height: 200,
+              decoration: BoxDecoration(
+                color: Colors.black12,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Text(
+                '+ ${msg.documents.length - 1}',
+                style: AppFonts.BOLD_WHITE_30,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ),
+  );
+}
+
 class ReceiverContent extends StatefulWidget {
   const ReceiverContent({
     Key key,
@@ -151,6 +169,8 @@ class _ReceiverContentState extends State<ReceiverContent> {
 
   @override
   Widget build(BuildContext context) {
+    final txtMsg = widget.msg.msgType == MessageType.Text;
+
     return InkWell(
       onLongPress: () {
         setState(() {
@@ -160,6 +180,7 @@ class _ReceiverContentState extends State<ReceiverContent> {
         widget.onLongPress(_deleteMode, widget.msg.id);
       },
       child: Ink(
+        color: _deleteMode ? AppColors.GREEN1 : null,
         padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -175,24 +196,33 @@ class _ReceiverContentState extends State<ReceiverContent> {
                     bottomLeft: Radius.circular(10),
                     bottomRight: Radius.circular(10),
                   )),
-              child: Padding(
-                padding: const EdgeInsets.fromLTRB(10, 10, 10, 6),
-                child: Wrap(
-                  crossAxisAlignment: WrapCrossAlignment.end,
-                  alignment: WrapAlignment.end,
-                  spacing: 12,
-                  children: [
-                    Text(
-                      widget.msg.message,
-                      style: AppFonts.REGULAR_BLACK3_14,
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 6),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  if (widget.msg.documents.isNotEmpty)
+                    Padding(
+                      padding: const EdgeInsets.only(bottom: 6),
+                      child: buildDocuments(context, widget.msg),
                     ),
-                    Text(
-                      widget.msg.timestamp.formattedTimes,
-                      textAlign: TextAlign.end,
-                      style: AppFonts.REGULAR_WHITE2_11,
-                    )
-                  ],
-                ),
+                  Wrap(
+                    crossAxisAlignment: WrapCrossAlignment.end,
+                    alignment: WrapAlignment.end,
+                    spacing: 12,
+                    children: [
+                      if (txtMsg)
+                        Text(
+                          widget.msg.message,
+                          style: AppFonts.REGULAR_BLACK3_14,
+                        ),
+                      Text(
+                        widget.msg.timestamp.formattedTimes,
+                        textAlign: TextAlign.end,
+                        style: AppFonts.REGULAR_WHITE2_11,
+                      )
+                    ],
+                  ),
+                ],
               ),
             ),
           ],
