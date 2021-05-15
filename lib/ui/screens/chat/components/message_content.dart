@@ -3,10 +3,10 @@ import 'package:flutter_sound_lite/flutter_sound.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 
-import 'package:covidoc/utils/utils.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/ui/widgets/image_slider.dart';
+import 'package:intl/intl.dart';
 
 class SenderContent extends StatefulWidget {
   const SenderContent({
@@ -75,7 +75,7 @@ class _SenderContentState extends State<SenderContent> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(widget.msg.timestamp.formattedTimes,
+                      Text(DateFormat.jm().format(widget.msg.timestamp),
                           style: AppFonts.REGULAR_DEFAULT_12
                               .copyWith(color: AppColors.WHITE5)),
                       const SizedBox(
@@ -216,8 +216,7 @@ class _ReceiverContentState extends State<ReceiverContent> {
                           style: AppFonts.REGULAR_BLACK3_14,
                         ),
                       Text(
-                        widget.msg.timestamp.formattedTimes,
-                        textAlign: TextAlign.end,
+                        DateFormat.jm().format(widget.msg.timestamp),
                         style: AppFonts.REGULAR_WHITE2_11,
                       )
                     ],

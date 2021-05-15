@@ -125,9 +125,6 @@ Future<void> launchURL(String url) async {
 }
 
 extension DateTimeExtension on DateTime {
-  String get formattedTimes =>
-      '${hour.padInt}:${minute.padInt} ${hour > 12 ? "PM" : "AM"}';
-
   String get formattedTime => '${day.padInt} ${AppConst.MONTH[month]} $year '
       '${hour.padInt}:${minute.padInt}';
 
