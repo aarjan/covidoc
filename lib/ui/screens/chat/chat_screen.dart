@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:readmore/readmore.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/utils/const/const.dart';
@@ -43,6 +44,7 @@ class _ChatScreenState extends State<ChatScreen> {
           context.read<MessageBloc>().add(LoadMsgs(chatId: widget.chat.id));
         }
       });
+    Permission.microphone.request();
   }
 
   void onLongPress(bool onSelected, String msgId) {
