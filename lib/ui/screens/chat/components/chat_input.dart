@@ -210,6 +210,7 @@ class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
                     child: TextFormField(
                       minLines: 1,
                       maxLines: 5,
+                      autofocus: true,
                       showCursor: !canRecord,
                       controller: _controller,
                       decoration: InputDecoration(
