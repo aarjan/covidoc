@@ -68,59 +68,48 @@ class _PatChatListScreenState extends State<PatChatListScreen>
           style: AppFonts.SEMIBOLD_BLACK3_16,
         ),
       ),
-      body: BlocListener<ChatBloc, ChatState>(
-        listener: (context, state) {
-          if (state is ChatLoadSuccess && state.conversationStarted) {
-            Navigator.push(
-                context,
-                getRoute(ChatScreen(
-                    chat: state.chatWith,
-                    isFromPatient: state.userType == 'Patient')));
-          }
-        },
-        child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
-          if (state is ChatLoadSuccess) {
-            // initialize the _user
-            // _user would only be used when scrolled down
-            // i.e. _showAddBtn=true;  only when user state is loaded
-            _user = state.user;
+      body: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
+        if (state is ChatLoadSuccess) {
+          // initialize the _user
+          // _user would only be used when scrolled down
+          // i.e. _showAddBtn=true;  only when user state is loaded
+          _user = state.user;
 
-            if (state.requests.isNotEmpty) {
-              return SingleChildScrollView(
-                physics: const AlwaysScrollableScrollPhysics(),
-                controller: _scrollController,
-                child: Column(
-                  children: [
-                    AnimatedSize(
-                      vsync: this,
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeIn,
-                      child: Visibility(
-                        visible: !_showAddBtn,
-                        key: const ValueKey('addBtn'),
-                        child: Padding(
-                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                          child: AddQuestionView(
-                            onAdd: () {
-                              showBottomQuestionSheet(context, state.user);
-                            },
-                          ),
+          if (state.requests.isNotEmpty) {
+            return SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              controller: _scrollController,
+              child: Column(
+                children: [
+                  AnimatedSize(
+                    vsync: this,
+                    duration: const Duration(milliseconds: 500),
+                    curve: Curves.easeIn,
+                    child: Visibility(
+                      visible: !_showAddBtn,
+                      key: const ValueKey('addBtn'),
+                      child: Padding(
+                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                        child: AddQuestionView(
+                          onAdd: () {
+                            showBottomQuestionSheet(context, state.user);
+                          },
                         ),
                       ),
                     ),
-                    _ChatListView(state.chats, state.requests, state.userType),
-                  ],
-                ),
-              );
-            }
-            return Padding(
-              padding: const EdgeInsets.all(16),
-              child: ChatRequest(user: state.user),
+                  ),
+                  _ChatListView(state.chats, state.requests, state.userType),
+                ],
+              ),
             );
           }
-          return const Center(child: CircularProgressIndicator());
-        }),
-      ),
+          return Padding(
+            padding: const EdgeInsets.all(16),
+            child: ChatRequest(user: state.user),
+          );
+        }
+        return const Center(child: CircularProgressIndicator());
+      }),
       floatingActionButton: Visibility(
         visible: _showAddBtn,
         child: FloatingActionButton(

@@ -98,6 +98,20 @@ class MessageRepo {
     return msgs;
   }
 
+  Stream<QuerySnapshot> messageSubscription(String chatId,
+      {int lastTimestamp}) {
+    final firestore = FirebaseFirestore.instance;
+    var query = firestore
+        .collection('chat/$chatId/message')
+        .limit(10)
+        .orderBy('timestamp', descending: true);
+
+    if (lastTimestamp != null) {
+      query = query.startAfter([lastTimestamp]);
+    }
+    return query.snapshots();
+  }
+
   Future<String> sendMsgRequest({MessageRequest request}) async {
     final firestore = FirebaseFirestore.instance;
     final mRef =

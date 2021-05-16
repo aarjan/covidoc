@@ -1,11 +1,34 @@
-import 'package:covidoc/model/entity/entity.dart';
-import 'package:covidoc/model/repo/repo.dart';
+import 'dart:async';
+
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:covidoc/model/repo/repo.dart';
+import 'package:covidoc/model/entity/entity.dart';
 
 class MessageEvent extends Equatable {
   @override
   List<Object> get props => [];
+}
+
+class UpdateData extends MessageEvent {
+  final List<Message> data;
+  final String chatId;
+
+  UpdateData(this.data, this.chatId);
+
+  @override
+  List<Object> get props => [data, chatId];
+}
+
+class SubscribeMsg extends MessageEvent {
+  final String chatId;
+
+  SubscribeMsg({this.chatId});
+
+  @override
+  List<Object> get props => [chatId];
 }
 
 class LoadMsgs extends MessageEvent {
@@ -77,11 +100,25 @@ class MessageLoadSuccess extends MessageState {
 
 class MessageBloc extends Bloc<MessageEvent, MessageState> {
   final MessageRepo repo;
+  StreamSubscription<QuerySnapshot> subscription;
+
   MessageBloc({this.repo}) : super(MessageInitial());
+
+  @override
+  Future<void> close() {
+    subscription?.cancel();
+    return super.close();
+  }
 
   @override
   Stream<MessageState> mapEventToState(MessageEvent event) async* {
     switch (event.runtimeType) {
+      case SubscribeMsg:
+        yield* _mapSubscribeMsgEventToState(event);
+        break;
+      case UpdateData:
+        yield* _mapUpdateDataEventToState(event);
+        break;
       case LoadMsgs:
         yield* _mapLoadMsgsEventToState(event);
         break;
@@ -96,6 +133,31 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
         break;
       default:
     }
+  }
+
+  Stream<MessageState> _mapSubscribeMsgEventToState(SubscribeMsg event) async* {
+    // return if subscribed already
+    if (state is MessageLoadSuccess &&
+        subscription != null &&
+        (state as MessageLoadSuccess).chatId == event.chatId) {
+      return;
+    }
+
+    yield MessageLoadInProgress();
+
+    // cancel pervious subscription
+    await subscription?.cancel();
+
+    subscription = repo.messageSubscription(event.chatId).listen((msgEvent) {
+      final msgs = msgEvent.docs
+          .map((e) => Message.fromJson(e.data()).copyWith(id: e.id))
+          .toList();
+      add(UpdateData(msgs, event.chatId));
+    });
+  }
+
+  Stream<MessageState> _mapUpdateDataEventToState(UpdateData event) async* {
+    yield MessageLoadSuccess(msgs: event.data, chatId: event.chatId);
   }
 
   Stream<MessageState> _mapLoadMsgsEventToState(LoadMsgs event) async* {
@@ -131,8 +193,6 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
 
   Stream<MessageState> _mapSendMsgEventToState(SendMsg event) async* {
     if (state is MessageLoadSuccess) {
-      final curState = state as MessageLoadSuccess;
-
       yield MessageLoadInProgress();
 
       // Add images
@@ -148,11 +208,11 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
       }
       final nMsg = event.msg.copyWith(documents: documents);
 
-      final msg = await repo.sendMessage(nMsg);
-
-      final nMsgs = List<Message>.from([msg, ...curState.msgs]);
+      await repo.sendMessage(nMsg);
       await repo.updateLastMsg(event.msg.chatId, event.msg.message);
-      yield MessageLoadSuccess(msgs: nMsgs);
+
+      // final nMsgs = List<Message>.from([msg, ...curState.msgs]);
+      // yield MessageLoadSuccess(msgs: nMsgs);
     }
   }
 

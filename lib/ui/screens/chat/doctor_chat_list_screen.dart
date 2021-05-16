@@ -42,7 +42,10 @@ class _DocChatListScreenState extends State<DocChatListScreen> {
         child: BlocListener<ChatBloc, ChatState>(
           listener: (context, state) {
             if (state is ChatLoadSuccess && state.conversationStarted) {
-              context.read<MessageBloc>().add(LoadMsgs());
+              context
+                  .read<MessageBloc>()
+                  .add(SubscribeMsg(chatId: state.chatWith.id));
+
               Navigator.push(
                   context,
                   getRoute(

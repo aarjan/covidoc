@@ -22,7 +22,7 @@ class ChatItem extends StatelessWidget {
 
     return ListTile(
       onTap: () {
-        context.read<MessageBloc>().add(LoadMsgs(chatId: chat.id));
+        context.read<MessageBloc>().add(SubscribeMsg(chatId: chat.id));
         Navigator.push(context,
             getRoute(ChatScreen(chat: chat, isFromPatient: isFromPatient)));
       },
