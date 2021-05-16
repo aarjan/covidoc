@@ -26,50 +26,52 @@ class _ChatRequestState extends State<ChatRequest> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 400,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.WHITE3),
-      ),
-      padding: const EdgeInsets.all(20),
-      child: PageView(
-        pageSnapping: false,
-        controller: _controller,
-        physics: const NeverScrollableScrollPhysics(),
-        children: [
-          RequestDialog(
-            onSubmit: () {
-              _controller.animateToPage(1,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeIn);
-            },
-          ),
-          ReplyDialog(
-            onSubmit: (String msg, bool anonymous) {
-              final msgRequest = MessageRequest(
-                message: msg,
-                resolved: false,
-                postedBy: widget.user.id,
-                patDetail: {
-                  'avatar': widget.user.avatar,
-                  'age': widget.user.detail['age'],
-                  'fullname': widget.user.fullname,
-                  'gender': widget.user.detail['gender'],
-                },
-                postedAt: DateTime.now().toUtc(),
-                postedAnonymously: anonymous,
-              );
+    return SingleChildScrollView(
+      child: Container(
+        height: 400,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: AppColors.WHITE3),
+        ),
+        padding: const EdgeInsets.all(20),
+        child: PageView(
+          pageSnapping: false,
+          controller: _controller,
+          physics: const NeverScrollableScrollPhysics(),
+          children: [
+            RequestDialog(
+              onSubmit: () {
+                _controller.animateToPage(1,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeIn);
+              },
+            ),
+            ReplyDialog(
+              onSubmit: (String msg, bool anonymous) {
+                final msgRequest = MessageRequest(
+                  message: msg,
+                  resolved: false,
+                  postedBy: widget.user.id,
+                  patDetail: {
+                    'avatar': widget.user.avatar,
+                    'age': widget.user.detail['age'],
+                    'fullname': widget.user.fullname,
+                    'gender': widget.user.detail['gender'],
+                  },
+                  postedAt: DateTime.now().toUtc(),
+                  postedAnonymously: anonymous,
+                );
 
-              context.read<ChatBloc>().add(RequestChat(msgRequest));
+                context.read<ChatBloc>().add(RequestChat(msgRequest));
 
-              _controller.animateToPage(2,
-                  duration: const Duration(milliseconds: 300),
-                  curve: Curves.easeIn);
-            },
-          ),
-          const StatusDialog(),
-        ],
+                _controller.animateToPage(2,
+                    duration: const Duration(milliseconds: 300),
+                    curve: Curves.easeIn);
+              },
+            ),
+            const StatusDialog(),
+          ],
+        ),
       ),
     );
   }
@@ -123,6 +125,7 @@ class _ReplyDialogState extends State<ReplyDialog> {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(height: 20),
         Text(
