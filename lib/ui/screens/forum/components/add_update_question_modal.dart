@@ -60,9 +60,9 @@ class _AddUpdateQuestion extends StatefulWidget {
 
 class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
   String _question;
-  String _category;
   ScrollController _controller;
   final List<String> _tags = [];
+  String _category = 'Category1';
   final List<Photo> _attachedImages = [];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -293,6 +293,7 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
             title: 'Category',
             borderRadius: 10,
             verticalPadding: 15,
+            selectedCategory: _category,
             items: ['Category1', 'Category2', 'Category3'],
             onItemSelected: (String val) {
               _category = val;
