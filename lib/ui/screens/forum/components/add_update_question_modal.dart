@@ -15,7 +15,10 @@ import 'question_tags.dart';
 
 class AddUpdateQuestionModal extends StatelessWidget {
   final Forum question;
-  const AddUpdateQuestionModal({this.question});
+  final void Function(String question, List<String> tags, String category,
+      List<Photo> images) onSubmit;
+
+  const AddUpdateQuestionModal({this.question, this.onSubmit});
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +33,7 @@ class AddUpdateQuestionModal extends StatelessWidget {
           children: [
             _AddUpdateQuestion(
               question: question,
-              updateQuestion: question != null,
+              onSubmit: onSubmit,
             ),
             if (state is ForumLoadInProgress)
               const Center(
@@ -45,13 +48,11 @@ class AddUpdateQuestionModal extends StatelessWidget {
 
 class _AddUpdateQuestion extends StatefulWidget {
   final Forum question;
-  final bool updateQuestion;
+  final void Function(String question, List<String> tags, String category,
+      List<Photo> images) onSubmit;
 
-  const _AddUpdateQuestion({
-    Key key,
-    this.question,
-    this.updateQuestion,
-  }) : super(key: key);
+  const _AddUpdateQuestion({Key key, this.question, this.onSubmit})
+      : super(key: key);
 
   @override
   _AddUpdateQuestionState createState() => _AddUpdateQuestionState();
@@ -334,26 +335,8 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
                     onTap: () {
                       _formKey.currentState.save();
                       if (_formKey.currentState.validate()) {
-                        if (widget.updateQuestion) {
-                          final forum = widget.question.copyWith(
-                            tags: _tags,
-                            title: _question,
-                            category: _category,
-                          );
-                          context
-                              .read<ForumBloc>()
-                              .add(UpdateForum(forum, _attachedImages));
-                        } else {
-                          final forum = Forum(
-                            tags: _tags,
-                            title: _question,
-                            category: 'Category1',
-                          );
-
-                          context
-                              .read<ForumBloc>()
-                              .add(AddForum(forum, _attachedImages));
-                        }
+                        widget.onSubmit(
+                            _question, _tags, _category, _attachedImages);
                       }
                     },
                     title: 'Submit',

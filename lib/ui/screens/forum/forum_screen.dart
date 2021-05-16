@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/ui/screens/screens.dart';
+import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/ui/widgets/dropdown_filter.dart';
 
 import 'components/components.dart';
@@ -161,7 +162,17 @@ class _ForumScreenState extends State<ForumScreen>
           borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
         ),
         builder: (context) {
-          return const AddUpdateQuestionModal();
+          return AddUpdateQuestionModal(
+            onSubmit: (question, tags, category, images) {
+              final forum = Forum(
+                tags: tags,
+                title: question,
+                category: category,
+              );
+
+              context.read<ForumBloc>().add(AddForum(forum, images));
+            },
+          );
         });
   }
 }

@@ -152,6 +152,14 @@ class _DiscussionPopUpMenu extends StatelessWidget {
                 builder: (context) {
                   return AddUpdateQuestionModal(
                     question: question,
+                    onSubmit: (txt, tags, category, images) {
+                      final forum = question.copyWith(
+                        tags: tags,
+                        title: txt,
+                        category: category,
+                      );
+                      context.read<ForumBloc>().add(UpdateForum(forum, images));
+                    },
                   );
                 });
             break;
