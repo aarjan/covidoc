@@ -132,7 +132,6 @@ class _ChatScreenState extends State<ChatScreen> {
                           return ReceiverContent(
                             key: ValueKey(msg.id),
                             msg: msg,
-                            onLongPress: onLongPress,
                           );
                         }
                       },

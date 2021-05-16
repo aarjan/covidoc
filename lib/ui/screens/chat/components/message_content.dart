@@ -154,78 +154,64 @@ class ReceiverContent extends StatefulWidget {
   const ReceiverContent({
     Key key,
     @required this.msg,
-    @required this.onLongPress,
   }) : super(key: key);
 
   final Message msg;
-  final void Function(bool onSelected, String msgId) onLongPress;
 
   @override
   _ReceiverContentState createState() => _ReceiverContentState();
 }
 
 class _ReceiverContentState extends State<ReceiverContent> {
-  bool _deleteMode = false;
-
   @override
   Widget build(BuildContext context) {
     final txtMsg = widget.msg.msgType == MessageType.Text;
 
-    return InkWell(
-      onLongPress: () {
-        setState(() {
-          _deleteMode = !_deleteMode;
-        });
-
-        widget.onLongPress(_deleteMode, widget.msg.id);
-      },
-      child: Ink(
-        color: _deleteMode ? AppColors.GREEN1 : null,
-        padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(top: 10),
-              constraints: const BoxConstraints(maxWidth: 250),
-              decoration: const BoxDecoration(
-                  color: AppColors.WHITE4,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.zero,
-                    topRight: Radius.circular(10),
-                    bottomLeft: Radius.circular(10),
-                    bottomRight: Radius.circular(10),
-                  )),
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 6),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  if (widget.msg.documents.isNotEmpty)
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 6),
-                      child: buildDocuments(context, widget.msg),
-                    ),
-                  Wrap(
-                    crossAxisAlignment: WrapCrossAlignment.end,
-                    alignment: WrapAlignment.end,
-                    spacing: 12,
-                    children: [
-                      if (txtMsg)
-                        Text(
-                          widget.msg.message,
-                          style: AppFonts.REGULAR_BLACK3_14,
-                        ),
-                      Text(
-                        DateFormat.jm().format(widget.msg.timestamp),
-                        style: AppFonts.REGULAR_WHITE2_11,
-                      )
-                    ],
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Container(
+            margin: const EdgeInsets.only(top: 10),
+            constraints: const BoxConstraints(maxWidth: 250),
+            decoration: const BoxDecoration(
+                color: AppColors.WHITE4,
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.zero,
+                  topRight: Radius.circular(10),
+                  bottomLeft: Radius.circular(10),
+                  bottomRight: Radius.circular(10),
+                )),
+            padding: const EdgeInsets.fromLTRB(10, 10, 10, 6),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                if (widget.msg.documents.isNotEmpty)
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 6),
+                    child: buildDocuments(context, widget.msg),
                   ),
-                ],
-              ),
+                Wrap(
+                  crossAxisAlignment: WrapCrossAlignment.end,
+                  alignment: WrapAlignment.end,
+                  spacing: 12,
+                  children: [
+                    if (txtMsg)
+                      Text(
+                        widget.msg.message,
+                        style: AppFonts.REGULAR_BLACK3_14,
+                      ),
+                    Text(
+                      DateFormat.jm().format(widget.msg.timestamp),
+                      style: AppFonts.REGULAR_WHITE2_11,
+                    )
+                  ],
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
