@@ -93,6 +93,7 @@ class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
   Future _stopRecord() async {
     try {
       _timer?.cancel();
+      recordTime = 0;
       final audioPath = await _recorder.stopRecorder();
       log('stopRecord: $audioPath');
       setState(() {
@@ -268,6 +269,13 @@ class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
                         }
                       },
                       onTapDown: (d) async {
+                        // Return early if
+                        // textController has text or images are loaded
+                        if (_controller.value.text.isNotEmpty ||
+                            _attachedImages.isNotEmpty) {
+                          return;
+                        }
+
                         log('tap down: start the recording');
                         // start record
                         canRecord = true;
@@ -335,6 +343,8 @@ class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
                             ? const EdgeInsets.all(20)
                             : const EdgeInsets.all(10),
                         child: Icon(
+                          // send -> !record && !showCamera && !images.notEmpty
+                          // mic -> record == true
                           canRecord || !showCamera || _attachedImages.isNotEmpty
                               ? Icons.send_rounded
                               : Icons.mic_rounded,
