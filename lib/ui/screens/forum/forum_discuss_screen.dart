@@ -14,7 +14,8 @@ import 'components/components.dart';
 class ForumDiscussScreen extends StatefulWidget {
   static const ROUTE_NAME = '/forum/discuss';
 
-  const ForumDiscussScreen();
+  final bool isAuthenticated;
+  const ForumDiscussScreen({this.isAuthenticated = false});
 
   @override
   _ForumDiscussScreenState createState() => _ForumDiscussScreenState();
@@ -66,7 +67,11 @@ class _ForumDiscussScreenState extends State<ForumDiscussScreen> {
           return Stack(
             children: [
               if (_question != null)
-                ForumDiscussView(question: _question, answers: _answers),
+                ForumDiscussView(
+                  question: _question,
+                  answers: _answers,
+                  isAuthenticated: widget.isAuthenticated,
+                ),
               if (state is AnswerLoadInProgress)
                 const Center(child: CircularProgressIndicator())
             ],
@@ -82,9 +87,11 @@ class ForumDiscussView extends StatelessWidget {
     Key key,
     @required this.question,
     @required this.answers,
+    @required this.isAuthenticated,
   }) : super(key: key);
 
   final Forum question;
+  final bool isAuthenticated;
   final List<Answer> answers;
 
   @override
@@ -204,6 +211,10 @@ class ForumDiscussView extends StatelessWidget {
         ),
         AddAnswerField(
           onSend: (str, photos) {
+            if (!isAuthenticated) {
+              return showLoginDialog(context);
+            }
+
             final answer = Answer(
               title: str,
               questionId: question.id,

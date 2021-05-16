@@ -136,6 +136,12 @@ class _DiscussionPopUpMenu extends StatelessWidget {
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
       onSelected: (str) {
+        final isAuthenticated = context.read<AuthBloc>().state is Authenticated;
+
+        if (!isAuthenticated) {
+          return showLoginDialog(context);
+        }
+
         switch (str) {
           case 'delete':
             context.read<ForumBloc>().add(DeleteForum(question.id));

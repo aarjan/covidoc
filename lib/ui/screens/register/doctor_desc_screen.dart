@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:covidoc/ui/router.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/ui/screens/screens.dart';
 import 'package:covidoc/ui/widgets/widgets.dart';
@@ -26,7 +27,8 @@ class DoctorDescScreen extends StatelessWidget {
       body: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
           if (state is UserLoadSuccess && state.userUpdated) {
-            Navigator.pushReplacementNamed(context, HomeScreen.ROUTE_NAME);
+            Navigator.pushReplacement(
+                context, getRoute(const HomeScreen(isAuthenticated: true)));
           }
         },
         child: DocDescription(),

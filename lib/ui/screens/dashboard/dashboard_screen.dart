@@ -1,34 +1,32 @@
-import 'package:covidoc/bloc/bloc.dart';
-import 'package:covidoc/bloc/blog/blog.dart';
-import 'package:covidoc/model/entity/entity.dart';
-import 'package:covidoc/ui/screens/dashboard/shimmer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/utils/utils.dart';
+import 'package:covidoc/bloc/blog/blog.dart';
 import 'package:covidoc/utils/const/const.dart';
+import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/ui/screens/screens.dart';
 
 class DashboardScreen extends StatelessWidget {
   static const ROUTE_NAME = '/dashboard';
+  final AppUser user;
 
-  const DashboardScreen();
+  const DashboardScreen({this.user});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
-          if (state is UserLoadSuccess) {
-            return ListView(
-              padding: EdgeInsets.zero,
-              children: [
-                UpperHalf(user: state.user),
-                const LowerHalf(),
-              ],
-            );
-          }
-          return const DashboardShimmer();
+          return ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              UpperHalf(user: user),
+              const LowerHalf(),
+            ],
+          );
         },
       ),
     );
@@ -45,6 +43,8 @@ class UpperHalf extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final greetTxt = user == null ? 'Hey!' : 'Hey! \n${user.fullname}';
+
     return Container(
       color: AppColors.DEFAULT,
       height: screenHeight(context) / 2,
@@ -58,7 +58,7 @@ class UpperHalf extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Hey! \n${user.fullname}',
+                  greetTxt,
                   style: AppFonts.MEDIUM_WHITE_24,
                 ),
                 const SizedBox(height: 10),
@@ -125,7 +125,7 @@ class LowerHalf extends StatelessWidget {
           Flexible(
             child: CardsView(
               onTap: () {
-                context.toast('Ask a doctor');
+                Navigator.pushNamed(context, PatChatListScreen.ROUTE_NAME);
               },
               title: 'Ask a Doctor',
               color: AppColors.PINK,

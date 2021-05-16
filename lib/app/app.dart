@@ -1,4 +1,3 @@
-import 'package:covidoc/model/repo/blog_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,6 +32,14 @@ class App extends StatelessWidget {
             backgroundColor: AppColors.DEFAULT,
           ),
         ),
+        elevatedButtonTheme: ElevatedButtonThemeData(
+          style: TextButton.styleFrom(
+            primary: Colors.white,
+            textStyle: AppFonts.SEMIBOLD_WHITE_16,
+            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+            backgroundColor: AppColors.DEFAULT,
+          ),
+        ),
         appBarTheme: const AppBarTheme(
           elevation: 1,
           color: AppColors.WHITE,
@@ -46,11 +53,15 @@ class App extends StatelessWidget {
           switch (state.runtimeType) {
             case Authenticated:
               return (state as Authenticated).profileVerification
-                  ? const HomeScreen()
+                  ? const HomeScreen(
+                      isAuthenticated: true,
+                    )
                   : const RegisterScreen();
               break;
             case UnAuthenticated:
-              return const SignInScreen();
+              return const HomeScreen(
+                isAuthenticated: false,
+              );
               break;
             default:
               return const SplashScreen();

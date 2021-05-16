@@ -8,9 +8,10 @@ import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/model/entity/app_user.dart';
 
 class HomeScreen extends StatelessWidget {
+  final bool isAuthenticated;
   static const ROUTE_NAME = '/home';
 
-  const HomeScreen();
+  const HomeScreen({this.isAuthenticated = false});
 
   @override
   Widget build(BuildContext context) {
@@ -27,18 +28,28 @@ class HomeScreen extends StatelessWidget {
             body: Builder(builder: (context) {
               switch (state) {
                 case TabState.DASHBOARD:
-                  return const DashboardScreen();
+                  return DashboardScreen(
+                    user: user,
+                  );
                   break;
                 case TabState.CHAT:
-                  return user.type == describeEnum(UserType.Doctor)
-                      ? const DocChatListScreen()
-                      : const PatChatListScreen();
+                  return user == null ||
+                          user.type == describeEnum(UserType.Patient)
+                      ? PatChatListScreen(
+                          isAuthenticated: isAuthenticated,
+                        )
+                      : const DocChatListScreen();
+
                   break;
                 case TabState.FORUM:
-                  return const ForumScreen();
+                  return ForumScreen(
+                    isAuthenticated: isAuthenticated,
+                  );
                   break;
                 case TabState.PROFILE:
-                  return const ProfileScreen();
+                  return ProfileScreen(
+                    isAuthenticated: isAuthenticated,
+                  );
                   break;
                 default:
                   throw UnimplementedError();

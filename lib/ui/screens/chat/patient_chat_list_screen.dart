@@ -1,22 +1,20 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:covidoc/ui/screens/screens.dart';
 
 import 'package:covidoc/bloc/bloc.dart';
-import 'package:covidoc/ui/router.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/ui/screens/forum/components/add_question.dart';
 
-import 'chat_screen.dart';
 import 'components/components.dart';
 
 class PatChatListScreen extends StatefulWidget {
+  final bool isAuthenticated;
   static const ROUTE_NAME = '/chat/list';
 
-  const PatChatListScreen();
+  const PatChatListScreen({this.isAuthenticated});
 
   @override
   _PatChatListScreenState createState() => _PatChatListScreenState();
@@ -33,7 +31,8 @@ class _PatChatListScreenState extends State<PatChatListScreen>
     super.initState();
 
     // load chats
-    context.read<ChatBloc>().add(LoadPatientChats());
+    if (widget.isAuthenticated)
+      context.read<ChatBloc>().add(LoadPatientChats());
 
     _showAddBtn = false;
     _scrollController = ScrollController();
@@ -69,6 +68,12 @@ class _PatChatListScreenState extends State<PatChatListScreen>
         ),
       ),
       body: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
+        if (!widget.isAuthenticated)
+          return const Padding(
+            padding: EdgeInsets.all(16),
+            child: ChatRequest(user: null),
+          );
+
         if (state is ChatLoadSuccess) {
           // initialize the _user
           // _user would only be used when scrolled down

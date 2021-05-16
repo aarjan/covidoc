@@ -1,3 +1,5 @@
+import 'package:covidoc/ui/screens/sign_in/sign_in_screen.dart';
+import 'package:covidoc/utils/const/const.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -149,4 +151,37 @@ String getCovidStatus(int status) {
       : status == 1
           ? 'Negative'
           : 'Not Tested';
+}
+
+Future showLoginDialog(BuildContext context) {
+  return showDialog(
+    context: context,
+    builder: (context) => AlertDialog(
+      title: const Text('Sign in to continue'),
+      actions: [
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: Text(
+            'Cancel',
+            style: AppFonts.REGULAR_WHITE_16,
+          ),
+        ),
+        ElevatedButton(
+          onPressed: () {
+            Navigator.pushNamed(
+              context,
+              SignInScreen.ROUTE_NAME,
+              arguments: {false},
+            );
+          },
+          child: Text(
+            'Ok',
+            style: AppFonts.REGULAR_WHITE_16,
+          ),
+        ),
+      ],
+    ),
+  );
 }

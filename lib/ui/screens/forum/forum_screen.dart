@@ -3,6 +3,7 @@ import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:covidoc/bloc/bloc.dart';
+import 'package:covidoc/utils/utils.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/ui/screens/screens.dart';
 import 'package:covidoc/model/entity/entity.dart';
@@ -13,7 +14,9 @@ import 'components/components.dart';
 class ForumScreen extends StatefulWidget {
   static const ROUTE_NAME = '/forum';
 
-  const ForumScreen();
+  final bool isAuthenticated;
+
+  const ForumScreen({this.isAuthenticated = false});
 
   @override
   _ForumScreenState createState() => _ForumScreenState();
@@ -78,7 +81,7 @@ class _ForumScreenState extends State<ForumScreen>
                       visible: !_showAddBtn,
                       child: AddQuestionView(
                         onAdd: () {
-                          showAddQuestionModal(context);
+                          showAddQuestionModal(context, widget.isAuthenticated);
                         },
                       ),
                     ),
@@ -144,7 +147,7 @@ class _ForumScreenState extends State<ForumScreen>
         visible: _showAddBtn,
         child: FloatingActionButton(
           onPressed: () async {
-            return showAddQuestionModal(context);
+            return showAddQuestionModal(context, widget.isAuthenticated);
           },
           child: const Icon(Icons.add, color: Colors.white),
         ),
@@ -152,7 +155,8 @@ class _ForumScreenState extends State<ForumScreen>
     );
   }
 
-  Future<void> showAddQuestionModal(BuildContext context) {
+  Future<void> showAddQuestionModal(
+      BuildContext context, bool isAuthenticated) {
     return showModalBottomSheet(
         context: context,
         isScrollControlled: true,
@@ -164,6 +168,10 @@ class _ForumScreenState extends State<ForumScreen>
         builder: (context) {
           return AddUpdateQuestionModal(
             onSubmit: (question, tags, category, images) {
+              if (!isAuthenticated) {
+                return showLoginDialog(context);
+              }
+
               final forum = Forum(
                 tags: tags,
                 title: question,

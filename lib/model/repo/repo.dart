@@ -1,4 +1,5 @@
 export 'auth_repo.dart';
+export 'blog_repo.dart';
 export 'forum_repo.dart';
 export 'home_repo.dart';
 export 'message_repo.dart';

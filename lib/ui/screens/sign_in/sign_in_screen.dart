@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 import 'package:covidoc/bloc/bloc.dart';
+import 'package:covidoc/ui/router.dart';
 import 'package:covidoc/ui/screens/screens.dart';
 
 class SignInScreen extends StatelessWidget {
@@ -22,7 +23,8 @@ class SignInScreen extends StatelessWidget {
           }
           if (state is SignInSuccess) {
             if (state.profileVerification) {
-              Navigator.pushReplacementNamed(context, HomeScreen.ROUTE_NAME);
+              Navigator.pushReplacement(
+                  context, getRoute(const HomeScreen(isAuthenticated: true)));
             } else
               Navigator.pushReplacementNamed(
                   context, RegisterScreen.ROUTE_NAME);

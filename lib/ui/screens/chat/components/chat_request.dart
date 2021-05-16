@@ -2,13 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
 import 'package:covidoc/bloc/bloc.dart';
+import 'package:covidoc/utils/utils.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/model/entity/entity.dart';
 
 class ChatRequest extends StatefulWidget {
-  const ChatRequest({@required this.user}) : assert(user != null);
+  const ChatRequest({@required this.user});
   final AppUser user;
 
   @override
@@ -40,8 +41,13 @@ class _ChatRequestState extends State<ChatRequest> {
           physics: const NeverScrollableScrollPhysics(),
           children: [
             RequestDialog(
-              onSubmit: () {
-                _controller.animateToPage(1,
+              onSubmit: () async {
+                // show signIn dialog
+                if (widget.user == null) {
+                  return showLoginDialog(context);
+                }
+
+                await _controller.animateToPage(1,
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeIn);
               },
