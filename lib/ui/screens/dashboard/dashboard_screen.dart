@@ -119,26 +119,31 @@ class LowerHalf extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 30),
       child: Row(
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          CardsView(
-            onTap: () {
-              context.toast('Ask a doctor');
-            },
-            title: 'Ask a Doctor',
-            color: AppColors.PINK,
-            image: 'assets/dashboard/doctor_ask.svg',
+          Flexible(
+            child: CardsView(
+              onTap: () {
+                context.toast('Ask a doctor');
+              },
+              title: 'Ask a Doctor',
+              color: AppColors.PINK,
+              image: 'assets/dashboard/doctor_ask.svg',
+            ),
           ),
           const SizedBox(width: 18),
-          CardsView(
-            onTap: () {
-              context.read<BlogBloc>().add(const LoadFeaturedBlog());
-              Navigator.pushNamed(context, BlogScreen.ROUTE_NAME);
-              context.toast('Covid guidelines');
-            },
-            title: 'Covid Guidelines',
-            color: AppColors.PURUPLE,
-            image: 'assets/dashboard/covid_guidelines.svg',
+          Flexible(
+            child: CardsView(
+              onTap: () {
+                context.read<BlogBloc>().add(const LoadFeaturedBlog());
+                Navigator.pushNamed(context, BlogScreen.ROUTE_NAME);
+                context.toast('Covid guidelines');
+              },
+              title: 'Covid Guidelines',
+              color: AppColors.PURUPLE,
+              image: 'assets/dashboard/covid_guidelines.svg',
+            ),
           )
         ],
       ),
@@ -162,7 +167,6 @@ class CardsView extends StatelessWidget {
       borderRadius: BorderRadius.circular(10),
       child: Ink(
         height: 225,
-        width: 165,
         decoration: BoxDecoration(
           color: color,
           borderRadius: BorderRadius.circular(10),
