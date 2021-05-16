@@ -82,6 +82,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }
         },
         builder: (context, state) {
+          if (state is UserLoadSuccess) {
+            init(state.user);
+          }
+
           if (_user == null) {
             if (widget.isAuthenticated)
               return const Center(child: CircularProgressIndicator());
@@ -99,9 +103,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               );
           }
 
-          if (state is UserLoadSuccess) {
-            init(state.user);
-          }
           return Stack(
             children: [
               CustomScrollView(
