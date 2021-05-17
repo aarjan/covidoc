@@ -10,15 +10,21 @@ class ForumRepo {
 
   ForumRepo(this.sessionRepo);
 
-  Future<List<Forum>> getForums({String? category}) async {
+  Future<List<Forum>> getForums({String? category, int? createdAt}) async {
     final firestore = FirebaseFirestore.instance;
-    var query = firestore.collection('forum').limit(20);
+    var query = firestore.collection('forum').limit(10);
 
     if (category != null && category != 'All') {
       query = query.where('category', isEqualTo: category);
     }
+    query = query.orderBy('createdAt', descending: true);
 
-    final fRef = await query.orderBy('createdAt', descending: true).get();
+    // paginate
+    if (createdAt != null) {
+      query = query.startAfter([createdAt]);
+    }
+
+    final fRef = await query.get();
 
     if (fRef.docs.isNotEmpty) {
       return fRef.docs

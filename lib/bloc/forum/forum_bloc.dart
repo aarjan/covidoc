@@ -17,11 +17,12 @@ class ForumState extends Equatable {
 
 class LoadForum extends ForumEvent {
   final String? category;
+  final bool hardRefresh;
 
-  LoadForum({this.category});
+  LoadForum({this.category, this.hardRefresh = false});
 
   @override
-  List<Object?> get props => [category];
+  List<Object?> get props => [category, hardRefresh];
 }
 
 class AddImages extends ForumEvent {
@@ -62,21 +63,30 @@ class ForumInitial extends ForumState {}
 class ForumLoadInProgress extends ForumState {}
 
 class ForumLoadSuccess extends ForumState {
-  final List<Forum>? forums;
+  final bool hasReachedEnd;
+  final List<Forum> forums;
   final List<String>? categories;
   final List<String>? uploadedImgUrls;
 
-  ForumLoadSuccess({this.forums, this.categories, this.uploadedImgUrls});
+  ForumLoadSuccess({
+    this.categories,
+    this.uploadedImgUrls,
+    required this.forums,
+    this.hasReachedEnd = false,
+  });
 
   @override
-  List<Object?> get props => [forums, categories, uploadedImgUrls];
+  List<Object?> get props =>
+      [forums, categories, uploadedImgUrls, hasReachedEnd];
 
   ForumLoadSuccess copyWith({
     List<Forum>? forums,
+    bool? hasReachedEnd,
     List<String>? categories,
     List<String>? uploadedImgUrls,
   }) {
     return ForumLoadSuccess(
+      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
       forums: forums ?? this.forums,
       categories: categories ?? this.categories,
       uploadedImgUrls: uploadedImgUrls ?? this.uploadedImgUrls,
@@ -133,9 +143,37 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
   }
 
   Stream<ForumState> _mapLoadForumEventToState(LoadForum event) async* {
+    // default categories; [TODO]: Add dynamic categories
+    final categories = ['Category1', 'Category2', 'Category3'];
+
+    if (state is ForumLoadSuccess) {
+      final curState = state as ForumLoadSuccess;
+
+      if (curState.hasReachedEnd) {
+        return;
+      }
+
+      if (!event.hardRefresh) {
+        return;
+      }
+
+      yield ForumLoadInProgress();
+
+      final forums = await repo.getForums(
+          category: event.category,
+          createdAt: curState.forums.last.createdAt!.millisecondsSinceEpoch);
+
+      final nForums = List<Forum>.from([...curState.forums, ...forums]);
+
+      yield curState.copyWith(
+        forums: nForums,
+        hasReachedEnd: forums.isEmpty,
+      );
+      return;
+    }
+
     yield ForumLoadInProgress();
     final forums = await repo.getForums(category: event.category);
-    final categories = ['Category1', 'Category2', 'Category3'];
     yield ForumLoadSuccess(forums: forums, categories: categories);
   }
 
@@ -164,7 +202,7 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
 
       final forum = await repo.addForum(nForum);
 
-      final nForums = List<Forum>.from([forum, ...curState.forums!]);
+      final nForums = List<Forum>.from([forum, ...curState.forums]);
 
       yield curState.copyWith(forums: nForums);
     }
@@ -194,7 +232,7 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
       await repo.updateForum(nForum);
 
       yield curState.copyWith(
-          forums: curState.forums!
+          forums: curState.forums
               .map((f) => f.id == event.forum.id ? nForum : f)
               .toList());
     }
@@ -208,8 +246,7 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
       await repo.delQuestion(event.forumId);
 
       yield curState.copyWith(
-          forums:
-              curState.forums!.where((f) => f.id != event.forumId).toList());
+          forums: curState.forums.where((f) => f.id != event.forumId).toList());
     }
   }
 }

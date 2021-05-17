@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:covidoc/ui/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,8 +28,9 @@ class ForumScreen extends StatefulWidget {
 class _ForumScreenState extends State<ForumScreen>
     with TickerProviderStateMixin {
   late bool _showAddBtn;
+  bool _isLoading = false;
   String _category = 'All';
-  ScrollController? _scrollController;
+  late ScrollController _scrollController;
   final _categories = ['All', 'Category1', 'Category2', 'Category3'];
 
   @override
@@ -34,18 +38,27 @@ class _ForumScreenState extends State<ForumScreen>
     super.initState();
     _showAddBtn = false;
     _scrollController = ScrollController();
-    _scrollController!.addListener(() {
-      if (_scrollController!.position.userScrollDirection ==
-          ScrollDirection.reverse) {
+    _scrollController.addListener(() {
+      if (_scrollController.position.userScrollDirection ==
+              ScrollDirection.reverse &&
+          !_showAddBtn) {
         setState(() {
           _showAddBtn = true;
         });
       }
-      if (_scrollController!.position.userScrollDirection ==
-          ScrollDirection.forward) {
+      if (_scrollController.position.userScrollDirection ==
+              ScrollDirection.forward &&
+          _showAddBtn) {
         setState(() {
           _showAddBtn = false;
         });
+      }
+
+      // Fetch more items when reached the bottom of screen
+      final maxExtent = _scrollController.position.maxScrollExtent * 0.9;
+      if (_scrollController.position.pixels > maxExtent && !_isLoading) {
+        // context.read<ForumBloc>().add(LoadForum(hardRefresh: true));
+        log('exceed!');
       }
     });
 
@@ -57,88 +70,104 @@ class _ForumScreenState extends State<ForumScreen>
     return Scaffold(
       appBar: AppBar(
         title: Text('Discuss', style: AppFonts.SEMIBOLD_BLACK3_16),
-        actions: [
-          IconButton(icon: const Icon(Icons.search), onPressed: () {}),
-        ],
       ),
       body: BlocBuilder<ForumBloc, ForumState>(builder: (context, state) {
         if (state is ForumLoadSuccess) {
-          return SingleChildScrollView(
-              controller: _scrollController,
-              padding: const EdgeInsets.symmetric(horizontal: 20),
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  AnimatedSize(
-                    vsync: this,
-                    curve: Curves.easeIn,
-                    duration: const Duration(milliseconds: 400),
-                    child: Visibility(
-                      visible: !_showAddBtn,
-                      child: AddQuestionView(
-                        onAdd: () {
-                          showAddQuestionModal(context, widget.isAuthenticated);
-                        },
-                      ),
+          return RefreshIndicator(
+            onRefresh: () async {
+              context.read<ForumBloc>().add(LoadForum(hardRefresh: true));
+            },
+            child: SingleChildScrollView(
+                controller: _scrollController,
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                physics: const AlwaysScrollableScrollPhysics(
+                  parent: BouncingScrollPhysics(),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(
+                      height: 20,
                     ),
-                  ),
-                  const SizedBox(
-                    height: 20,
-                  ),
-                  Row(
-                    children: [
-                      Flexible(
-                        child: DropdownFilter(
-                          title: 'Category',
-                          fillColor: AppColors.WHITE4,
-                          items: _categories,
-                          selectedCategory: _category,
-                          onItemSelected: (val) {
-                            _category = val;
-                            setState(() {});
-                            context
-                                .read<ForumBloc>()
-                                .add(LoadForum(category: val));
+                    AnimatedSize(
+                      vsync: this,
+                      curve: Curves.easeIn,
+                      duration: const Duration(milliseconds: 400),
+                      child: Visibility(
+                        visible: !_showAddBtn,
+                        child: AddQuestionView(
+                          onAdd: () {
+                            showAddQuestionModal(
+                                context, widget.isAuthenticated);
                           },
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Flexible(
-                        child: DropdownFilter(
-                          title: 'Sort',
-                          fillColor: AppColors.WHITE4,
-                          items: ['Sort1', 'Sort2', 'Sort3'],
-                          onItemSelected: (val) {},
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Row(
+                      children: [
+                        Flexible(
+                          child: DropdownFilter(
+                            title: 'Category',
+                            fillColor: AppColors.WHITE4,
+                            items: _categories,
+                            selectedCategory: _category,
+                            onItemSelected: (val) {
+                              _category = val;
+                              setState(() {});
+                              context
+                                  .read<ForumBloc>()
+                                  .add(LoadForum(category: val));
+                            },
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                  ListView.builder(
-                    itemCount: state.forums!.length,
-                    shrinkWrap: true,
-                    padding: EdgeInsets.zero,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return QuestionItem(
-                        question: state.forums![index],
-                        onTap: () {
-                          context
-                              .read<AnswerBloc>()
-                              .add(LoadAnswers(state.forums![index]));
+                        const SizedBox(width: 10),
+                        Flexible(
+                          child: DropdownFilter(
+                            title: 'Sort',
+                            fillColor: AppColors.WHITE4,
+                            items: ['Sort1', 'Sort2', 'Sort3'],
+                            onItemSelected: (val) {},
+                          ),
+                        ),
+                      ],
+                    ),
+                    ListView.builder(
+                      itemCount: state.forums.length,
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemBuilder: (context, index) {
+                        // if (index + 1 == state.forums.length &&
+                        //     !state.hasReachedEnd) {
+                        //   context
+                        //       .read<ForumBloc>()
+                        //       .add(LoadForum(hardRefresh: true));
+                        // }
 
-                          Navigator.pushNamed(
-                              context, ForumDiscussScreen.ROUTE_NAME);
-                        },
-                      );
-                    },
-                  ),
-                ],
-              ));
+                        return QuestionItem(
+                          question: state.forums[index],
+                          onTap: () {
+                            context
+                                .read<AnswerBloc>()
+                                .add(LoadAnswers(state.forums[index]));
+
+                            Navigator.push(
+                                context,
+                                getRoute(ForumDiscussScreen(
+                                  isAuthenticated: widget.isAuthenticated,
+                                )));
+                          },
+                        );
+                      },
+                    ),
+                  ],
+                )),
+          );
         }
+
         return const Center(
           child: CircularProgressIndicator(),
         );
