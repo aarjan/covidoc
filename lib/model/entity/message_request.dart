@@ -8,12 +8,12 @@ part 'message_request.g.dart';
 @DateTimeConverter()
 class MessageRequest extends Equatable {
   final String? id;
-  final String? message;
+  final String message;
+  final String postedBy;
   final DateTime? postedAt;
-  final String? postedBy;
   final String? resolvedBy;
+  final Map<String, dynamic> patDetail;
   final Map<String, dynamic>? docDetail;
-  final Map<String, dynamic>? patDetail;
 
   @JsonKey(defaultValue: false)
   final bool resolved;
@@ -22,13 +22,13 @@ class MessageRequest extends Equatable {
 
   MessageRequest({
     this.id,
-    this.message,
-    this.postedAt,
-    this.postedBy,
-    this.patDetail,
     this.docDetail,
     this.resolvedBy,
+    this.postedAt,
     this.resolved = false,
+    required this.message,
+    required this.postedBy,
+    required this.patDetail,
     this.postedAnonymously = false,
   });
 

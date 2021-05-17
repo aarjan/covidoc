@@ -138,8 +138,8 @@ class _ChatListView extends StatelessWidget {
                         patId: request.postedBy,
                         consultReqMessage: request.message,
                         lastTimestamp: DateTime.now().toUtc(),
-                        patName: request.patDetail!['fullname'],
-                        patAvatar: request.patDetail!['avatar'],
+                        patName: request.patDetail['fullname'],
+                        patAvatar: request.patDetail['avatar'],
                       )),
                     );
                 // remove the current requests from the list

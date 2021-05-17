@@ -115,6 +115,19 @@ class MessageRepo {
     return mRef.id;
   }
 
+  Future<void> updateMsgRequest({required MessageRequest request}) async {
+    final firestore = FirebaseFirestore.instance;
+    await firestore.doc('messageRequest/${request.id}').update({
+      'message': request.message,
+      'postedAnonymously': request.postedAnonymously,
+    });
+  }
+
+  Future<void> delMsgRequest({required String id}) async {
+    final firestore = FirebaseFirestore.instance;
+    await firestore.doc('messageRequest/$id').delete();
+  }
+
   Future<void> resolveMsgRequest(
       {String? requestId,
       String? docId,

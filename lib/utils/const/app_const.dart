@@ -22,6 +22,7 @@ class AppConst {
       'Your message should be atleast 50 chars long';
 
   static const String POST_ANONYMOUS_TXT = 'Post as anonymous';
+  static const String REQUEST_UPDATE_BTN_TXT = 'UPDATE MESSAGE';
   static const String REQUEST_SEND_BTN_TXT = 'SEND MESSAGE';
   static const String REQUEST_CONSULT_BTN_TXT = 'CONSULT WITH A DOCTOR';
   static const String REQUEST_DONE_BTN_TXT = 'DONE';

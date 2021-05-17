@@ -16,6 +16,22 @@ class LoadDoctorChats extends ChatEvent {}
 
 class LoadChatRequests extends ChatEvent {}
 
+class UpdateMsgRequest extends ChatEvent {
+  final MessageRequest request;
+  UpdateMsgRequest(this.request);
+
+  @override
+  List<Object> get props => [request];
+}
+
+class DelMsgRequest extends ChatEvent {
+  final String id;
+  DelMsgRequest(this.id);
+
+  @override
+  List<Object> get props => [id];
+}
+
 class RequestChat extends ChatEvent {
   final MessageRequest request;
 
@@ -107,6 +123,12 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       case RequestChat:
         yield* _mapRequestChatEventToState(event as RequestChat);
         break;
+      case UpdateMsgRequest:
+        yield* _mapUpdateMsgRequestEventToState(event as UpdateMsgRequest);
+        break;
+      case DelMsgRequest:
+        yield* _mapDelMsgRequestEventToState(event as DelMsgRequest);
+        break;
       case LoadPatientChats:
         yield* _mapLoadPatientChatsEventToState(event as LoadPatientChats);
         break;
@@ -172,6 +194,37 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
       userType: user?.type,
       requests: requests,
     );
+  }
+
+  Stream<ChatState> _mapUpdateMsgRequestEventToState(
+      UpdateMsgRequest event) async* {
+    if (state is ChatLoadSuccess) {
+      final curState = state as ChatLoadSuccess;
+      yield ChatLoadInProgress();
+
+      await repo.updateMsgRequest(request: event.request);
+
+      yield curState.copyWith(
+        requestSent: true,
+        requests: curState.requests
+            .map((e) => e.id == event.request.id ? event.request : e)
+            .toList(),
+      );
+    }
+  }
+
+  Stream<ChatState> _mapDelMsgRequestEventToState(DelMsgRequest event) async* {
+    if (state is ChatLoadSuccess) {
+      final curState = state as ChatLoadSuccess;
+      yield ChatLoadInProgress();
+
+      await repo.delMsgRequest(id: event.id);
+
+      yield curState.copyWith(
+        requestSent: true,
+        requests: curState.requests.where((e) => e.id != event.id).toList(),
+      );
+    }
   }
 
   Stream<ChatState> _mapRequestChatEventToState(RequestChat event) async* {

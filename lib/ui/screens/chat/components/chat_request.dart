@@ -57,7 +57,7 @@ class _ChatRequestState extends State<ChatRequest> {
                 final msgRequest = MessageRequest(
                   message: msg,
                   resolved: false,
-                  postedBy: widget.user!.id,
+                  postedBy: widget.user!.id ?? '',
                   patDetail: {
                     'avatar': widget.user!.avatar,
                     'age': widget.user!.detail!['age'],
@@ -114,7 +114,17 @@ class RequestDialog extends StatelessWidget {
 }
 
 class ReplyDialog extends StatefulWidget {
-  const ReplyDialog({Key? key, required this.onSubmit}) : super(key: key);
+  const ReplyDialog({
+    Key? key,
+    this.msg = '',
+    required this.onSubmit,
+    this.updateMode = false,
+    this.postAnonymous = false,
+  }) : super(key: key);
+
+  final String msg;
+  final bool updateMode;
+  final bool postAnonymous;
   final void Function(String msg, bool anonymous) onSubmit;
 
   @override
@@ -122,20 +132,29 @@ class ReplyDialog extends StatefulWidget {
 }
 
 class _ReplyDialogState extends State<ReplyDialog> {
-  String _msg = '';
-  bool _postAnonymous = false;
+  late String _msg;
+  late bool _postAnonymous;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
+  void initState() {
+    super.initState();
+    _msg = widget.msg;
+    _postAnonymous = widget.postAnonymous;
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final mainTxt = widget.updateMode ? 'Update your query' : 'Ask your query';
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
         const SizedBox(height: 20),
         Text(
-          'Ask your query',
+          mainTxt,
           style: AppFonts.SEMIBOLD_BLACK3_16,
         ),
         const SizedBox(height: 20),
@@ -144,6 +163,7 @@ class _ReplyDialogState extends State<ReplyDialog> {
           child: FormInput(
             minLines: 6,
             maxLines: 6,
+            initialValue: _msg,
             onSave: (val) => _msg = val!.trim(),
             onValidate: (val) =>
                 val!.trim().length < 100 ? AppConst.MSG_ERROR : null,
@@ -172,7 +192,9 @@ class _ReplyDialogState extends State<ReplyDialog> {
         ),
         const Spacer(),
         MsgBtn(
-          title: AppConst.REQUEST_SEND_BTN_TXT,
+          title: widget.updateMode
+              ? AppConst.REQUEST_UPDATE_BTN_TXT
+              : AppConst.REQUEST_SEND_BTN_TXT,
           onTap: () {
             _formKey.currentState!.save();
             FocusScope.of(context).unfocus();
