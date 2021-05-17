@@ -85,7 +85,7 @@ class UpperHalf extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               child: InkWell(
                 onTap: () {
-                  context.toast('Ask');
+                  context.read<TabBloc>().add(const OnTabChanged(2));
                 },
                 child: Ink(
                   decoration: BoxDecoration(
@@ -125,7 +125,7 @@ class LowerHalf extends StatelessWidget {
           Flexible(
             child: CardsView(
               onTap: () {
-                Navigator.pushNamed(context, PatChatListScreen.ROUTE_NAME);
+                context.read<TabBloc>().add(const OnTabChanged(1));
               },
               title: 'Ask a Doctor',
               color: AppColors.PINK,
@@ -138,7 +138,6 @@ class LowerHalf extends StatelessWidget {
               onTap: () {
                 context.read<BlogBloc>().add(const LoadFeaturedBlog());
                 Navigator.pushNamed(context, BlogScreen.ROUTE_NAME);
-                context.toast('Covid guidelines');
               },
               title: 'Covid Guidelines',
               color: AppColors.PURUPLE,
