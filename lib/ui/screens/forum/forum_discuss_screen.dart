@@ -47,12 +47,6 @@ class _ForumDiscussScreenState extends State<ForumDiscussScreen> {
             Navigator.of(context).pop();
           },
         ),
-        actions: [
-          const Icon(
-            Icons.more_vert,
-            color: Colors.black,
-          )
-        ],
       ),
       body: BlocConsumer<AnswerBloc, AnswerState>(
         listener: (context, state) {
@@ -172,6 +166,7 @@ class ForumDiscussView extends StatelessWidget {
                           borderRadius: BorderRadius.circular(5),
                           color: AppColors.WHITE5,
                         ),
+                        margin: const EdgeInsets.only(right: 10),
                         child: Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: Text(

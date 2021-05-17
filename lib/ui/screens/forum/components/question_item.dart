@@ -33,6 +33,7 @@ class QuestionItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Expanded(
                   child: ReadMoreText(
@@ -42,8 +43,8 @@ class QuestionItem extends StatelessWidget {
                     trimMode: TrimMode.Line,
                     trimCollapsedText: 'Show more',
                     trimExpandedText: 'Show less',
-                    style: AppFonts.REGULAR_BLACK3_14,
-                    moreStyle: AppFonts.MEDIUM_DEFAULT_14,
+                    style: AppFonts.MEDIUM_BLACK3_16,
+                    moreStyle: AppFonts.MEDIUM_DEFAULT_16,
                   ),
                 ),
                 _DiscussionPopUpMenu(question: question)

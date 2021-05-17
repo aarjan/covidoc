@@ -22,6 +22,7 @@ class AnswerItem extends StatelessWidget {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             CircleAvatar(
               radius: 18.0,
@@ -61,9 +62,6 @@ class AnswerItem extends StatelessWidget {
             ),
             _DiscussionPopUpMenu(answer: answer),
           ],
-        ),
-        const SizedBox(
-          height: 15.0,
         ),
         ReadMoreText(
           answer.title!,
