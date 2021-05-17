@@ -8,11 +8,11 @@ import 'package:covidoc/model/entity/entity.dart';
 
 class PendingStatus extends StatelessWidget {
   const PendingStatus({
-    Key key,
+    Key? key,
     this.request,
   }) : super(key: key);
 
-  final MessageRequest request;
+  final MessageRequest? request;
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +27,7 @@ class PendingStatus extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            request.message,
+            request!.message!,
             softWrap: true,
             style: AppFonts.MEDIUM_BLACK3_16,
           ),
@@ -38,7 +38,7 @@ class PendingStatus extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                request.postedAt.formattedTime,
+                request!.postedAt!.formattedTime,
                 style: AppFonts.REGULAR_WHITE3_12,
               ),
               Container(
@@ -62,20 +62,21 @@ class PendingStatus extends StatelessWidget {
 
 class MsgRequest extends StatelessWidget {
   const MsgRequest({
-    Key key,
+    Key? key,
     this.request,
     this.onSubmit,
   }) : super(key: key);
 
-  final MessageRequest request;
-  final void Function() onSubmit;
+  final MessageRequest? request;
+  final void Function()? onSubmit;
 
   @override
   Widget build(BuildContext context) {
     final patInfo =
-        '${request.patDetail["gender"]}, ${request.patDetail["age"]}';
-    final fullname =
-        request.postedAnonymously ? 'Anonymous' : request.patDetail['fullname'];
+        '${request!.patDetail!["gender"]}, ${request!.patDetail!["age"]}';
+    final fullname = request!.postedAnonymously
+        ? 'Anonymous'
+        : request!.patDetail!['fullname'];
 
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 16),
@@ -90,7 +91,7 @@ class MsgRequest extends StatelessWidget {
         children: [
           Row(
             children: [
-              request.postedAnonymously
+              request!.postedAnonymously
                   ? CircleAvatar(
                       radius: 22,
                       child: SvgPicture.asset('assets/register/patient.svg'),
@@ -98,7 +99,7 @@ class MsgRequest extends StatelessWidget {
                   : CircleAvatar(
                       radius: 22,
                       backgroundImage: CachedNetworkImageProvider(
-                          request.patDetail['avatar']),
+                          request!.patDetail!['avatar']),
                     ),
               const SizedBox(width: 12),
               Expanded(
@@ -120,7 +121,7 @@ class MsgRequest extends StatelessWidget {
                       height: 2,
                     ),
                     Text(
-                      request.postedAt.formattedTime,
+                      request!.postedAt!.formattedTime,
                       style: AppFonts.REGULAR_BLACK3_12,
                     ),
                   ],
@@ -147,7 +148,7 @@ class MsgRequest extends StatelessWidget {
             height: 10,
           ),
           Text(
-            request.message,
+            request!.message!,
             softWrap: true,
             style: AppFonts.MEDIUM_BLACK3_16,
           ),

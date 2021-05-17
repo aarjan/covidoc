@@ -15,15 +15,16 @@ class ForumDiscussScreen extends StatefulWidget {
   static const ROUTE_NAME = '/forum/discuss';
 
   final bool isAuthenticated;
-  const ForumDiscussScreen({this.isAuthenticated = false});
+  const ForumDiscussScreen({Key? key, this.isAuthenticated = false})
+      : super(key: key);
 
   @override
   _ForumDiscussScreenState createState() => _ForumDiscussScreenState();
 }
 
 class _ForumDiscussScreenState extends State<ForumDiscussScreen> {
-  Forum _question;
-  List<Answer> _answers;
+  Forum? _question;
+  List<Answer>? _answers;
 
   @override
   Widget build(BuildContext context) {
@@ -84,15 +85,15 @@ class _ForumDiscussScreenState extends State<ForumDiscussScreen> {
 
 class ForumDiscussView extends StatelessWidget {
   const ForumDiscussView({
-    Key key,
-    @required this.question,
-    @required this.answers,
-    @required this.isAuthenticated,
+    Key? key,
+    required this.question,
+    required this.answers,
+    required this.isAuthenticated,
   }) : super(key: key);
 
-  final Forum question;
+  final Forum? question;
   final bool isAuthenticated;
-  final List<Answer> answers;
+  final List<Answer>? answers;
 
   @override
   Widget build(BuildContext context) {
@@ -108,7 +109,7 @@ class ForumDiscussView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 ReadMoreText(
-                  question.title,
+                  question!.title!,
                   trimLines: 4,
                   colorClickableText: AppColors.DEFAULT,
                   trimMode: TrimMode.Line,
@@ -120,41 +121,41 @@ class ForumDiscussView extends StatelessWidget {
                 const SizedBox(
                   height: 10.0,
                 ),
-                if (question.imageUrls.isNotEmpty)
+                if (question!.imageUrls.isNotEmpty)
                   GestureDetector(
                     onTap: () {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
                               builder: (_) => ImageGallerySlider(
-                                  images: question.imageUrls)));
+                                  images: question!.imageUrls)));
                     },
-                    child: ImageSlider(images: question.imageUrls),
+                    child: ImageSlider(images: question!.imageUrls),
                   ),
                 Row(
                   children: [
                     CircleAvatar(
                       radius: 10,
                       backgroundImage:
-                          CachedNetworkImageProvider(question.addedByAvatar),
+                          CachedNetworkImageProvider(question!.addedByAvatar!),
                     ),
                     const SizedBox(
                       width: 6,
                     ),
                     Text(
-                      question.addedByName,
+                      question!.addedByName!,
                       style: AppFonts.REGULAR_BLACK3_10,
                     ),
                     const SizedBox(
                       width: 30,
                     ),
                     Text(
-                      question.updatedAt.formattedTime,
+                      question!.updatedAt!.formattedTime,
                       style: AppFonts.REGULAR_WHITE2_10,
                     ),
                     const Spacer(),
                     Text(
-                      question.category,
+                      question!.category!,
                       style: AppFonts.REGULAR_DEFAULT_10,
                     ),
                   ],
@@ -165,7 +166,7 @@ class ForumDiscussView extends StatelessWidget {
                 Wrap(
                   children: [
                     ...List.generate(
-                      question.tags.length,
+                      question!.tags.length,
                       (index) => Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5),
@@ -174,7 +175,7 @@ class ForumDiscussView extends StatelessWidget {
                         child: Padding(
                           padding: const EdgeInsets.all(5.0),
                           child: Text(
-                            question.tags[index],
+                            question!.tags[index],
                             style: AppFonts.REGULAR_WHITE2_10,
                           ),
                         ),
@@ -186,7 +187,7 @@ class ForumDiscussView extends StatelessWidget {
                   height: 30.0,
                 ),
                 Text(
-                  '${question.ansCount} Discussion',
+                  '${question!.ansCount} Discussion',
                   style: AppFonts.REGULAR_BLACK3_14,
                 ),
                 const Divider(
@@ -199,10 +200,10 @@ class ForumDiscussView extends StatelessWidget {
                 ListView.builder(
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
-                    itemCount: answers.length,
+                    itemCount: answers!.length,
                     itemBuilder: (context, index) {
                       return AnswerItem(
-                        answer: answers[index],
+                        answer: answers![index],
                       );
                     }),
               ],
@@ -210,14 +211,14 @@ class ForumDiscussView extends StatelessWidget {
           ),
         ),
         AddAnswerField(
-          onSend: (str, photos) {
+          onSend: (str, photos) async {
             if (!isAuthenticated) {
               return showLoginDialog(context);
             }
 
             final answer = Answer(
               title: str,
-              questionId: question.id,
+              questionId: question!.id,
             );
             context
                 .read<AnswerBloc>()

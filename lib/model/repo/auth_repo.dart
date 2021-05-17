@@ -41,7 +41,7 @@ class AuthRepo {
     return true;
   }
 
-  Future<AppUser> getUser() async {
+  Future<AppUser?> getUser() async {
     return sessionRepo.getUser();
   }
 }

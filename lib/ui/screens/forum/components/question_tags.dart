@@ -3,11 +3,11 @@ import 'package:flutter_tags/flutter_tags.dart';
 import 'package:covidoc/utils/const/const.dart';
 
 class QuestionTags extends StatefulWidget {
-  final void Function(String) onAdd;
-  final List<String> tags;
-  final void Function(String) onRemove;
+  final void Function(String)? onAdd;
+  final List<String>? tags;
+  final void Function(String?)? onRemove;
 
-  const QuestionTags({Key key, this.onAdd, this.onRemove, this.tags})
+  const QuestionTags({Key? key, this.onAdd, this.onRemove, this.tags})
       : super(key: key);
 
   @override
@@ -21,7 +21,7 @@ class _QuestionTagsState extends State<QuestionTags> {
   @override
   void initState() {
     super.initState();
-    _itemlist.addAll(widget.tags);
+    _itemlist.addAll(widget.tags!);
   }
 
   @override
@@ -41,7 +41,7 @@ class _QuestionTagsState extends State<QuestionTags> {
             // required
             _itemlist.add(str);
           });
-          widget.onAdd(str);
+          widget.onAdd!(str);
         },
       ),
       itemCount: _itemlist.length, // required
@@ -75,7 +75,7 @@ class _QuestionTagsState extends State<QuestionTags> {
                   _itemlist.removeAt(index);
                 });
 
-                widget.onRemove(title);
+                widget.onRemove!(title);
                 return true;
               },
             ), // OR null,
@@ -83,7 +83,7 @@ class _QuestionTagsState extends State<QuestionTags> {
               setState(() {
                 _itemlist.removeAt(index);
               });
-              widget.onRemove(item.title);
+              widget.onRemove!(item.title);
             },
           ),
         );

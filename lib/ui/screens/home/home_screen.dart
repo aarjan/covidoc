@@ -11,7 +11,7 @@ class HomeScreen extends StatelessWidget {
   final bool isAuthenticated;
   static const ROUTE_NAME = '/home';
 
-  const HomeScreen({this.isAuthenticated = false});
+  const HomeScreen({Key? key, this.isAuthenticated = false}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +31,6 @@ class HomeScreen extends StatelessWidget {
                   return DashboardScreen(
                     user: user,
                   );
-                  break;
                 case TabState.CHAT:
                   return user == null ||
                           user.type == describeEnum(UserType.Patient)
@@ -40,17 +39,14 @@ class HomeScreen extends StatelessWidget {
                         )
                       : const DocChatListScreen();
 
-                  break;
                 case TabState.FORUM:
                   return ForumScreen(
                     isAuthenticated: isAuthenticated,
                   );
-                  break;
                 case TabState.PROFILE:
                   return ProfileScreen(
                     isAuthenticated: isAuthenticated,
                   );
-                  break;
                 default:
                   throw UnimplementedError();
               }

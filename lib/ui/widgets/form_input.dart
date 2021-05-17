@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 
 class FormInput extends StatelessWidget {
   const FormInput({
-    Key key,
+    Key? key,
     this.title,
     this.onEdit,
     this.onSave,
@@ -15,15 +15,15 @@ class FormInput extends StatelessWidget {
     this.isNumber = false,
   }) : super(key: key);
 
-  final String title;
+  final String? title;
   final int minLines;
   final int maxLines;
   final bool isNumber;
   final bool enabled;
-  final String initialValue;
-  final void Function() onEdit;
-  final void Function(String) onSave;
-  final String Function(String) onValidate;
+  final String? initialValue;
+  final void Function()? onEdit;
+  final void Function(String?)? onSave;
+  final String? Function(String?)? onValidate;
 
   @override
   Widget build(BuildContext context) {

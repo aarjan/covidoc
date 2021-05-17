@@ -8,8 +8,7 @@ import 'package:covidoc/ui/screens/screens.dart';
 
 class SignInScreen extends StatelessWidget {
   static const ROUTE_NAME = '/signIn';
-
-  const SignInScreen();
+  const SignInScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +16,7 @@ class SignInScreen extends StatelessWidget {
       body: BlocListener<SignInBloc, SignInState>(
         listener: (context, state) {
           if (state is SignInFailure) {
-            Scaffold.of(context).showSnackBar(
+            ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(content: Text(state.error)),
             );
           }
@@ -30,13 +29,15 @@ class SignInScreen extends StatelessWidget {
                   context, RegisterScreen.ROUTE_NAME);
           }
         },
-        child: SignInView(),
+        child: const SignInView(),
       ),
     );
   }
 }
 
 class SignInView extends StatelessWidget {
+  const SignInView({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Center(

@@ -12,30 +12,33 @@ import 'package:covidoc/model/entity/entity.dart';
 class RegisterScreen extends StatelessWidget {
   static const ROUTE_NAME = '/register';
 
-  const RegisterScreen();
+  const RegisterScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.DEFAULT,
       body: BlocListener<UserBloc, UserState>(
-          listener: (context, state) {
-            if (state is UserLoadSuccess && state.userUpdated) {
-              final isPatient =
-                  state.user.type == describeEnum(UserType.Patient);
-              Navigator.pushReplacementNamed(
-                context,
-                isPatient
-                    ? PatientDescScreen.ROUTE_NAME
-                    : DoctorDescScreen.ROUTE_NAME,
-              );
-            }
-          },
-          child: RegisterView()),
+        listener: (context, state) {
+          if (state is UserLoadSuccess && state.userUpdated) {
+            final isPatient = state.user.type == describeEnum(UserType.Patient);
+            Navigator.pushReplacementNamed(
+              context,
+              isPatient
+                  ? PatientDescScreen.ROUTE_NAME
+                  : DoctorDescScreen.ROUTE_NAME,
+            );
+          }
+        },
+        child: const RegisterView(),
+      ),
     );
   }
 }
 
 class RegisterView extends StatefulWidget {
+  const RegisterView({Key? key}) : super(key: key);
+
   @override
   _RegisterViewState createState() => _RegisterViewState();
 }
@@ -114,12 +117,12 @@ class _RegisterViewState extends State<RegisterView> {
 
 class UserWidget extends StatelessWidget {
   const UserWidget({
-    Key key,
-    @required this.name,
-    @required this.onTap,
-    @required this.active,
-    @required this.activeImg,
-    @required this.inactiveImg,
+    Key? key,
+    required this.name,
+    required this.onTap,
+    required this.active,
+    required this.activeImg,
+    required this.inactiveImg,
   }) : super(key: key);
 
   final String name;

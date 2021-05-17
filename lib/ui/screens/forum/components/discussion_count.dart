@@ -7,16 +7,16 @@ import 'package:covidoc/utils/const/const.dart';
 ///AND IF DISCUSSION COUNT IS GREATER THAN 4
 ///SHOWS THE COUNT TOO
 class DiscussionCount extends StatelessWidget {
-  const DiscussionCount({Key key, this.count, this.profilePics})
+  const DiscussionCount({Key? key, this.count, this.profilePics})
       : super(key: key);
-  final List<String> profilePics;
-  final int count;
+  final List<String>? profilePics;
+  final int? count;
   @override
   Widget build(BuildContext context) {
     // -----------------------------------------------------------------
     // OFFSET FOR THE ADDING SPACE TO THE DYNAMIC DISCCOUNT COUNT
     // -----------------------------------------------------------------
-    final maxPadding = count > 4 ? 70.0 : count * 15.0;
+    final maxPadding = count! > 4 ? 70.0 : count! * 15.0;
 
     return Padding(
       padding: EdgeInsets.only(right: maxPadding),
@@ -30,9 +30,9 @@ class DiscussionCount extends StatelessWidget {
           // IF COUNT OF THE DISCUSSIONS IS GREATER THAN 4
           // THEN SHOW THE TOTAL NUMBER IN CONTAINER
           // -----------------------------------------------------------------
-          if (count > 4)
+          if (count! > 4)
             Transform.translate(
-              offset: Offset((16 * profilePics.length).toDouble(), 0),
+              offset: Offset((16 * profilePics!.length).toDouble(), 0),
               child: Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
@@ -53,7 +53,7 @@ class DiscussionCount extends StatelessWidget {
           // AND TRANSLATE IS USED TO SHIFT THE PIC BY 16 PIXELS FOR EACH INDEX
           // -----------------------------------------------------------------
           ...List.generate(
-            profilePics.length,
+            profilePics!.length,
             (index) => Transform.translate(
               offset: Offset((16 * index).toDouble(), 0),
               child: CircleAvatar(
@@ -64,7 +64,7 @@ class DiscussionCount extends StatelessWidget {
                   backgroundColor: Colors.white,
                   radius: 10,
                   backgroundImage: CachedNetworkImageProvider(
-                    profilePics[index],
+                    profilePics![index],
                   ),
                 ),
               ),

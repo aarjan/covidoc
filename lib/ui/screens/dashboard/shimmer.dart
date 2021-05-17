@@ -3,14 +3,14 @@ import 'package:shimmer/shimmer.dart';
 
 class DashboardShimmer extends StatelessWidget {
   const DashboardShimmer({
-    Key key,
+    Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Shimmer.fromColors(
-      baseColor: Colors.grey[300],
-      highlightColor: Colors.grey[100],
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.all(20),

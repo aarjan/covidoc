@@ -14,7 +14,7 @@ import 'update_answer_modal.dart';
 class AnswerItem extends StatelessWidget {
   final Answer answer;
 
-  const AnswerItem({Key key, this.answer}) : super(key: key);
+  const AnswerItem({Key? key, required this.answer}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,9 @@ class AnswerItem extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 18.0,
-              backgroundImage: CachedNetworkImageProvider(answer.addedByAvatar),
+              backgroundImage: CachedNetworkImageProvider(
+                answer.addedByAvatar!,
+              ),
             ),
             const SizedBox(
               width: 10,
@@ -35,13 +37,13 @@ class AnswerItem extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  answer.addedByName,
+                  answer.addedByName!,
                   style: AppFonts.REGULAR_BLACK3_14,
                 ),
                 const SizedBox(
                   height: 5.0,
                 ),
-                Text(answer.updatedAt.formattedTime,
+                Text(answer.updatedAt!.formattedTime,
                     style: AppFonts.REGULAR_WHITE2_10),
               ],
             ),
@@ -64,7 +66,7 @@ class AnswerItem extends StatelessWidget {
           height: 15.0,
         ),
         ReadMoreText(
-          answer.title,
+          answer.title!,
           trimLines: 2,
           colorClickableText: AppColors.DEFAULT,
           trimMode: TrimMode.Line,
@@ -95,8 +97,8 @@ class AnswerItem extends StatelessWidget {
 
 class _DiscussionPopUpMenu extends StatelessWidget {
   const _DiscussionPopUpMenu({
-    Key key,
-    @required this.answer,
+    Key? key,
+    required this.answer,
   }) : super(key: key);
 
   final Answer answer;
@@ -104,7 +106,7 @@ class _DiscussionPopUpMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      onSelected: (str) {
+      onSelected: (str) async {
         final isAuthenticated = context.read<AuthBloc>().state is Authenticated;
 
         if (!isAuthenticated) {
@@ -118,7 +120,7 @@ class _DiscussionPopUpMenu extends StatelessWidget {
                 .add(DeleteAnswer(answer.questionId, answer.id));
             break;
           case 'edit':
-            showModalBottomSheet(
+            await showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.white,
@@ -145,7 +147,7 @@ class _DiscussionPopUpMenu extends StatelessWidget {
                 });
             break;
           case 'report':
-            showModalBottomSheet(
+            await showModalBottomSheet(
               context: context,
               isScrollControlled: true,
               backgroundColor: Colors.white,
@@ -174,19 +176,19 @@ class _DiscussionPopUpMenu extends StatelessWidget {
       padding: EdgeInsets.zero,
       itemBuilder: (context) => [
         const PopupMenuItem(
-          child: Text('Edit'),
+          height: 36,
           value: 'edit',
-          height: 36,
+          child: Text('Edit'),
         ),
         const PopupMenuItem(
-          child: Text('Delete'),
+          height: 36,
           value: 'delete',
-          height: 36,
+          child: Text('Delete'),
         ),
         const PopupMenuItem(
-          child: Text('Report'),
-          value: 'report',
           height: 36,
+          value: 'report',
+          child: Text('Report'),
         ),
       ],
     );

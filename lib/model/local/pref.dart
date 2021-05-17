@@ -1,19 +1,19 @@
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class Pref {
-  Future<int> getInt(String key);
-  Future<bool> getBool(String key);
+  Future<int?> getInt(String key);
+  Future<bool?> getBool(String key);
   Future<bool> delString(String key);
-  Future<String> getString(String key);
+  Future<String?> getString(String key);
   Future<bool> saveInt(String key, int value);
   Future<bool> saveBool(String key, bool value);
-  Future<bool> flushAll({List<String> exceptions});
+  Future<bool> flushAll({List<String>? exceptions});
   Future<bool> saveString(String key, String value);
 }
 
 class LocalPref extends Pref {
   @override
-  Future<bool> getBool(String key) async {
+  Future<bool?> getBool(String key) async {
     final _pref = await SharedPreferences.getInstance();
     return _pref.getBool(key);
   }
@@ -25,7 +25,7 @@ class LocalPref extends Pref {
   }
 
   @override
-  Future<int> getInt(String key) async {
+  Future<int?> getInt(String key) async {
     final _pref = await SharedPreferences.getInstance();
     return _pref.getInt(key);
   }
@@ -37,7 +37,7 @@ class LocalPref extends Pref {
   }
 
   @override
-  Future<String> getString(String key) async {
+  Future<String?> getString(String key) async {
     final _pref = await SharedPreferences.getInstance();
     return _pref.getString(key);
   }
@@ -55,10 +55,10 @@ class LocalPref extends Pref {
   }
 
   @override
-  Future<bool> flushAll({List<String> exceptions = const []}) async {
+  Future<bool> flushAll({List<String>? exceptions = const []}) async {
     final _pref = await SharedPreferences.getInstance();
     for (final k in _pref.getKeys()) {
-      if (!exceptions.contains(k)) {
+      if (!exceptions!.contains(k)) {
         await _pref.remove(k);
       }
     }
@@ -71,7 +71,7 @@ class MemPref extends Pref {
 
   @override
   Future<String> getString(String key) async {
-    return Future.value(memoryMap[key] as String);
+    return Future.value(memoryMap[key] as String?);
   }
 
   @override
@@ -87,9 +87,9 @@ class MemPref extends Pref {
   }
 
   @override
-  Future<bool> flushAll({List<String> exceptions = const []}) async {
+  Future<bool> flushAll({List<String>? exceptions = const []}) async {
     for (final k in memoryMap.keys) {
-      if (!exceptions.contains(k)) {
+      if (!exceptions!.contains(k)) {
         memoryMap.remove(k);
       }
     }

@@ -4,10 +4,10 @@ import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/ui/widgets/default_button.dart';
 
 class ReportForumModal extends StatefulWidget {
-  final void Function(String report, String reporType) onSubmit;
+  final void Function(String report, String reporType)? onSubmit;
 
   const ReportForumModal({
-    Key key,
+    Key? key,
     this.onSubmit,
   }) : super(key: key);
 
@@ -83,9 +83,9 @@ class _ReportBottomSheetState extends State<ReportForumModal> {
           child: TextFormField(
             maxLines: 4,
             autofocus: true,
-            onSaved: (val) => _report = val.trim(),
+            onSaved: (val) => _report = val!.trim(),
             validator: (val) =>
-                val.trim().isEmpty ? 'Message cannot be empty' : null,
+                val!.trim().isEmpty ? 'Message cannot be empty' : null,
             style: AppFonts.REGULAR_BLACK3_14,
             decoration: InputDecoration(
               hintText: 'Type your Message...',
@@ -113,9 +113,9 @@ class _ReportBottomSheetState extends State<ReportForumModal> {
             child: DefaultButton(
               title: 'Submit now',
               onTap: () {
-                _formKey.currentState.save();
-                if (_formKey.currentState.validate()) {
-                  widget.onSubmit(_report, _reportType);
+                _formKey.currentState!.save();
+                if (_formKey.currentState!.validate()) {
+                  widget.onSubmit!(_report, _reportType);
                 }
               },
             )),
@@ -134,7 +134,7 @@ class _ReportBottomSheetState extends State<ReportForumModal> {
     return InkWell(
       onTap: () {
         if (!otherSelected) {
-          widget.onSubmit('', reportType);
+          widget.onSubmit!('', reportType);
         } else {
           setState(() {
             _reportType = reportType;

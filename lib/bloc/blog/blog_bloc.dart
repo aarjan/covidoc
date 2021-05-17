@@ -7,9 +7,7 @@ import 'package:covidoc/model/repo/blog_repo.dart';
 class BlogBloc extends Bloc<BlogEvent, BlogState> {
   final BlogRepo repo;
 
-  BlogBloc(this.repo)
-      : assert(repo != null),
-        super(BlogInitial());
+  BlogBloc(this.repo) : super(BlogInitial());
 
   @override
   Stream<BlogState> mapEventToState(BlogEvent event) async* {
@@ -37,7 +35,7 @@ class BlogBloc extends Bloc<BlogEvent, BlogState> {
       }
 
       final blogs = await repo.getBlogs(
-        offset: currentState.regularBlogs.blogs.length,
+        offset: currentState.regularBlogs.blogs!.length,
       );
 
       yield BlogLoadInProgress();
@@ -47,12 +45,12 @@ class BlogBloc extends Bloc<BlogEvent, BlogState> {
           yield BlogLoadFailure(f.toString());
         },
         (b) async* {
-          final updatedBlogs = currentState.regularBlogs.blogs + b.data;
+          final updatedBlogs = currentState.regularBlogs.blogs! + b.data!;
           yield currentState.copyWith(
             regularBlogs: const BlogItem().copyWith(
                 blogs: updatedBlogs,
                 totalCount: b.totalCount,
-                hasReachedEnd: updatedBlogs.length >= b.totalCount),
+                hasReachedEnd: updatedBlogs.length >= b.totalCount!),
           );
         },
       );
@@ -67,7 +65,7 @@ class BlogBloc extends Bloc<BlogEvent, BlogState> {
         regularBlogs: BlogItem(
             blogs: b.data,
             totalCount: b.totalCount,
-            hasReachedEnd: b.data.length >= b.totalCount),
+            hasReachedEnd: b.data!.length >= b.totalCount!),
       ),
     );
   }
@@ -83,18 +81,18 @@ class BlogBloc extends Bloc<BlogEvent, BlogState> {
       yield BlogLoadInProgress();
 
       final blogs = await repo.getBlogs(
-        offset: currentState.featuredBlogs.blogs.length,
+        offset: currentState.featuredBlogs.blogs!.length,
       );
 
       yield blogs.fold(
         (f) => BlogLoadFailure(f.toString()),
         (b) {
-          final updatedBlogs = currentState.featuredBlogs.blogs + b.data;
+          final updatedBlogs = currentState.featuredBlogs.blogs! + b.data!;
           return currentState.copyWith(
             featuredBlogs: const BlogItem().copyWith(
                 blogs: updatedBlogs,
                 totalCount: b.totalCount,
-                hasReachedEnd: updatedBlogs.length >= b.totalCount),
+                hasReachedEnd: updatedBlogs.length >= b.totalCount!),
           );
         },
       );
@@ -109,7 +107,7 @@ class BlogBloc extends Bloc<BlogEvent, BlogState> {
         featuredBlogs: BlogItem(
             blogs: b.data,
             totalCount: b.totalCount,
-            hasReachedEnd: b.data.length >= b.totalCount),
+            hasReachedEnd: b.data!.length >= b.totalCount!),
       ),
     );
   }

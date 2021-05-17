@@ -15,10 +15,10 @@ class UserRepo {
   }
 
   Future<List<AppUser>> loadUsers({
-    String userId,
+    String? userId,
     int limit = 10,
-    List<String> userIds,
-    String userType = 'Doctor',
+    required List<String?> userIds,
+    String? userType = 'Doctor',
   }) async {
     final firestore = FirebaseFirestore.instance;
     final dRef = await firestore
@@ -28,31 +28,32 @@ class UserRepo {
             whereNotIn: userIds.isEmpty ? [' '] : userIds)
         .limit(limit)
         .get();
-    if (dRef != null && dRef.docs.isNotEmpty) {
+
+    if (dRef.docs.isNotEmpty) {
       final doctors = dRef.docs
-          ?.map((d) => d == null ? null : AppUser.fromJson(d.data()))
-          ?.where((d) => d.id != userId)
-          ?.toList();
+          .map((d) => AppUser.fromJson(d.data()))
+          .where((d) => d.id != userId)
+          .toList();
 
       return doctors;
     }
     return [];
   }
 
-  Future<AppUser> loadUser(String userId) async {
+  Future<AppUser?> loadUser(String? userId) async {
     final firestore = FirebaseFirestore.instance;
     final uRef = await firestore.doc('user/$userId').get();
-    if (uRef != null && uRef.exists) {
-      return AppUser.fromJson(uRef.data());
+    if (uRef.exists) {
+      return AppUser.fromJson(uRef.data()!);
     }
     return null;
   }
 
-  Future<AppUser> getUser() async {
+  Future<AppUser?> getUser() async {
     return sessionRepo.getUser();
   }
 
   Future<void> cacheUser(AppUser user) async {
-    return sessionRepo.cacheUser(user);
+    await sessionRepo.cacheUser(user);
   }
 }

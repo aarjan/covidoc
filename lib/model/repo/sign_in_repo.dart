@@ -1,7 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:either_option/either_option.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 
 import 'package:covidoc/core/error/failures.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -17,7 +16,7 @@ class SignInRepo {
 
   Future<Either<ServerFailure, AppUser>> signIn(SignInType type) async {
     try {
-      UserCredential userCreds;
+      late UserCredential userCreds;
       switch (type) {
         case SignInType.Facebook:
           userCreds = await signInWithFacebook();
@@ -33,18 +32,16 @@ class SignInRepo {
 
       final user = AppUser(
         type: 'Patient',
-        email: userCreds.user.email ?? userCreds.user.providerData[0].email,
-        avatar: userCreds.user.photoURL,
-        fullname: userCreds.user.displayName,
+        email: userCreds.user!.email ?? userCreds.user!.providerData[0].email,
+        avatar: userCreds.user!.photoURL,
+        fullname: userCreds.user!.displayName,
         providerId: {
-          describeEnum(type): userCreds.user.providerData[0].uid,
+          describeEnum(type): userCreds.user!.providerData[0].uid,
         },
       );
       return Right(user);
     } on ServerFailure catch (e) {
       return Left(e);
-    } on FacebookAuthException catch (e) {
-      return Left(ServerFailure(e.message));
     } catch (e) {
       return Left(ServerFailure(e.toString()));
     }
@@ -57,11 +54,11 @@ class SignInRepo {
       final firestore = FirebaseFirestore.instance;
       final uRef = await firestore
           .collection('user')
-          .where('providerId.$_type', isEqualTo: user.providerId.values.first)
+          .where('providerId.$_type', isEqualTo: user.providerId!.values.first)
           .get();
 
       // Create new user if not exists
-      if (uRef == null || uRef.docs.isEmpty) {
+      if (uRef.docs.isEmpty) {
         final userRef = await firestore.collection('user').add(user.toJson());
         final fUser = user.copyWith(id: userRef.id);
 
@@ -72,8 +69,8 @@ class SignInRepo {
       final fUser = AppUser.fromJson(uRef.docs[0].data());
 
       // Add providerId if not exists
-      if (!fUser.providerId.containsKey(user.providerId.keys.first)) {
-        fUser.providerId[_type] = user.providerId[_type];
+      if (!fUser.providerId!.containsKey(user.providerId!.keys.first)) {
+        fUser.providerId![_type] = user.providerId![_type];
 
         await firestore
             .doc('user/${fUser.id}')
@@ -83,7 +80,7 @@ class SignInRepo {
       await cacheUserInfo(fUser, type);
       return fUser;
     } catch (e) {
-      return e;
+      rethrow;
     }
   }
 

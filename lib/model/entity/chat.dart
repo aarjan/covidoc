@@ -23,24 +23,24 @@ class Chat extends Equatable {
     this.docUnreadCount = 0,
   });
 
-  final String id;
-  final String docId;
-  final String patId;
-  final String docName;
-  final String patName;
-  final String docAvatar;
-  final String patAvatar;
-  final String requestId;
-  final String lastMessage;
+  final String? id;
+  final String? docId;
+  final String? patId;
+  final String? docName;
+  final String? patName;
+  final String? docAvatar;
+  final String? patAvatar;
+  final String? requestId;
+  final String? lastMessage;
   @JsonKey(defaultValue: 0)
   final int patUnreadCount;
   @JsonKey(defaultValue: 0)
   final int docUnreadCount;
-  final DateTime lastTimestamp;
-  final String consultReqMessage;
+  final DateTime? lastTimestamp;
+  final String? consultReqMessage;
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         docId,
         patId,
@@ -61,19 +61,19 @@ class Chat extends Equatable {
   Map<String, dynamic> toJson() => _$ChatToJson(this);
 
   Chat copyWith({
-    String id,
-    String docId,
-    String patId,
-    String docName,
-    String patName,
-    String requestId,
-    String docAvatar,
-    String patAvatar,
-    String lastMessage,
-    int patUnreadCount,
-    int docUnreadCount,
-    DateTime lastTimestamp,
-    String consultReqMessage,
+    String? id,
+    String? docId,
+    String? patId,
+    String? docName,
+    String? patName,
+    String? requestId,
+    String? docAvatar,
+    String? patAvatar,
+    String? lastMessage,
+    int? patUnreadCount,
+    int? docUnreadCount,
+    DateTime? lastTimestamp,
+    String? consultReqMessage,
   }) {
     return Chat(
       id: id ?? this.id,

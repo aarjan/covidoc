@@ -7,13 +7,13 @@ part 'message_request.g.dart';
 @JsonSerializable()
 @DateTimeConverter()
 class MessageRequest extends Equatable {
-  final String id;
-  final String message;
-  final DateTime postedAt;
-  final String postedBy;
-  final String resolvedBy;
-  final Map<String, dynamic> docDetail;
-  final Map<String, dynamic> patDetail;
+  final String? id;
+  final String? message;
+  final DateTime? postedAt;
+  final String? postedBy;
+  final String? resolvedBy;
+  final Map<String, dynamic>? docDetail;
+  final Map<String, dynamic>? patDetail;
 
   @JsonKey(defaultValue: false)
   final bool resolved;
@@ -33,7 +33,7 @@ class MessageRequest extends Equatable {
   });
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         message,
         postedAt,
@@ -51,15 +51,15 @@ class MessageRequest extends Equatable {
   Map<String, dynamic> toJson() => _$MessageRequestToJson(this);
 
   MessageRequest copyWith({
-    String id,
-    bool resolved,
-    String message,
-    String postedBy,
-    String resolvedBy,
-    DateTime postedAt,
-    bool postedAnonymously,
-    Map<String, dynamic> patDetail,
-    Map<String, dynamic> docDetail,
+    String? id,
+    bool? resolved,
+    String? message,
+    String? postedBy,
+    String? resolvedBy,
+    DateTime? postedAt,
+    bool? postedAnonymously,
+    Map<String, dynamic>? patDetail,
+    Map<String, dynamic>? docDetail,
   }) {
     return MessageRequest(
       id: id ?? this.id,

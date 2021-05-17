@@ -9,15 +9,15 @@ import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/model/entity/entity.dart';
 
 class ChatRequest extends StatefulWidget {
-  const ChatRequest({@required this.user});
-  final AppUser user;
+  const ChatRequest({Key? key, required this.user}) : super(key: key);
+  final AppUser? user;
 
   @override
   _ChatRequestState createState() => _ChatRequestState();
 }
 
 class _ChatRequestState extends State<ChatRequest> {
-  PageController _controller;
+  PageController? _controller;
 
   @override
   void initState() {
@@ -47,7 +47,7 @@ class _ChatRequestState extends State<ChatRequest> {
                   return showLoginDialog(context);
                 }
 
-                await _controller.animateToPage(1,
+                await _controller!.animateToPage(1,
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeIn);
               },
@@ -57,12 +57,12 @@ class _ChatRequestState extends State<ChatRequest> {
                 final msgRequest = MessageRequest(
                   message: msg,
                   resolved: false,
-                  postedBy: widget.user.id,
+                  postedBy: widget.user!.id,
                   patDetail: {
-                    'avatar': widget.user.avatar,
-                    'age': widget.user.detail['age'],
-                    'fullname': widget.user.fullname,
-                    'gender': widget.user.detail['gender'],
+                    'avatar': widget.user!.avatar,
+                    'age': widget.user!.detail!['age'],
+                    'fullname': widget.user!.fullname,
+                    'gender': widget.user!.detail!['gender'],
                   },
                   postedAt: DateTime.now().toUtc(),
                   postedAnonymously: anonymous,
@@ -70,7 +70,7 @@ class _ChatRequestState extends State<ChatRequest> {
 
                 context.read<ChatBloc>().add(RequestChat(msgRequest));
 
-                _controller.animateToPage(2,
+                _controller!.animateToPage(2,
                     duration: const Duration(milliseconds: 300),
                     curve: Curves.easeIn);
               },
@@ -85,11 +85,11 @@ class _ChatRequestState extends State<ChatRequest> {
 
 class RequestDialog extends StatelessWidget {
   const RequestDialog({
-    Key key,
+    Key? key,
     this.onSubmit,
   }) : super(key: key);
 
-  final void Function() onSubmit;
+  final void Function()? onSubmit;
 
   @override
   Widget build(BuildContext context) {
@@ -114,7 +114,7 @@ class RequestDialog extends StatelessWidget {
 }
 
 class ReplyDialog extends StatefulWidget {
-  const ReplyDialog({this.onSubmit});
+  const ReplyDialog({Key? key, required this.onSubmit}) : super(key: key);
   final void Function(String msg, bool anonymous) onSubmit;
 
   @override
@@ -122,7 +122,7 @@ class ReplyDialog extends StatefulWidget {
 }
 
 class _ReplyDialogState extends State<ReplyDialog> {
-  String _msg;
+  String _msg = '';
   bool _postAnonymous = false;
 
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -144,9 +144,9 @@ class _ReplyDialogState extends State<ReplyDialog> {
           child: FormInput(
             minLines: 6,
             maxLines: 6,
-            onSave: (val) => _msg = val.trim(),
+            onSave: (val) => _msg = val!.trim(),
             onValidate: (val) =>
-                val.trim().length < 100 ? AppConst.MSG_ERROR : null,
+                val!.trim().length < 100 ? AppConst.MSG_ERROR : null,
             title: AppConst.REQUEST_WRITE_TXT,
           ),
         ),
@@ -174,10 +174,10 @@ class _ReplyDialogState extends State<ReplyDialog> {
         MsgBtn(
           title: AppConst.REQUEST_SEND_BTN_TXT,
           onTap: () {
-            _formKey.currentState.save();
+            _formKey.currentState!.save();
             FocusScope.of(context).unfocus();
 
-            if (_formKey.currentState.validate()) {
+            if (_formKey.currentState!.validate()) {
               widget.onSubmit(_msg, _postAnonymous);
             }
           },
@@ -188,7 +188,7 @@ class _ReplyDialogState extends State<ReplyDialog> {
 }
 
 class StatusDialog extends StatelessWidget {
-  const StatusDialog();
+  const StatusDialog({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -228,13 +228,13 @@ class StatusDialog extends StatelessWidget {
 
 class MsgBtn extends StatelessWidget {
   const MsgBtn({
-    Key key,
+    Key? key,
     this.onTap,
     this.title,
   }) : super(key: key);
 
-  final void Function() onTap;
-  final String title;
+  final void Function()? onTap;
+  final String? title;
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +253,7 @@ class MsgBtn extends StatelessWidget {
             SvgPicture.asset('assets/chat/message.svg'),
             const SizedBox(width: 12),
             Text(
-              title,
+              title!,
               textAlign: TextAlign.center,
               style: AppFonts.BOLD_WHITE_14,
             )

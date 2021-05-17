@@ -11,7 +11,7 @@ import 'package:covidoc/model/entity/entity.dart';
 
 class BlogScreen extends StatelessWidget {
   static const ROUTE_NAME = '/blog';
-  const BlogScreen();
+  const BlogScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,14 +25,14 @@ class BlogScreen extends StatelessWidget {
             final curState = state as BlogLoadSuccess;
             return ListView.builder(
               padding: const EdgeInsets.all(20),
-              itemCount: curState.featuredBlogs.blogs.length,
+              itemCount: curState.featuredBlogs.blogs!.length,
               itemBuilder: (context, index) =>
-                  BlogItem(curState.featuredBlogs.blogs[index]),
+                  BlogItem(blog: curState.featuredBlogs.blogs![index]),
             );
           case BlogLoadFailure:
             final currState = state as BlogLoadFailure;
             return Center(
-              child: Text(currState.error),
+              child: Text(currState.error!),
             );
           default:
             return const Center(child: CircularProgressIndicator());
@@ -45,7 +45,7 @@ class BlogScreen extends StatelessWidget {
 class BlogItem extends StatelessWidget {
   final Blog blog;
 
-  const BlogItem(this.blog);
+  const BlogItem({Key? key, required this.blog}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -53,7 +53,7 @@ class BlogItem extends StatelessWidget {
       color: Colors.transparent,
       child: InkWell(
         onTap: () {
-          Navigator.push(context, getRoute(BlogDetailScreen(blog)));
+          Navigator.push(context, getRoute(BlogDetailScreen(blog: blog)));
         },
         child: Column(
           children: [
@@ -65,7 +65,7 @@ class BlogItem extends StatelessWidget {
                     fit: BoxFit.cover,
                     width: 100,
                     height: 100,
-                    imageUrl: blog.blogImg,
+                    imageUrl: blog.blogImg!,
                     errorWidget: (_, url, err) =>
                         const Center(child: Icon(Icons.error_outline)),
                     placeholder: (context, url) =>
@@ -78,12 +78,12 @@ class BlogItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        blog.categoryTitle,
+                        blog.categoryTitle!,
                         style: AppFonts.REGULAR_GREEN1_12,
                       ),
                       const SizedBox(height: 5),
                       Text(
-                        blog.title,
+                        blog.title!,
                         style: AppFonts.REGULAR_BLACK3_14,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -92,7 +92,7 @@ class BlogItem extends StatelessWidget {
                       Row(
                         children: [
                           Text(
-                            blog.publishedAt.formattedTime,
+                            blog.publishedAt!.formattedTime,
                             style: AppFonts.REGULAR_WHITE3_12,
                           ),
                           Container(
@@ -101,7 +101,7 @@ class BlogItem extends StatelessWidget {
                             color: AppColors.BLACK3,
                             margin: const EdgeInsets.all(10),
                           ),
-                          Text(blog.description.readingDuration,
+                          Text(blog.description!.readingDuration,
                               style: AppFonts.REGULAR_WHITE3_12),
                         ],
                       )

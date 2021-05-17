@@ -10,7 +10,8 @@ import 'package:covidoc/ui/screens/screens.dart';
 import 'package:covidoc/model/entity/entity.dart';
 
 class ChatItem extends StatelessWidget {
-  const ChatItem(this.chat, this.isFromPatient);
+  const ChatItem({Key? key, required this.chat, required this.isFromPatient})
+      : super(key: key);
 
   final Chat chat;
   final bool isFromPatient;
@@ -18,7 +19,7 @@ class ChatItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final unReadCount =
-        isFromPatient ? chat.patUnreadCount : chat.docUnreadCount ?? 4;
+        isFromPatient ? chat.patUnreadCount : chat.docUnreadCount;
 
     return ListTile(
       onTap: () {
@@ -29,10 +30,10 @@ class ChatItem extends StatelessWidget {
       leading: CircleAvatar(
         radius: 22,
         backgroundImage: CachedNetworkImageProvider(
-            isFromPatient ? chat.docAvatar : chat.patAvatar),
+            isFromPatient ? chat.docAvatar! : chat.patAvatar!),
       ),
       title: Text(
-        isFromPatient ? chat.docName : chat.patName,
+        isFromPatient ? chat.docName! : chat.patName!,
         style: AppFonts.SEMIBOLD_BLACK3_16,
       ),
       subtitle: Text(

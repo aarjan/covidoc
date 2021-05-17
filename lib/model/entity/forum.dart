@@ -24,15 +24,15 @@ class Forum extends Equatable {
     this.recentUsersAvatar = const <String>[],
   });
 
-  final String id;
-  final String title;
-  final String category;
-  final String addedById;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final String addedByType;
-  final String addedByName;
-  final String addedByAvatar;
+  final String? id;
+  final String? title;
+  final String? category;
+  final String? addedById;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final String? addedByType;
+  final String? addedByName;
+  final String? addedByAvatar;
 
   @JsonKey(defaultValue: 0)
   final int ansCount;
@@ -41,7 +41,7 @@ class Forum extends Equatable {
   final bool isPinned;
 
   @JsonKey(defaultValue: <String>[])
-  final List<String> imageUrls;
+  final List<String?> imageUrls;
 
   @JsonKey(defaultValue: <String>[])
   final List<String> tags;
@@ -50,7 +50,7 @@ class Forum extends Equatable {
   final List<String> recentUsersAvatar;
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         tags,
         title,
@@ -72,20 +72,20 @@ class Forum extends Equatable {
   Map<String, dynamic> toJson() => _$ForumToJson(this);
 
   Forum copyWith({
-    String id,
-    int ansCount,
-    String title,
-    bool isPinned,
-    String category,
-    String addedById,
-    List<String> tags,
-    DateTime createdAt,
-    DateTime updatedAt,
-    String addedByName,
-    String addedByType,
-    String addedByAvatar,
-    List<String> imageUrls,
-    List<String> recentUsersAvatar,
+    String? id,
+    int? ansCount,
+    String? title,
+    bool? isPinned,
+    String? category,
+    String? addedById,
+    List<String>? tags,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? addedByName,
+    String? addedByType,
+    String? addedByAvatar,
+    List<String?>? imageUrls,
+    List<String>? recentUsersAvatar,
   }) {
     return Forum(
       id: id ?? this.id,
@@ -122,22 +122,22 @@ class Answer extends Equatable {
     this.imageUrls = const <String>[],
   });
 
-  final String id;
-  final String title;
-  final String addedById;
-  final String questionId;
-  final bool isBestAnswer;
-  final DateTime createdAt;
-  final DateTime updatedAt;
-  final String addedByName;
-  final String addedByType;
-  final String addedByAvatar;
+  final String? id;
+  final String? title;
+  final String? addedById;
+  final String? questionId;
+  final bool? isBestAnswer;
+  final DateTime? createdAt;
+  final DateTime? updatedAt;
+  final String? addedByName;
+  final String? addedByType;
+  final String? addedByAvatar;
 
   @JsonKey(defaultValue: <String>[])
-  final List<String> imageUrls;
+  final List<String?> imageUrls;
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         title,
         createdAt,
@@ -156,17 +156,17 @@ class Answer extends Equatable {
   Map<String, dynamic> toJson() => _$AnswerToJson(this);
 
   Answer copyWith({
-    String id,
-    String title,
-    String addedById,
-    String questionId,
-    bool isBestAnswer,
-    DateTime createdAt,
-    DateTime updatedAt,
-    String addedByName,
-    String addedByType,
-    String addedByAvatar,
-    List<String> imageUrls,
+    String? id,
+    String? title,
+    String? addedById,
+    String? questionId,
+    bool? isBestAnswer,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    String? addedByName,
+    String? addedByType,
+    String? addedByAvatar,
+    List<String?>? imageUrls,
   }) {
     return Answer(
       id: id ?? this.id,

@@ -3,11 +3,11 @@ import 'package:covidoc/utils/const/const.dart';
 
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({
-    Key key,
+    Key? key,
     this.onSelected,
   }) : super(key: key);
 
-  final Function(int) onSelected;
+  final Function(int)? onSelected;
 
   @override
   _BottomNavBarState createState() => _BottomNavBarState();
@@ -22,7 +22,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
       backgroundColor: AppColors.WHITE1,
       currentIndex: _selectedIndex,
       onTap: (index) {
-        widget.onSelected(index);
+        widget.onSelected!(index);
         setState(() {
           _selectedIndex = index;
         });
@@ -58,9 +58,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
 
 class NavItem extends StatelessWidget {
   final bool active;
-  final IconData icon;
+  final IconData? icon;
 
-  const NavItem({Key key, this.active = false, this.icon}) : super(key: key);
+  const NavItem({Key? key, this.active = false, this.icon}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

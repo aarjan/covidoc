@@ -15,7 +15,7 @@ Future<UserCredential> signInWithGoogle() async {
   final googleAuth = await googleUser.authentication;
 
   // Create a new credential
-  final GoogleAuthCredential credential = GoogleAuthProvider.credential(
+  final credential = GoogleAuthProvider.credential(
     accessToken: googleAuth.accessToken,
     idToken: googleAuth.idToken,
   );

@@ -8,21 +8,21 @@ import 'package:covidoc/utils/const/const.dart';
 ///will display the images and it's name from the property [Photo]
 ///name will also be extracted from the same property
 class AttachedImages extends StatelessWidget {
-  const AttachedImages({Key key, this.photo, this.onRemove}) : super(key: key);
-  final Photo photo;
-  final void Function() onRemove;
+  const AttachedImages({Key? key, this.photo, this.onRemove}) : super(key: key);
+  final Photo? photo;
+  final void Function()? onRemove;
 
   @override
   Widget build(BuildContext context) {
     //getting the last index of the /, and adding 1 to it will give the start index of the
     //name of the file which will indeed can be used by extracting the subString
     String fileName;
-    if (photo.source == PhotoSource.File) {
-      final lastIndexOfSlash = photo.file.path.lastIndexOf('/') + 1;
-      fileName = photo.file.path.substring(lastIndexOfSlash);
+    if (photo!.source == PhotoSource.File) {
+      final lastIndexOfSlash = photo!.file!.path.lastIndexOf('/') + 1;
+      fileName = photo!.file!.path.substring(lastIndexOfSlash);
     } else {
-      fileName = photo.url.substring(
-          photo.url.lastIndexOf('/') + 1, photo.url.lastIndexOf('?'));
+      fileName = photo!.url!.substring(
+          photo!.url!.lastIndexOf('/') + 1, photo!.url!.lastIndexOf('?'));
     }
 
     return Container(
@@ -42,15 +42,15 @@ class AttachedImages extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(10),
             clipBehavior: Clip.hardEdge,
-            child: photo.source == PhotoSource.File
+            child: photo!.source == PhotoSource.File
                 ? Image.file(
-                    photo.file,
+                    photo!.file!,
                     height: 40,
                     width: 40,
                     fit: BoxFit.cover,
                   )
                 : Image.network(
-                    photo.url,
+                    photo!.url!,
                     height: 40,
                     width: 40,
                     fit: BoxFit.cover,

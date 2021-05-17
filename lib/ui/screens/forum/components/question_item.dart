@@ -17,7 +17,8 @@ import 'discussion_count.dart';
 class QuestionItem extends StatelessWidget {
   final Forum question;
   final void Function() onTap;
-  const QuestionItem({this.question, this.onTap});
+  const QuestionItem({Key? key, required this.question, required this.onTap})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +36,7 @@ class QuestionItem extends StatelessWidget {
               children: [
                 Expanded(
                   child: ReadMoreText(
-                    question.title,
+                    question.title!,
                     trimLines: 2,
                     colorClickableText: AppColors.DEFAULT,
                     trimMode: TrimMode.Line,
@@ -58,7 +59,7 @@ class QuestionItem extends StatelessWidget {
                 SvgPicture.asset('assets/forum/calendar.svg'),
                 const SizedBox(width: 6),
                 Text(
-                  question.updatedAt.formattedTime,
+                  question.updatedAt!.formattedTime,
                   style: AppFonts.REGULAR_WHITE2_10,
                 ),
                 const SizedBox(width: 20),
@@ -83,13 +84,13 @@ class QuestionItem extends StatelessWidget {
                 CircleAvatar(
                   radius: 10,
                   backgroundImage:
-                      CachedNetworkImageProvider(question.addedByAvatar),
+                      CachedNetworkImageProvider(question.addedByAvatar!),
                 ),
                 const SizedBox(
                   width: 6,
                 ),
                 Text(
-                  question.addedByName,
+                  question.addedByName!,
                   style: AppFonts.REGULAR_BLACK3_10,
                 ),
                 const SizedBox(
@@ -98,12 +99,12 @@ class QuestionItem extends StatelessWidget {
                 Visibility(
                   visible: question.ansCount > 0,
                   child: DiscussionCount(
-                    count: question.ansCount ?? 0,
+                    count: question.ansCount,
                     profilePics: question.recentUsersAvatar,
                   ),
                 ),
                 Text(
-                  question.category,
+                  question.category!,
                   style: AppFonts.REGULAR_DEFAULT_10,
                 ),
                 const Spacer(),
@@ -126,8 +127,8 @@ class QuestionItem extends StatelessWidget {
 
 class _DiscussionPopUpMenu extends StatelessWidget {
   const _DiscussionPopUpMenu({
-    Key key,
-    @required this.question,
+    Key? key,
+    required this.question,
   }) : super(key: key);
 
   final Forum question;
@@ -135,7 +136,7 @@ class _DiscussionPopUpMenu extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton<String>(
-      onSelected: (str) {
+      onSelected: (str) async {
         final isAuthenticated = context.read<AuthBloc>().state is Authenticated;
 
         if (!isAuthenticated) {
@@ -147,7 +148,7 @@ class _DiscussionPopUpMenu extends StatelessWidget {
             context.read<ForumBloc>().add(DeleteForum(question.id));
             break;
           case 'edit':
-            showModalBottomSheet(
+            return showModalBottomSheet(
                 context: context,
                 isScrollControlled: true,
                 backgroundColor: Colors.white,
@@ -168,9 +169,8 @@ class _DiscussionPopUpMenu extends StatelessWidget {
                     },
                   );
                 });
-            break;
           case 'report':
-            showModalBottomSheet(
+            return showModalBottomSheet(
               context: context,
               isScrollControlled: true,
               backgroundColor: Colors.white,
@@ -185,7 +185,6 @@ class _DiscussionPopUpMenu extends StatelessWidget {
                 );
               },
             );
-            break;
           default:
         }
       },
@@ -199,16 +198,16 @@ class _DiscussionPopUpMenu extends StatelessWidget {
       padding: EdgeInsets.zero,
       itemBuilder: (context) => [
         const PopupMenuItem(
-          child: Text('Edit'),
           value: 'edit',
+          child: Text('Edit'),
         ),
         const PopupMenuItem(
-          child: Text('Delete'),
           value: 'delete',
+          child: Text('Delete'),
         ),
         const PopupMenuItem(
-          child: Text('Report'),
           value: 'report',
+          child: Text('Report'),
         ),
       ],
     );

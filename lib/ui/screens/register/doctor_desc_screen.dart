@@ -11,7 +11,7 @@ import 'package:covidoc/bloc/user/user_bloc.dart';
 class DoctorDescScreen extends StatelessWidget {
   static const ROUTE_NAME = '/register/docDescription';
 
-  const DoctorDescScreen();
+  const DoctorDescScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -21,8 +21,16 @@ class DoctorDescScreen extends StatelessWidget {
         title: Text('Describe Yourself', style: AppFonts.SEMIBOLD_BLACK3_16),
         centerTitle: true,
         automaticallyImplyLeading: false,
-        bottom:
-            ProgressBar([AppColors.WHITE3, AppColors.WHITE3, AppColors.WHITE3]),
+        bottom: PreferredSize(
+          preferredSize: const Size(double.infinity, 2),
+          child: Row(
+            children: [AppColors.WHITE3, AppColors.WHITE3, AppColors.WHITE3]
+                .map((e) => Flexible(
+                    child:
+                        Container(color: e, width: double.infinity, height: 2)))
+                .toList(),
+          ),
+        ),
       ),
       body: BlocListener<UserBloc, UserState>(
         listener: (context, state) {
@@ -31,30 +39,31 @@ class DoctorDescScreen extends StatelessWidget {
                 context, getRoute(const HomeScreen(isAuthenticated: true)));
           }
         },
-        child: DocDescription(),
+        child: const DocDescription(),
       ),
     );
   }
 }
 
 class DocDescription extends StatefulWidget {
+  const DocDescription({Key? key}) : super(key: key);
   @override
   _DocDescriptionState createState() => _DocDescriptionState();
 }
 
 class _DocDescriptionState extends State<DocDescription> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  int _age;
-  String _name;
-  String _gender;
-  String _location;
-  String _practice;
-  String _speciality;
-  String _yearsOfExperience;
+  int? _age;
+  String? _name;
+  String? _gender;
+  String? _location;
+  String? _practice;
+  String? _speciality;
+  String? _yearsOfExperience;
 
   List<String> years = ['1-2 years', '2-5 years', '5-10 years', '>10 years'];
 
-  FocusScopeNode _node;
+  late FocusScopeNode _node;
 
   @override
   void didChangeDependencies() {
@@ -85,8 +94,8 @@ class _DocDescriptionState extends State<DocDescription> {
                     FormInput(
                       title: 'Name',
                       onEdit: _node.nextFocus,
-                      onSave: (val) => _name = val.trim(),
-                      onValidate: (val) => val.trim().isEmpty
+                      onSave: (val) => _name = val!.trim(),
+                      onValidate: (val) => val!.trim().isEmpty
                           ? AppConst.FULLNAME_LENGTH_ERROR
                           : null,
                     ),
@@ -96,25 +105,25 @@ class _DocDescriptionState extends State<DocDescription> {
                       isNumber: true,
                       onEdit: _node.nextFocus,
                       onSave: (val) =>
-                          _age = int.tryParse(val.trim(), radix: 10),
+                          _age = int.tryParse(val!.trim(), radix: 10),
                       onValidate: (val) =>
-                          val.trim().isEmpty ? AppConst.AGE_ERROR : null,
+                          val!.trim().isEmpty ? AppConst.AGE_ERROR : null,
                     ),
                     const SizedBox(height: 16),
                     FormInput(
                       title: 'Gender',
                       onEdit: _node.nextFocus,
-                      onSave: (val) => _gender = val.trim(),
+                      onSave: (val) => _gender = val!.trim(),
                       onValidate: (val) =>
-                          val.trim().isEmpty ? AppConst.GENDER_ERROR : null,
+                          val!.trim().isEmpty ? AppConst.GENDER_ERROR : null,
                     ),
                     const SizedBox(height: 16),
                     FormInput(
                       title: 'Location',
                       onEdit: _node.nextFocus,
-                      onSave: (val) => _location = val.trim(),
+                      onSave: (val) => _location = val!.trim(),
                       onValidate: (val) =>
-                          val.trim().isEmpty ? AppConst.LOCATION_ERROR : null,
+                          val!.trim().isEmpty ? AppConst.LOCATION_ERROR : null,
                     ),
                     const SizedBox(height: 25),
                     Text(
@@ -126,8 +135,8 @@ class _DocDescriptionState extends State<DocDescription> {
                     FormInput(
                       title: 'Speciality',
                       onEdit: _node.nextFocus,
-                      onSave: (val) => _speciality = val.trim(),
-                      onValidate: (val) => val.trim().isEmpty
+                      onSave: (val) => _speciality = val!.trim(),
+                      onValidate: (val) => val!.trim().isEmpty
                           ? AppConst.SPECIALITY_LENGTH_ERROR
                           : null,
                     ),
@@ -135,8 +144,8 @@ class _DocDescriptionState extends State<DocDescription> {
                     FormInput(
                       title: 'Hospital or Clinic',
                       onEdit: _node.nextFocus,
-                      onSave: (val) => _practice = val.trim(),
-                      onValidate: (val) => val.trim().isEmpty
+                      onSave: (val) => _practice = val!.trim(),
+                      onValidate: (val) => val!.trim().isEmpty
                           ? AppConst.PRACTICE_LENGTH_ERROR
                           : null,
                     ),
@@ -157,7 +166,7 @@ class _DocDescriptionState extends State<DocDescription> {
                                     child: Text(e),
                                   ))
                               .toList(),
-                          onChanged: (val) {
+                          onChanged: (dynamic val) {
                             setState(() {
                               _yearsOfExperience = val;
                             });
@@ -174,10 +183,10 @@ class _DocDescriptionState extends State<DocDescription> {
               width: double.infinity,
               child: TextButton(
                 onPressed: () {
-                  _formKey.currentState.save();
+                  _formKey.currentState!.save();
                   FocusScope.of(context).unfocus();
 
-                  if (_formKey.currentState.validate()) {
+                  if (_formKey.currentState!.validate()) {
                     final user = AppUser(
                       fullname: _name,
                       detail: {

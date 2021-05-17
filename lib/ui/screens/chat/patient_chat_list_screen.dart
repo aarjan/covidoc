@@ -11,10 +11,10 @@ import 'package:covidoc/ui/screens/forum/components/add_question.dart';
 import 'components/components.dart';
 
 class PatChatListScreen extends StatefulWidget {
-  final bool isAuthenticated;
+  final bool? isAuthenticated;
   static const ROUTE_NAME = '/chat/list';
 
-  const PatChatListScreen({this.isAuthenticated});
+  const PatChatListScreen({Key? key, this.isAuthenticated}) : super(key: key);
 
   @override
   _PatChatListScreenState createState() => _PatChatListScreenState();
@@ -22,28 +22,28 @@ class PatChatListScreen extends StatefulWidget {
 
 class _PatChatListScreenState extends State<PatChatListScreen>
     with TickerProviderStateMixin {
-  AppUser _user;
-  bool _showAddBtn;
-  ScrollController _scrollController;
+  AppUser? _user;
+  late bool _showAddBtn;
+  ScrollController? _scrollController;
 
   @override
   void initState() {
     super.initState();
 
     // load chats
-    if (widget.isAuthenticated)
+    if (widget.isAuthenticated!)
       context.read<ChatBloc>().add(LoadPatientChats());
 
     _showAddBtn = false;
     _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      if (_scrollController.position.userScrollDirection ==
+    _scrollController!.addListener(() {
+      if (_scrollController!.position.userScrollDirection ==
           ScrollDirection.reverse) {
         setState(() {
           _showAddBtn = true;
         });
       }
-      if (_scrollController.position.userScrollDirection ==
+      if (_scrollController!.position.userScrollDirection ==
           ScrollDirection.forward) {
         setState(() {
           _showAddBtn = false;
@@ -54,7 +54,7 @@ class _PatChatListScreenState extends State<PatChatListScreen>
 
   @override
   void dispose() {
-    _scrollController.dispose();
+    _scrollController!.dispose();
     super.dispose();
   }
 
@@ -68,7 +68,7 @@ class _PatChatListScreenState extends State<PatChatListScreen>
         ),
       ),
       body: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
-        if (!widget.isAuthenticated)
+        if (!widget.isAuthenticated!)
           return const Padding(
             padding: EdgeInsets.all(16),
             child: ChatRequest(user: null),
@@ -130,7 +130,7 @@ class _PatChatListScreenState extends State<PatChatListScreen>
 
 class _ChatListView extends StatelessWidget {
   const _ChatListView(this.chats, this.requests, this.userType);
-  final String userType;
+  final String? userType;
   final List<Chat> chats;
   final List<MessageRequest> requests;
 
@@ -157,10 +157,7 @@ class _ChatListView extends StatelessWidget {
           shrinkWrap: true,
           itemBuilder: (context, index) => Column(
             children: [
-              ChatItem(
-                chats[index],
-                userType == describeEnum(UserType.Patient),
-              ),
+              ChatItem(chat: chats[index], isFromPatient: true),
               const Divider(),
             ],
           ),
@@ -190,7 +187,7 @@ class _ChatListView extends StatelessWidget {
   }
 }
 
-Future showBottomQuestionSheet(BuildContext context, AppUser user) {
+Future showBottomQuestionSheet(BuildContext context, AppUser? user) {
   return showModalBottomSheet(
     context: context,
     isDismissible: true,

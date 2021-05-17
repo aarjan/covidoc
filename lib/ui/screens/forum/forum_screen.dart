@@ -16,7 +16,7 @@ class ForumScreen extends StatefulWidget {
 
   final bool isAuthenticated;
 
-  const ForumScreen({this.isAuthenticated = false});
+  const ForumScreen({Key? key, this.isAuthenticated = false}) : super(key: key);
 
   @override
   _ForumScreenState createState() => _ForumScreenState();
@@ -24,9 +24,9 @@ class ForumScreen extends StatefulWidget {
 
 class _ForumScreenState extends State<ForumScreen>
     with TickerProviderStateMixin {
-  bool _showAddBtn;
+  late bool _showAddBtn;
   String _category = 'All';
-  ScrollController _scrollController;
+  ScrollController? _scrollController;
   final _categories = ['All', 'Category1', 'Category2', 'Category3'];
 
   @override
@@ -34,14 +34,14 @@ class _ForumScreenState extends State<ForumScreen>
     super.initState();
     _showAddBtn = false;
     _scrollController = ScrollController();
-    _scrollController.addListener(() {
-      if (_scrollController.position.userScrollDirection ==
+    _scrollController!.addListener(() {
+      if (_scrollController!.position.userScrollDirection ==
           ScrollDirection.reverse) {
         setState(() {
           _showAddBtn = true;
         });
       }
-      if (_scrollController.position.userScrollDirection ==
+      if (_scrollController!.position.userScrollDirection ==
           ScrollDirection.forward) {
         setState(() {
           _showAddBtn = false;
@@ -118,17 +118,17 @@ class _ForumScreenState extends State<ForumScreen>
                     ],
                   ),
                   ListView.builder(
-                    itemCount: state.forums.length,
+                    itemCount: state.forums!.length,
                     shrinkWrap: true,
                     padding: EdgeInsets.zero,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
                       return QuestionItem(
-                        question: state.forums[index],
+                        question: state.forums![index],
                         onTap: () {
                           context
                               .read<AnswerBloc>()
-                              .add(LoadAnswers(state.forums[index]));
+                              .add(LoadAnswers(state.forums![index]));
 
                           Navigator.pushNamed(
                               context, ForumDiscussScreen.ROUTE_NAME);
@@ -167,7 +167,7 @@ class _ForumScreenState extends State<ForumScreen>
         ),
         builder: (context) {
           return AddUpdateQuestionModal(
-            onSubmit: (question, tags, category, images) {
+            onSubmit: (question, tags, category, images) async {
               if (!isAuthenticated) {
                 return showLoginDialog(context);
               }

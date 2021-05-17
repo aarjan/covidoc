@@ -68,14 +68,14 @@ extension IntExtensions on int {
   }
 }
 
-extension ShowToast on GlobalKey<ScaffoldState> {
+extension ShowToast on GlobalKey<ScaffoldMessengerState> {
   void toast(
     String msg, {
-    SnackBarBehavior behavior,
+    SnackBarBehavior? behavior,
     Duration duration = const Duration(seconds: 2),
   }) {
     currentState
-      ..removeCurrentSnackBar()
+      ?..removeCurrentSnackBar()
       ..showSnackBar(SnackBar(
         content: Text(
           msg,
@@ -90,11 +90,11 @@ extension ShowToast on GlobalKey<ScaffoldState> {
 extension ShowContextToast on BuildContext {
   void toast(
     String msg, {
-    SnackBarBehavior behavior,
+    SnackBarBehavior? behavior,
     Duration duration = const Duration(seconds: 2),
   }) {
-    Scaffold.of(this).removeCurrentSnackBar();
-    Scaffold.of(this).showSnackBar(SnackBar(
+    ScaffoldMessenger.of(this).removeCurrentSnackBar();
+    ScaffoldMessenger.of(this).showSnackBar(SnackBar(
       content: Text(
         msg,
         textAlign: (behavior != null) ? TextAlign.center : TextAlign.start,
@@ -105,9 +105,9 @@ extension ShowContextToast on BuildContext {
   }
 
   void toastWithAction(String msg,
-      {String actionMsg, VoidCallback actionCallback}) {
-    Scaffold.of(this).removeCurrentSnackBar();
-    Scaffold.of(this).showSnackBar(
+      {required String actionMsg, required VoidCallback actionCallback}) {
+    ScaffoldMessenger.of(this).removeCurrentSnackBar();
+    ScaffoldMessenger.of(this).showSnackBar(
       SnackBar(
         content: Text(msg),
         action: SnackBarAction(
@@ -135,14 +135,16 @@ extension DateTimeExtension on DateTime {
   String get formattedDay => '${day.padInt} ${AppConst.MONTH[month]}';
 }
 
-class DateTimeConverter implements JsonConverter<DateTime, int> {
+class DateTimeConverter implements JsonConverter<DateTime?, int?> {
   const DateTimeConverter();
 
   @override
-  DateTime fromJson(int json) => DateTime.fromMillisecondsSinceEpoch(json);
+  DateTime fromJson(int? json) =>
+      json != null ? DateTime.fromMillisecondsSinceEpoch(json) : DateTime.now();
 
   @override
-  int toJson(DateTime object) => object.millisecondsSinceEpoch;
+  int toJson(DateTime? object) =>
+      object?.millisecondsSinceEpoch ?? DateTime.now().millisecondsSinceEpoch;
 }
 
 String getCovidStatus(int status) {

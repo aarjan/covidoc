@@ -10,7 +10,7 @@ import 'package:covidoc/bloc/user/user_bloc.dart';
 class PatientDescScreen extends StatelessWidget {
   static const ROUTE_NAME = '/register/description';
 
-  const PatientDescScreen();
+  const PatientDescScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,25 +20,27 @@ class PatientDescScreen extends StatelessWidget {
           Navigator.pushNamed(context, CovidStatusScreen.ROUTE_NAME);
         }
       },
-      child: PatientDescription(),
+      child: const PatientDescription(),
     );
   }
 }
 
 class PatientDescription extends StatefulWidget {
+  const PatientDescription({Key? key}) : super(key: key);
+
   @override
   _PatientDescriptionState createState() => _PatientDescriptionState();
 }
 
 class _PatientDescriptionState extends State<PatientDescription> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  int _age;
-  String _name;
-  String _gender;
-  String _location;
-  String _language;
+  int? _age;
+  String? _name;
+  String? _gender;
+  String? _location;
+  String? _language;
 
-  FocusScopeNode _node;
+  late FocusScopeNode _node;
 
   @override
   void didChangeDependencies() {
@@ -60,8 +62,16 @@ class _PatientDescriptionState extends State<PatientDescription> {
         title: Text('Describe Yourself', style: AppFonts.SEMIBOLD_BLACK3_16),
         centerTitle: true,
         automaticallyImplyLeading: false,
-        bottom: ProgressBar(
-            [AppColors.DEFAULT, AppColors.WHITE3, AppColors.WHITE3]),
+        bottom: PreferredSize(
+          preferredSize: const Size(double.infinity, 2),
+          child: Row(
+            children: [AppColors.DEFAULT, AppColors.WHITE3, AppColors.WHITE3]
+                .map((e) => Flexible(
+                    child:
+                        Container(color: e, width: double.infinity, height: 2)))
+                .toList(),
+          ),
+        ),
       ),
       body: Form(
         key: _formKey,
@@ -77,8 +87,8 @@ class _PatientDescriptionState extends State<PatientDescription> {
                       FormInput(
                         title: 'Name',
                         onEdit: _node.nextFocus,
-                        onSave: (val) => _name = val.trim(),
-                        onValidate: (val) => val.trim().isEmpty
+                        onSave: (val) => _name = val!.trim(),
+                        onValidate: (val) => val!.trim().isEmpty
                             ? AppConst.FULLNAME_LENGTH_ERROR
                             : null,
                       ),
@@ -88,31 +98,32 @@ class _PatientDescriptionState extends State<PatientDescription> {
                         isNumber: true,
                         onEdit: _node.nextFocus,
                         onSave: (val) =>
-                            _age = int.tryParse(val.trim(), radix: 10),
+                            _age = int.tryParse(val!.trim(), radix: 10),
                         onValidate: (val) =>
-                            val.trim().isEmpty ? AppConst.AGE_ERROR : null,
+                            val!.trim().isEmpty ? AppConst.AGE_ERROR : null,
                       ),
                       const SizedBox(height: 16),
                       FormInput(
                         title: 'Gender',
                         onEdit: _node.nextFocus,
-                        onSave: (val) => _gender = val.trim(),
+                        onSave: (val) => _gender = val!.trim(),
                         onValidate: (val) =>
-                            val.trim().isEmpty ? AppConst.GENDER_ERROR : null,
+                            val!.trim().isEmpty ? AppConst.GENDER_ERROR : null,
                       ),
                       const SizedBox(height: 16),
                       FormInput(
                         title: 'Location',
                         onEdit: _node.nextFocus,
-                        onSave: (val) => _location = val.trim(),
-                        onValidate: (val) =>
-                            val.trim().isEmpty ? AppConst.LOCATION_ERROR : null,
+                        onSave: (val) => _location = val!.trim(),
+                        onValidate: (val) => val!.trim().isEmpty
+                            ? AppConst.LOCATION_ERROR
+                            : null,
                       ),
                       const SizedBox(height: 16),
                       FormInput(
                         title: 'Language',
                         onEdit: _node.nextFocus,
-                        onSave: (val) => _language = val.trim(),
+                        onSave: (val) => _language = val!.trim(),
                       ),
                       const SizedBox(height: 16),
                     ],
@@ -123,10 +134,10 @@ class _PatientDescriptionState extends State<PatientDescription> {
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () {
-                    _formKey.currentState.save();
+                    _formKey.currentState!.save();
                     FocusScope.of(context).unfocus();
 
-                    if (_formKey.currentState.validate()) {
+                    if (_formKey.currentState!.validate()) {
                       final user = AppUser(
                         fullname: _name,
                         detail: {

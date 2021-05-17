@@ -15,7 +15,7 @@ import 'components/components.dart';
 class DocChatListScreen extends StatefulWidget {
   static const ROUTE_NAME = '/chat/list';
 
-  const DocChatListScreen();
+  const DocChatListScreen({Key? key}) : super(key: key);
 
   @override
   _DocChatListScreenState createState() => _DocChatListScreenState();
@@ -44,12 +44,12 @@ class _DocChatListScreenState extends State<DocChatListScreen> {
             if (state is ChatLoadSuccess && state.conversationStarted) {
               context
                   .read<MessageBloc>()
-                  .add(SubscribeMsg(chatId: state.chatWith.id));
+                  .add(SubscribeMsg(chatId: state.chatWith!.id));
 
               Navigator.push(
                   context,
                   getRoute(
-                      ChatScreen(chat: state.chatWith, isFromPatient: false)));
+                      ChatScreen(chat: state.chatWith!, isFromPatient: false)));
             }
           },
           child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
@@ -77,7 +77,7 @@ class _DocChatListScreenState extends State<DocChatListScreen> {
 
 class _ChatListView extends StatelessWidget {
   const _ChatListView(this.user, this.chats, this.requests);
-  final AppUser user;
+  final AppUser? user;
   final List<Chat> chats;
   final List<MessageRequest> requests;
 
@@ -104,7 +104,7 @@ class _ChatListView extends StatelessWidget {
           shrinkWrap: true,
           itemBuilder: (context, index) => Column(
             children: [
-              ChatItem(chats[index], false),
+              ChatItem(chat: chats[index], isFromPatient: false),
               const Divider(),
             ],
           ),
@@ -131,15 +131,15 @@ class _ChatListView extends StatelessWidget {
               onSubmit: () {
                 context.read<ChatBloc>().add(
                       StartChat(Chat(
-                        docId: user.id,
+                        docId: user!.id,
                         requestId: request.id,
-                        docAvatar: user.avatar,
-                        docName: user.fullname,
+                        docAvatar: user!.avatar,
+                        docName: user!.fullname,
                         patId: request.postedBy,
                         consultReqMessage: request.message,
                         lastTimestamp: DateTime.now().toUtc(),
-                        patName: request.patDetail['fullname'],
-                        patAvatar: request.patDetail['avatar'],
+                        patName: request.patDetail!['fullname'],
+                        patAvatar: request.patDetail!['avatar'],
                       )),
                     );
                 // remove the current requests from the list

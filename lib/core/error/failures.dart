@@ -5,10 +5,10 @@ abstract class Failure extends Equatable {}
 class ServerFailure extends Failure implements Exception {
   ServerFailure(this.error);
 
-  final String error;
+  final String? error;
 
   @override
-  List<Object> get props => [error];
+  List<Object?> get props => [error];
 
   @override
   String toString() {

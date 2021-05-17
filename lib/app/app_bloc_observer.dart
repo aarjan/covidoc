@@ -10,8 +10,8 @@ class AppBlocObserver extends BlocObserver {
   }
 
   @override
-  void onError(Cubit cubit, Object error, StackTrace stackTrace) {
-    log('onError(${cubit.runtimeType}, $error, $stackTrace)');
-    super.onError(cubit, error, stackTrace);
+  void onError(BlocBase bloc, Object error, StackTrace stackTrace) {
+    log('onError(${bloc.runtimeType}, $error, $stackTrace)');
+    super.onError(bloc, error, stackTrace);
   }
 }

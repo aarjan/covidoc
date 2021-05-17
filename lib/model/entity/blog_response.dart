@@ -6,10 +6,10 @@ part 'blog_response.g.dart';
 
 @JsonSerializable()
 class BlogResp extends Equatable {
-  final List<Blog> data;
-  final int totalCount;
-  final bool status;
-  final String message;
+  final List<Blog>? data;
+  final int? totalCount;
+  final bool? status;
+  final String? message;
 
   const BlogResp({this.data, this.totalCount, this.status, this.message});
 
@@ -19,7 +19,7 @@ class BlogResp extends Equatable {
   Map<String, dynamic> toJson() => _$BlogRespToJson(this);
 
   @override
-  List<Object> get props => [data, totalCount, status, message];
+  List<Object?> get props => [data, totalCount, status, message];
 
   @override
   String toString() {

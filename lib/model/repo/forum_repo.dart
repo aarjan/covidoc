@@ -10,7 +10,7 @@ class ForumRepo {
 
   ForumRepo(this.sessionRepo);
 
-  Future<List<Forum>> getForums({String category}) async {
+  Future<List<Forum>> getForums({String? category}) async {
     final firestore = FirebaseFirestore.instance;
     var query = firestore.collection('forum').limit(20);
 
@@ -20,16 +20,15 @@ class ForumRepo {
 
     final fRef = await query.orderBy('createdAt', descending: true).get();
 
-    if (fRef != null && fRef.docs.isNotEmpty) {
+    if (fRef.docs.isNotEmpty) {
       return fRef.docs
-          ?.map((e) =>
-              e == null ? null : Forum.fromJson(e.data()).copyWith(id: e.id))
-          ?.toList();
+          .map((e) => Forum.fromJson(e.data()).copyWith(id: e.id))
+          .toList();
     }
     return [];
   }
 
-  Future<List<Answer>> getAnswers(String questionId) async {
+  Future<List<Answer>> getAnswers(String? questionId) async {
     final firestore = FirebaseFirestore.instance;
     final fRef = await firestore
         .collection('forum/$questionId/answer')
@@ -37,11 +36,10 @@ class ForumRepo {
         .orderBy('updatedAt', descending: false)
         .get();
 
-    if (fRef != null && fRef.docs.isNotEmpty) {
+    if (fRef.docs.isNotEmpty) {
       return fRef.docs
-          ?.map((e) =>
-              e == null ? null : Answer.fromJson(e.data()).copyWith(id: e.id))
-          ?.toList();
+          .map((e) => Answer.fromJson(e.data()).copyWith(id: e.id))
+          .toList();
     }
     return [];
   }
@@ -57,7 +55,7 @@ class ForumRepo {
     await firestore.collection('forum').doc(forum.id).update(forum.toJson());
   }
 
-  Future<void> delQuestion(String questionId) async {
+  Future<void> delQuestion(String? questionId) async {
     final firestore = FirebaseFirestore.instance;
     await firestore.doc('forum/$questionId').delete();
   }
@@ -77,7 +75,7 @@ class ForumRepo {
     return answer.copyWith(id: aRef.id);
   }
 
-  Future<void> delAnswer(String questionId, String answerId) async {
+  Future<void> delAnswer(String? questionId, String? answerId) async {
     final firestore = FirebaseFirestore.instance;
     await firestore.doc('forum/$questionId/answer/$answerId').delete();
 
@@ -101,7 +99,7 @@ class ForumRepo {
     return res.ref.getDownloadURL();
   }
 
-  Future<AppUser> getUser() async {
+  Future<AppUser?> getUser() async {
     return sessionRepo.getUser();
   }
 }

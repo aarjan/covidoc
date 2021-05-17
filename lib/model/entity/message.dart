@@ -22,22 +22,22 @@ class Message extends Equatable {
     this.timestamp,
   });
 
-  final String id;
-  final String docId;
-  final String patId;
-  final String chatId;
-  final String message;
-  final String msgFrom;
-  final bool readStatus;
+  final String? id;
+  final String? docId;
+  final String? patId;
+  final String? chatId;
+  final String? message;
+  final String? msgFrom;
+  final bool? readStatus;
 
-  final DateTime timestamp;
-  final MessageType msgType;
+  final DateTime? timestamp;
+  final MessageType? msgType;
 
   @JsonKey(defaultValue: <String>[])
   final List<String> documents;
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         docId,
         patId,
@@ -56,16 +56,16 @@ class Message extends Equatable {
   Map<String, dynamic> toJson() => _$MessageToJson(this);
 
   Message copyWith({
-    String id,
-    String docId,
-    String patId,
-    String chatId,
-    String message,
-    String msgFrom,
-    String timestamp,
-    String readStatus,
-    MessageType msgType,
-    List<String> documents,
+    String? id,
+    String? docId,
+    String? patId,
+    String? chatId,
+    String? message,
+    String? msgFrom,
+    String? timestamp,
+    String? readStatus,
+    MessageType? msgType,
+    List<String>? documents,
   }) {
     return Message(
       id: id ?? this.id,
@@ -75,9 +75,9 @@ class Message extends Equatable {
       message: message ?? this.message,
       msgFrom: msgFrom ?? this.msgFrom,
       msgType: msgType ?? this.msgType,
-      timestamp: timestamp ?? this.timestamp,
+      timestamp: timestamp as DateTime? ?? this.timestamp,
       documents: documents ?? this.documents,
-      readStatus: readStatus ?? this.readStatus,
+      readStatus: readStatus as bool? ?? this.readStatus,
     );
   }
 }

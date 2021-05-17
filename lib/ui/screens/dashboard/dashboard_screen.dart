@@ -11,9 +11,9 @@ import 'package:covidoc/ui/screens/screens.dart';
 
 class DashboardScreen extends StatelessWidget {
   static const ROUTE_NAME = '/dashboard';
-  final AppUser user;
+  final AppUser? user;
 
-  const DashboardScreen({this.user});
+  const DashboardScreen({Key? key, this.user}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -35,15 +35,15 @@ class DashboardScreen extends StatelessWidget {
 
 class UpperHalf extends StatelessWidget {
   const UpperHalf({
-    Key key,
+    Key? key,
     this.user,
   }) : super(key: key);
 
-  final AppUser user;
+  final AppUser? user;
 
   @override
   Widget build(BuildContext context) {
-    final greetTxt = user == null ? 'Hey!' : 'Hey! \n${user.fullname}';
+    final greetTxt = user == null ? 'Hey!' : 'Hey! \n${user!.fullname}';
 
     return Container(
       color: AppColors.DEFAULT,
@@ -112,7 +112,7 @@ class UpperHalf extends StatelessWidget {
 }
 
 class LowerHalf extends StatelessWidget {
-  const LowerHalf();
+  const LowerHalf({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -152,12 +152,12 @@ class LowerHalf extends StatelessWidget {
 }
 
 class CardsView extends StatelessWidget {
-  final Color color;
-  final String title;
-  final String image;
-  final Function() onTap;
+  final Color? color;
+  final String? title;
+  final String? image;
+  final Function()? onTap;
 
-  const CardsView({Key key, this.color, this.title, this.onTap, this.image})
+  const CardsView({Key? key, this.color, this.title, this.onTap, this.image})
       : super(key: key);
 
   @override
@@ -176,7 +176,7 @@ class CardsView extends StatelessWidget {
             Positioned(
               top: 25,
               left: 16,
-              child: Text(title, style: AppFonts.MEDIUM_WHITE_16),
+              child: Text(title!, style: AppFonts.MEDIUM_WHITE_16),
             ),
             Positioned(
               top: 60,
@@ -188,7 +188,7 @@ class CardsView extends StatelessWidget {
             Positioned(
               bottom: 0,
               right: 13,
-              child: SvgPicture.asset(image),
+              child: SvgPicture.asset(image!),
             ),
           ],
         ),

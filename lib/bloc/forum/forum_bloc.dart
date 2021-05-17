@@ -7,21 +7,21 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ForumEvent extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class ForumState extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class LoadForum extends ForumEvent {
-  final String category;
+  final String? category;
 
   LoadForum({this.category});
 
   @override
-  List<Object> get props => [category];
+  List<Object?> get props => [category];
 }
 
 class AddImages extends ForumEvent {
@@ -41,11 +41,11 @@ class AddForum extends ForumEvent {
 }
 
 class DeleteForum extends ForumEvent {
-  final String forumId;
+  final String? forumId;
   DeleteForum(this.forumId);
 
   @override
-  List<Object> get props => [forumId];
+  List<Object?> get props => [forumId];
 }
 
 class UpdateForum extends ForumEvent {
@@ -62,19 +62,19 @@ class ForumInitial extends ForumState {}
 class ForumLoadInProgress extends ForumState {}
 
 class ForumLoadSuccess extends ForumState {
-  final List<Forum> forums;
-  final List<String> categories;
-  final List<String> uploadedImgUrls;
+  final List<Forum>? forums;
+  final List<String>? categories;
+  final List<String>? uploadedImgUrls;
 
   ForumLoadSuccess({this.forums, this.categories, this.uploadedImgUrls});
 
   @override
-  List<Object> get props => [forums, categories, uploadedImgUrls];
+  List<Object?> get props => [forums, categories, uploadedImgUrls];
 
   ForumLoadSuccess copyWith({
-    List<Forum> forums,
-    List<String> categories,
-    List<String> uploadedImgUrls,
+    List<Forum>? forums,
+    List<String>? categories,
+    List<String>? uploadedImgUrls,
   }) {
     return ForumLoadSuccess(
       forums: forums ?? this.forums,
@@ -100,19 +100,19 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
   Stream<ForumState> mapEventToState(ForumEvent event) async* {
     switch (event.runtimeType) {
       case LoadForum:
-        yield* _mapLoadForumEventToState(event);
+        yield* _mapLoadForumEventToState(event as LoadForum);
         break;
       case AddImages:
-        yield* _mapAddImagesEventToState(event);
+        yield* _mapAddImagesEventToState(event as AddImages);
         break;
       case UpdateForum:
-        yield* _mapUpdateForumEventToState(event);
+        yield* _mapUpdateForumEventToState(event as UpdateForum);
         break;
       case AddForum:
-        yield* _mapAddForumEventToState(event);
+        yield* _mapAddForumEventToState(event as AddForum);
         break;
       case DeleteForum:
-        yield* _mapDeleteForumEventToState(event);
+        yield* _mapDeleteForumEventToState(event as DeleteForum);
         break;
       default:
     }
@@ -147,24 +147,24 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
       // Add images
       final imgUrls = <String>[];
       for (final f in event.images) {
-        final url = await repo.uploadImage(f.file);
+        final url = await repo.uploadImage(f.file!);
         imgUrls.add(url);
       }
       final user = await repo.getUser();
 
       final nForum = event.forum.copyWith(
         imageUrls: imgUrls,
-        addedById: user.id,
-        addedByType: user.type,
-        addedByAvatar: user.avatar,
-        addedByName: user.fullname,
+        addedById: user?.id,
+        addedByType: user?.type,
+        addedByAvatar: user?.avatar,
+        addedByName: user?.fullname,
         createdAt: DateTime.now().toUtc(),
         updatedAt: DateTime.now().toUtc(),
       );
 
       final forum = await repo.addForum(nForum);
 
-      final nForums = List<Forum>.from([forum, ...curState.forums]);
+      final nForums = List<Forum>.from([forum, ...curState.forums!]);
 
       yield curState.copyWith(forums: nForums);
     }
@@ -176,10 +176,10 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
       yield ForumLoadInProgress();
 
       // Add images
-      final imgUrls = <String>[];
+      final imgUrls = <String?>[];
       for (final f in event.images) {
         if (f.source == PhotoSource.File) {
-          final url = await repo.uploadImage(f.file);
+          final url = await repo.uploadImage(f.file!);
           imgUrls.add(url);
         } else {
           imgUrls.add(f.url);
@@ -194,7 +194,7 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
       await repo.updateForum(nForum);
 
       yield curState.copyWith(
-          forums: curState.forums
+          forums: curState.forums!
               .map((f) => f.id == event.forum.id ? nForum : f)
               .toList());
     }
@@ -208,7 +208,8 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
       await repo.delQuestion(event.forumId);
 
       yield curState.copyWith(
-          forums: curState.forums.where((f) => f.id != event.forumId).toList());
+          forums:
+              curState.forums!.where((f) => f.id != event.forumId).toList());
     }
   }
 }

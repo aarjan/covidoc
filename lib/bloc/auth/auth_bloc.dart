@@ -27,7 +27,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         final user = await repo.getUser();
         if (user != null) {
           yield Authenticated(
-            profileVerification: user?.profileVerification ?? false,
+            profileVerification: user.profileVerification,
           );
         } else
           yield UnAuthenticated();

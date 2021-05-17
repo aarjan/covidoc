@@ -9,35 +9,35 @@ import 'package:covidoc/model/entity/entity.dart';
 
 class MessageEvent extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class UpdateData extends MessageEvent {
   final List<Message> data;
-  final String chatId;
+  final String? chatId;
 
   UpdateData(this.data, this.chatId);
 
   @override
-  List<Object> get props => [data, chatId];
+  List<Object?> get props => [data, chatId];
 }
 
 class SubscribeMsg extends MessageEvent {
-  final String chatId;
+  final String? chatId;
 
   SubscribeMsg({this.chatId});
 
   @override
-  List<Object> get props => [chatId];
+  List<Object?> get props => [chatId];
 }
 
 class LoadMsgs extends MessageEvent {
-  final String chatId;
+  final String? chatId;
 
   LoadMsgs({this.chatId});
 
   @override
-  List<Object> get props => [chatId];
+  List<Object?> get props => [chatId];
 }
 
 class EditMsg extends MessageEvent {
@@ -50,28 +50,28 @@ class EditMsg extends MessageEvent {
 }
 
 class DeleteMsg extends MessageEvent {
-  final String chatId;
-  final List<String> msgIds;
+  final String? chatId;
+  final List<String>? msgIds;
 
   DeleteMsg({this.msgIds, this.chatId});
 
   @override
-  List<Object> get props => [msgIds, chatId];
+  List<Object?> get props => [msgIds, chatId];
 }
 
 class SendMsg extends MessageEvent {
-  final Message msg;
-  final List<Photo> images;
+  final Message? msg;
+  final List<Photo>? images;
 
   SendMsg({this.msg, this.images});
 
   @override
-  List<Object> get props => [msg, images];
+  List<Object?> get props => [msg, images];
 }
 
 class MessageState extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class MessageInitial extends MessageState {}
@@ -79,17 +79,17 @@ class MessageInitial extends MessageState {}
 class MessageLoadInProgress extends MessageState {}
 
 class MessageLoadSuccess extends MessageState {
-  final String chatId;
+  final String? chatId;
   final bool hasReachedEnd;
-  final List<Message> msgs;
+  final List<Message>? msgs;
 
   MessageLoadSuccess({this.msgs, this.chatId, this.hasReachedEnd = false});
 
   @override
-  List<Object> get props => [msgs, chatId, hasReachedEnd];
+  List<Object?> get props => [msgs, chatId, hasReachedEnd];
 
   MessageLoadSuccess copyWith(
-      {List<Message> msgs, String chatId, bool hasReachedEnd}) {
+      {List<Message>? msgs, String? chatId, bool? hasReachedEnd}) {
     return MessageLoadSuccess(
       msgs: msgs ?? this.msgs,
       chatId: chatId ?? this.chatId,
@@ -100,9 +100,9 @@ class MessageLoadSuccess extends MessageState {
 
 class MessageBloc extends Bloc<MessageEvent, MessageState> {
   final MessageRepo repo;
-  StreamSubscription<QuerySnapshot> subscription;
+  StreamSubscription<QuerySnapshot>? subscription;
 
-  MessageBloc({this.repo}) : super(MessageInitial());
+  MessageBloc({required this.repo}) : super(MessageInitial());
 
   @override
   Future<void> close() {
@@ -114,22 +114,22 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
   Stream<MessageState> mapEventToState(MessageEvent event) async* {
     switch (event.runtimeType) {
       case SubscribeMsg:
-        yield* _mapSubscribeMsgEventToState(event);
+        yield* _mapSubscribeMsgEventToState(event as SubscribeMsg);
         break;
       case UpdateData:
-        yield* _mapUpdateDataEventToState(event);
+        yield* _mapUpdateDataEventToState(event as UpdateData);
         break;
       case LoadMsgs:
-        yield* _mapLoadMsgsEventToState(event);
+        yield* _mapLoadMsgsEventToState(event as LoadMsgs);
         break;
       case SendMsg:
-        yield* _mapSendMsgEventToState(event);
+        yield* _mapSendMsgEventToState(event as SendMsg);
         break;
       case EditMsg:
-        yield* _mapEditMsgEventToState(event);
+        yield* _mapEditMsgEventToState(event as EditMsg);
         break;
       case DeleteMsg:
-        yield* _mapDeleteMsgEventToState(event);
+        yield* _mapDeleteMsgEventToState(event as DeleteMsg);
         break;
       default:
     }
@@ -150,7 +150,8 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
 
     subscription = repo.messageSubscription(event.chatId).listen((msgEvent) {
       final msgs = msgEvent.docs
-          .map((e) => Message.fromJson(e.data()).copyWith(id: e.id))
+          .map((e) => Message.fromJson(e.data() as Map<String, dynamic>)
+              .copyWith(id: e.id))
           .toList();
       add(UpdateData(msgs, event.chatId));
     });
@@ -172,16 +173,16 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
 
       // If currentState has no message
       // OR, currentState has reached end of the message list
-      if (curState.msgs.isEmpty || curState.hasReachedEnd) {
+      if (curState.msgs!.isEmpty || curState.hasReachedEnd) {
         return;
       }
 
       yield MessageLoadInProgress();
       final msgs = await repo.loadMessages(event.chatId,
-          lastTimestamp: curState.msgs.last.timestamp.millisecondsSinceEpoch);
+          lastTimestamp: curState.msgs!.last.timestamp!.millisecondsSinceEpoch);
 
       yield curState.copyWith(
-          msgs: [...curState.msgs, ...msgs], hasReachedEnd: msgs.isEmpty);
+          msgs: [...curState.msgs!, ...msgs], hasReachedEnd: msgs.isEmpty);
 
       return;
     }
@@ -197,19 +198,19 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
 
       // Add images
       final documents = <String>[];
-      for (final f in event.images) {
-        if (event.msg.msgType == MessageType.Audio) {
-          final url = await repo.uploadAudio(f.file);
+      for (final f in event.images!) {
+        if (event.msg!.msgType == MessageType.Audio) {
+          final url = await repo.uploadAudio(f.file!);
           documents.add(url);
         } else {
-          final url = await repo.uploadImage(f.file);
+          final url = await repo.uploadImage(f.file!);
           documents.add(url);
         }
       }
-      final nMsg = event.msg.copyWith(documents: documents);
+      final nMsg = event.msg!.copyWith(documents: documents);
 
       await repo.sendMessage(nMsg);
-      await repo.updateLastMsg(event.msg.chatId, event.msg.message);
+      await repo.updateLastMsg(event.msg!.chatId, event.msg!.message);
 
       // final nMsgs = List<Message>.from([msg, ...curState.msgs]);
       // yield MessageLoadSuccess(msgs: nMsgs);
@@ -218,7 +219,7 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
 
   Stream<MessageState> _mapEditMsgEventToState(EditMsg event) async* {
     if (state is MessageLoadSuccess) {
-      final curMsgs = (state as MessageLoadSuccess).msgs;
+      final curMsgs = (state as MessageLoadSuccess).msgs!;
 
       yield MessageLoadInProgress();
 
@@ -233,14 +234,14 @@ class MessageBloc extends Bloc<MessageEvent, MessageState> {
 
   Stream<MessageState> _mapDeleteMsgEventToState(DeleteMsg event) async* {
     if (state is MessageLoadSuccess) {
-      final curMsgs = (state as MessageLoadSuccess).msgs;
+      final curMsgs = (state as MessageLoadSuccess).msgs!;
 
       yield MessageLoadInProgress();
 
-      await repo.deleteMessage(chatId: event.chatId, msgIds: event.msgIds);
+      await repo.deleteMessage(chatId: event.chatId, msgIds: event.msgIds!);
 
       final newMsgs =
-          curMsgs.where((m) => !event.msgIds.contains(m.id)).toList();
+          curMsgs.where((m) => !event.msgIds!.contains(m.id)).toList();
 
       yield MessageLoadSuccess(msgs: newMsgs);
     }

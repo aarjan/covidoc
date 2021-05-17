@@ -14,7 +14,8 @@ import 'components/message_content.dart';
 class ChatScreen extends StatefulWidget {
   static const ROUTE_NAME = '/chat/message';
 
-  const ChatScreen({this.chat, this.isFromPatient});
+  const ChatScreen({Key? key, required this.chat, required this.isFromPatient})
+      : super(key: key);
 
   final Chat chat;
   final bool isFromPatient;
@@ -24,12 +25,12 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  String userType;
-  List<Message> _msgs;
+  String? userType;
+  List<Message>? _msgs;
   int _deleteCount = 0;
   bool _deleteMode = false;
   bool _hasReachedEnd = false;
-  ScrollController _controller;
+  ScrollController? _controller;
   bool _clearReqmsg = false;
   final List<String> msgIds = [];
 
@@ -39,7 +40,7 @@ class _ChatScreenState extends State<ChatScreen> {
     userType = widget.isFromPatient ? 'Patient' : 'Doctor';
     _controller = ScrollController(initialScrollOffset: 0)
       ..addListener(() {
-        if (_controller.offset == _controller.position.maxScrollExtent &&
+        if (_controller!.offset == _controller!.position.maxScrollExtent &&
             !_hasReachedEnd) {
           context.read<MessageBloc>().add(LoadMsgs(chatId: widget.chat.id));
         }
@@ -62,10 +63,10 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    String toUserId;
-    String fromUserId;
-    String fullname;
-    String avatar;
+    String? toUserId;
+    String? fromUserId;
+    String? fullname;
+    String? avatar;
 
     if (widget.isFromPatient) {
       fromUserId = widget.chat.patId;
@@ -87,10 +88,10 @@ class _ChatScreenState extends State<ChatScreen> {
           name: fullname,
           active: true,
           imgUrl: avatar,
-          userId: toUserId,
+          userId: toUserId!,
           deleteMode: _deleteMode,
           deleteCount: _deleteCount,
-          msgRequest: widget.chat.consultReqMessage,
+          msgRequest: widget.chat.consultReqMessage!,
           onDelete: () {
             context.read<MessageBloc>().add(
                   DeleteMsg(chatId: widget.chat.id, msgIds: msgIds),
@@ -116,11 +117,11 @@ class _ChatScreenState extends State<ChatScreen> {
                       reverse: true,
                       shrinkWrap: true,
                       controller: _controller,
-                      itemCount: _msgs.length,
+                      itemCount: _msgs!.length,
                       padding: EdgeInsets.only(
                           bottom: MediaQuery.of(context).viewInsets.bottom),
                       itemBuilder: (context, index) {
-                        final msg = _msgs[index];
+                        final msg = _msgs![index];
                         final isSender = msg.msgFrom == userType;
                         if (isSender) {
                           return SenderContent(
@@ -170,7 +171,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     children: [
                       Expanded(
                         child: ReadMoreText(
-                          widget.chat.consultReqMessage,
+                          widget.chat.consultReqMessage!,
                           trimLines: 4,
                           trimMode: TrimMode.Line,
                           trimCollapsedText: 'Show more',

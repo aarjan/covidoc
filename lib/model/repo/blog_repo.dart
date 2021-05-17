@@ -18,12 +18,12 @@ class BlogRepo {
     bool featured = false,
   }) async {
     try {
-      final response =
-          await http.get('${AppConst.BLOG_URL}?limit=$limit&offset=$offset');
+      final url = Uri.parse('${AppConst.BLOG_URL}?limit=$limit&offset=$offset');
+      final response = await http.get(url);
       final resp = BlogResp.fromJson(jsonDecode(response.body));
       return Right(resp);
     } catch (e) {
-      return Left(ServerFailure(e));
+      return Left(ServerFailure(e.toString()));
     }
   }
 }

@@ -4,7 +4,6 @@ import 'package:covidoc/bloc/user/user_bloc.dart';
 import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/model/repo/repo.dart';
 import 'package:covidoc/utils/const/const.dart';
-import 'package:covidoc/utils/utils.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -14,7 +13,8 @@ class UserProfileScreen extends StatelessWidget {
 
   final String userId;
   final String msgRequest;
-  const UserProfileScreen({Key key, this.userId, this.msgRequest})
+  const UserProfileScreen(
+      {Key? key, required this.userId, required this.msgRequest})
       : super(key: key);
 
   @override
@@ -42,9 +42,9 @@ class UserProfileScreen extends StatelessWidget {
 
 class UserProfile extends StatelessWidget {
   const UserProfile({
-    Key key,
-    @required this.user,
-    this.msgRequest,
+    Key? key,
+    required this.user,
+    required this.msgRequest,
   }) : super(key: key);
 
   final AppUser user;
@@ -70,14 +70,14 @@ class UserProfile extends StatelessWidget {
             ],
             centerTitle: false,
             title: Text(
-              user.fullname,
+              user.fullname!,
               style: AppFonts.BOLD_WHITE_18,
             ),
             background: Stack(
               fit: StackFit.expand,
               children: [
                 CachedNetworkImage(
-                  imageUrl: user.avatar,
+                  imageUrl: user.avatar!,
                   fit: BoxFit.cover,
                 ),
                 const DecoratedBox(
@@ -118,8 +118,8 @@ class UserProfile extends StatelessWidget {
                       height: 10,
                     ),
                     ListTile(
-                      title: Text(msgRequest ?? '',
-                          style: AppFonts.REGULAR_BLACK3_14),
+                      title:
+                          Text(msgRequest, style: AppFonts.REGULAR_BLACK3_14),
                     ),
                     const SizedBox(
                       height: 20,
@@ -127,30 +127,32 @@ class UserProfile extends StatelessWidget {
                   ],
                 ),
               ListTile(
-                title: Text(user.detail['age'].toString(),
+                title: Text(user.detail!['age'].toString(),
                     style: AppFonts.MEDIUM_BLACK3_14),
                 subtitle: Text('Age', style: AppFonts.REGULAR_WHITE2_11),
               ),
               const Divider(),
               ListTile(
-                title: Text(user.detail['gender'],
+                title: Text(user.detail!['gender'],
                     style: AppFonts.MEDIUM_BLACK3_14),
                 subtitle: Text('Gender', style: AppFonts.REGULAR_WHITE2_11),
               ),
               const Divider(),
               ListTile(
-                title: Text(user.detail['language'],
+                title: Text(user.detail!['language'],
                     style: AppFonts.MEDIUM_BLACK3_14),
                 subtitle: Text('Language', style: AppFonts.REGULAR_WHITE2_11),
               ),
               const Divider(),
               ListTile(
-                title: Text(user.detail['location'],
+                title: Text(user.detail!['location'],
                     style: AppFonts.MEDIUM_BLACK3_14),
                 subtitle: Text('Location', style: AppFonts.REGULAR_WHITE2_11),
               ),
               const Divider(),
-              isPatient ? PatientInfo(user.detail) : DoctorInfo(user.detail),
+              isPatient
+                  ? PatientInfo(detail: user.detail)
+                  : DoctorInfo(detail: user.detail!),
               const Divider(
                 thickness: 10,
               ),
@@ -190,21 +192,21 @@ class UserProfile extends StatelessWidget {
 }
 
 class PatientInfo extends StatelessWidget {
-  const PatientInfo(this.detail);
-  final Map<String, dynamic> detail;
+  const PatientInfo({Key? key, this.detail}) : super(key: key);
+  final Map<String, dynamic>? detail;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
         ListTile(
-          title: Text(detail['covidStatus'].toString(),
+          title: Text(detail!['covidStatus'].toString(),
               style: AppFonts.MEDIUM_BLACK3_14),
           subtitle: Text('CovidStatus', style: AppFonts.REGULAR_WHITE2_11),
         ),
         const Divider(),
         ListTile(
-          title: Text(detail['symptoms'], style: AppFonts.MEDIUM_BLACK3_14),
+          title: Text(detail!['symptoms'], style: AppFonts.MEDIUM_BLACK3_14),
           subtitle: Text('Symptoms', style: AppFonts.REGULAR_WHITE2_11),
         ),
       ],
@@ -213,7 +215,7 @@ class PatientInfo extends StatelessWidget {
 }
 
 class DoctorInfo extends StatelessWidget {
-  const DoctorInfo(this.detail);
+  const DoctorInfo({Key? key, required this.detail}) : super(key: key);
   final Map<String, dynamic> detail;
 
   @override

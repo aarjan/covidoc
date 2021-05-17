@@ -12,7 +12,7 @@ class BlogDetailScreen extends StatelessWidget {
 
   final Blog blog;
 
-  const BlogDetailScreen(this.blog);
+  const BlogDetailScreen({Key? key, required this.blog}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +26,7 @@ class BlogDetailScreen extends StatelessWidget {
           IconButton(
             onPressed: () {
               Share.share(
-                blog.url,
+                blog.url!,
                 subject: 'Check this blog on covidoc!',
               );
             },
@@ -48,7 +48,7 @@ class BlogDetailScreen extends StatelessWidget {
                   child: CachedNetworkImage(
                     fit: BoxFit.cover,
                     height: 214,
-                    imageUrl: blog.blogImg,
+                    imageUrl: blog.blogImg!,
                     errorWidget: (_, url, err) =>
                         const Center(child: Icon(Icons.error_outline)),
                     placeholder: (context, url) =>
@@ -59,10 +59,10 @@ class BlogDetailScreen extends StatelessWidget {
                 Row(
                   children: [
                     Expanded(
-                      child: Text(blog.categoryTitle,
+                      child: Text(blog.categoryTitle!,
                           style: AppFonts.REGULAR_GREEN1_12),
                     ),
-                    Text(blog.publishedAt.formattedTime,
+                    Text(blog.publishedAt!.formattedTime,
                         style: AppFonts.REGULAR_WHITE3_12),
                     Container(
                       width: 2,
@@ -70,13 +70,13 @@ class BlogDetailScreen extends StatelessWidget {
                       color: AppColors.BLACK3,
                       margin: const EdgeInsets.all(10),
                     ),
-                    Text(blog.description.readingDuration,
+                    Text(blog.description!.readingDuration,
                         style: AppFonts.REGULAR_WHITE3_12),
                   ],
                 ),
                 const SizedBox(height: 7),
                 Text(
-                  blog.title,
+                  blog.title!,
                   maxLines: 3,
                   overflow: TextOverflow.ellipsis,
                   style: AppFonts.MEDIUM_BLACK3_20,
@@ -99,7 +99,7 @@ class BlogDetailScreen extends StatelessWidget {
                 ),
 
                 HtmlWidget(
-                  blog.description,
+                  blog.description!,
                   onTapUrl: launchURL,
                   buildAsync: true,
                   textStyle: AppFonts.REGULAR_BLACK3_14,

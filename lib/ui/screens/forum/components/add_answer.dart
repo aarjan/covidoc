@@ -11,25 +11,25 @@ import 'package:covidoc/model/entity/entity.dart';
 
 class AddAnswerField extends StatefulWidget {
   const AddAnswerField({
-    Key key,
+    Key? key,
     this.text,
     this.onSend,
     this.images,
     this.updateAnswer = false,
   }) : super(key: key);
 
-  final String text;
-  final List<Photo> images;
+  final String? text;
+  final List<Photo>? images;
   final bool updateAnswer;
-  final void Function(String, List<Photo>) onSend;
+  final void Function(String?, List<Photo>)? onSend;
 
   @override
   _AddAnswerState createState() => _AddAnswerState();
 }
 
 class _AddAnswerState extends State<AddAnswerField> {
-  String _txt;
-  FocusScopeNode currentFocus;
+  String? _txt;
+  late FocusScopeNode currentFocus;
   final List<Photo> _attachedImages = [];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -41,7 +41,7 @@ class _AddAnswerState extends State<AddAnswerField> {
     if (widget.updateAnswer) {
       _txt = widget.text;
 
-      for (final e in widget.images) {
+      for (final e in widget.images!) {
         _attachedImages.add(Photo(
           source: PhotoSource.Network,
           url: e.url,
@@ -100,7 +100,7 @@ class _AddAnswerState extends State<AddAnswerField> {
                     key: _formKey,
                     child: TextFormField(
                       autofocus: false,
-                      onSaved: (val) => _txt = val.trim(),
+                      onSaved: (val) => _txt = val!.trim(),
                       minLines: 1,
                       maxLines: 5,
                       decoration: InputDecoration(
@@ -131,18 +131,18 @@ class _AddAnswerState extends State<AddAnswerField> {
                 ),
                 InkWell(
                   onTap: () {
-                    _formKey.currentState.save();
+                    _formKey.currentState!.save();
 
-                    if (_formKey.currentState.validate() &&
-                        (_txt.isNotEmpty || _attachedImages.isNotEmpty)) {
+                    if (_formKey.currentState!.validate() &&
+                        (_txt!.isNotEmpty || _attachedImages.isNotEmpty)) {
                       // remove focus from Textformfield
                       if (!currentFocus.hasPrimaryFocus) {
                         currentFocus.unfocus();
                       }
 
-                      widget.onSend(_txt, _attachedImages);
+                      widget.onSend!(_txt, _attachedImages);
 
-                      _formKey.currentState.reset();
+                      _formKey.currentState!.reset();
                     }
                   },
                   borderRadius: BorderRadius.circular(10),

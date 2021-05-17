@@ -5,14 +5,14 @@ class BlogEvent extends Equatable {
   const BlogEvent();
 
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class LoadBlog extends BlogEvent {
   final int limit;
   final int offset;
   final bool addData;
-  final BlogType type;
+  final BlogType? type;
 
   const LoadBlog([
     this.type,
@@ -22,7 +22,7 @@ class LoadBlog extends BlogEvent {
   ]);
 
   @override
-  List<Object> get props => [limit, offset, addData, type];
+  List<Object?> get props => [limit, offset, addData, type];
 
   @override
   String toString() {
@@ -35,7 +35,7 @@ class LoadFeaturedBlog extends BlogEvent {
   final int limit;
   final int offset;
   final bool addData;
-  final BlogType type;
+  final BlogType? type;
 
   const LoadFeaturedBlog([
     this.type,
@@ -46,7 +46,7 @@ class LoadFeaturedBlog extends BlogEvent {
   ]);
 
   @override
-  List<Object> get props => [limit, offset, addData, type];
+  List<Object?> get props => [limit, offset, addData, type];
 
   @override
   String toString() {

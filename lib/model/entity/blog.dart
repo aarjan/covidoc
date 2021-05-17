@@ -7,18 +7,18 @@ enum BlogType { Featured, Regular }
 
 @JsonSerializable()
 class Blog extends Equatable {
-  final int id;
-  final String url;
-  final String title;
-  final bool featured;
-  final String seoTitle;
-  final String description;
-  final DateTime publishedBy;
-  final String blogImg;
-  final int categoryID;
-  final DateTime publishedAt;
-  final String categoryTitle;
-  final String seoDescription;
+  final int? id;
+  final String? url;
+  final String? title;
+  final bool? featured;
+  final String? seoTitle;
+  final String? description;
+  final DateTime? publishedBy;
+  final String? blogImg;
+  final int? categoryID;
+  final DateTime? publishedAt;
+  final String? categoryTitle;
+  final String? seoDescription;
 
   const Blog(
       {this.id,
@@ -39,7 +39,7 @@ class Blog extends Equatable {
   Map<String, dynamic> toJson() => _$BlogToJson(this);
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         url,
         title,

@@ -1,3 +1,4 @@
+import 'package:covidoc/core/error/failures.dart';
 import 'package:covidoc/env.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_twitter_login/flutter_twitter_login.dart';
@@ -15,11 +16,14 @@ class TwitterSignIn {
 
     // Get the Logged In session
     final twitterSession = result.session;
+    if (twitterSession == null) {
+      throw ServerFailure('Server error: null session');
+    }
 
     // Create a credential from the access token
     final twitterAuthCredential = TwitterAuthProvider.credential(
-      accessToken: twitterSession.token,
-      secret: twitterSession.secret,
+      accessToken: twitterSession.token!,
+      secret: twitterSession.secret!,
     );
     // Once signed in, return the UserCredential
     return await FirebaseAuth.instance

@@ -25,14 +25,10 @@ class Routes {
         return getRoute(const PatientDescScreen());
       case DocChatListScreen.ROUTE_NAME:
         return getRoute(const DocChatListScreen());
-      case ChatScreen.ROUTE_NAME:
-        return getRoute(const ChatScreen());
       case DashboardScreen.ROUTE_NAME:
         return getRoute(const DashboardScreen());
       case ForumDiscussScreen.ROUTE_NAME:
         return getRoute(const ForumDiscussScreen());
-      case UserProfileScreen.ROUTE_NAME:
-        return getRoute(const UserProfileScreen());
       default:
 
         /// [TODO]: Show 404 page

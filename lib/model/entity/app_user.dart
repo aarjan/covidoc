@@ -25,22 +25,22 @@ class AppUser extends Equatable {
 
   Map<String, dynamic> toJson() => _$AppUserToJson(this);
 
-  final String id;
-  final String type;
-  final String email;
-  final String avatar;
-  final String fullname;
+  final String? id;
+  final String? type;
+  final String? email;
+  final String? avatar;
+  final String? fullname;
   @JsonKey(defaultValue: <String>[])
   final List<String> chatIds;
   @JsonKey(defaultValue: <String>[])
-  final List<String> chatUsers;
-  final Map<String, dynamic> detail;
+  final List<String?> chatUsers;
+  final Map<String, dynamic>? detail;
   @JsonKey(defaultValue: false)
   final bool profileVerification;
-  final Map<String, String> providerId;
+  final Map<String, String?>? providerId;
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         id,
         type,
         email,
@@ -56,7 +56,7 @@ class AppUser extends Equatable {
   AppUser copyUser(AppUser user) {
     final nDetail = detail ?? <String, dynamic>{};
     if (user.detail != null) {
-      nDetail.addAll(user.detail);
+      nDetail.addAll(user.detail!);
     }
 
     return AppUser(
@@ -67,23 +67,23 @@ class AppUser extends Equatable {
       avatar: user.avatar ?? avatar,
       fullname: user.fullname ?? fullname,
       providerId: user.providerId ?? providerId,
+      profileVerification: user.profileVerification,
       chatIds: user.chatIds.isEmpty ? chatIds : user.chatIds,
       chatUsers: user.chatUsers.isEmpty ? chatUsers : user.chatUsers,
-      profileVerification: user.profileVerification ?? profileVerification,
     );
   }
 
   AppUser copyWith({
-    String id,
-    String type,
-    String email,
-    String avatar,
-    String fullname,
-    List<String> chatIds,
-    List<String> chatUsers,
-    bool profileVerification,
-    Map<String, dynamic> detail,
-    Map<String, String> providerId,
+    String? id,
+    String? type,
+    String? email,
+    String? avatar,
+    String? fullname,
+    List<String>? chatIds,
+    List<String?>? chatUsers,
+    bool? profileVerification,
+    Map<String, dynamic>? detail,
+    Map<String, String>? providerId,
   }) {
     return AppUser(
       id: id ?? this.id,

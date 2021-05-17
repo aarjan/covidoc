@@ -1,4 +1,3 @@
-import 'dart:io';
 import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -7,12 +6,12 @@ import 'package:covidoc/model/repo/forum_repo.dart';
 
 class AnswerEvent extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class AnswerState extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class LoadAnswers extends AnswerEvent {
@@ -22,31 +21,31 @@ class LoadAnswers extends AnswerEvent {
 }
 
 class AddAnswer extends AnswerEvent {
-  final Answer answer;
-  final List<Photo> images;
+  final Answer? answer;
+  final List<Photo>? images;
 
   AddAnswer({this.answer, this.images});
 
   @override
-  List<Object> get props => [answer, images];
+  List<Object?> get props => [answer, images];
 }
 
 class UpdateAnswer extends AnswerEvent {
-  final Answer answer;
-  final List<Photo> images;
+  final Answer? answer;
+  final List<Photo>? images;
   UpdateAnswer({this.answer, this.images});
 
   @override
-  List<Object> get props => [answer, images];
+  List<Object?> get props => [answer, images];
 }
 
 class DeleteAnswer extends AnswerEvent {
-  final String forumId;
-  final String answerId;
+  final String? forumId;
+  final String? answerId;
   DeleteAnswer(this.forumId, this.answerId);
 
   @override
-  List<Object> get props => [forumId, answerId];
+  List<Object?> get props => [forumId, answerId];
 }
 
 class AnswerInitial extends AnswerState {}
@@ -54,10 +53,10 @@ class AnswerInitial extends AnswerState {}
 class AnswerLoadInProgress extends AnswerState {}
 
 class AnswerLoadSuccess extends AnswerState {
-  final Forum question;
-  final List<Answer> answers;
+  final Forum? question;
+  final List<Answer>? answers;
   final bool answerUpdated;
-  final List<String> uploadedImgUrls;
+  final List<String>? uploadedImgUrls;
 
   AnswerLoadSuccess({
     this.answers,
@@ -67,13 +66,14 @@ class AnswerLoadSuccess extends AnswerState {
   });
 
   @override
-  List<Object> get props => [answers, uploadedImgUrls, question, answerUpdated];
+  List<Object?> get props =>
+      [answers, uploadedImgUrls, question, answerUpdated];
 
   AnswerLoadSuccess copyWith({
-    Forum question,
-    bool answerUpdated,
-    List<Answer> answers,
-    List<String> uploadedImgUrls,
+    Forum? question,
+    bool? answerUpdated,
+    List<Answer>? answers,
+    List<String>? uploadedImgUrls,
   }) {
     return AnswerLoadSuccess(
       answers: answers ?? this.answers,
@@ -100,16 +100,16 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
   Stream<AnswerState> mapEventToState(AnswerEvent event) async* {
     switch (event.runtimeType) {
       case LoadAnswers:
-        yield* _mapLoadAnswersEventToState(event);
+        yield* _mapLoadAnswersEventToState(event as LoadAnswers);
         break;
       case AddAnswer:
-        yield* _mapAddAnswerEventToState(event);
+        yield* _mapAddAnswerEventToState(event as AddAnswer);
         break;
       case DeleteAnswer:
-        yield* _mapDeleteAnswerEventToState(event);
+        yield* _mapDeleteAnswerEventToState(event as DeleteAnswer);
         break;
       case UpdateAnswer:
-        yield* _mapUpdateAnswerEventToState(event);
+        yield* _mapUpdateAnswerEventToState(event as UpdateAnswer);
         break;
       default:
     }
@@ -129,33 +129,33 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
 
       // Add images
       final imgUrls = <String>[];
-      for (final f in event.images) {
-        final url = await repo.uploadImage(f.file);
+      for (final f in event.images!) {
+        final url = await repo.uploadImage(f.file!);
         imgUrls.add(url);
       }
 
       final user = await repo.getUser();
 
-      final nAnswer = event.answer.copyWith(
+      final nAnswer = event.answer!.copyWith(
         imageUrls: imgUrls,
 
         // user data
-        addedById: user.id,
-        addedByType: user.type,
-        addedByAvatar: user.avatar,
-        addedByName: user.fullname,
+        addedById: user?.id,
+        addedByType: user?.type,
+        addedByAvatar: user?.avatar,
+        addedByName: user?.fullname,
         createdAt: DateTime.now().toUtc(),
         updatedAt: DateTime.now().toUtc(),
       );
-      final addUserAvatar = curState.question.recentUsersAvatar.length < 4;
+      final addUserAvatar = curState.question!.recentUsersAvatar.length < 4;
 
       final answer = await repo.addAnswer(nAnswer, addUserAvatar);
 
-      final nAns = List<Answer>.from([...curState.answers, answer]);
+      final nAns = List<Answer>.from([...curState.answers!, answer]);
       yield curState.copyWith(
           answers: nAns,
-          question: curState.question
-              .copyWith(ansCount: curState.question.ansCount + 1));
+          question: curState.question!
+              .copyWith(ansCount: curState.question!.ansCount + 1));
     }
   }
 
@@ -165,17 +165,17 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
       yield AnswerLoadInProgress();
 
       // Add images
-      final imgUrls = <String>[];
-      for (final f in event.images) {
+      final imgUrls = <String?>[];
+      for (final f in event.images!) {
         if (f.source == PhotoSource.File) {
-          final url = await repo.uploadImage(f.file);
+          final url = await repo.uploadImage(f.file!);
           imgUrls.add(url);
         } else {
           imgUrls.add(f.url);
         }
       }
 
-      final nAnswer = event.answer.copyWith(
+      final nAnswer = event.answer!.copyWith(
         imageUrls: imgUrls,
         updatedAt: DateTime.now().toUtc(),
       );
@@ -183,8 +183,8 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
       await repo.updateAnswer(nAnswer);
 
       yield curState.copyWith(
-          answers: curState.answers
-              .map((a) => a.id == event.answer.id ? nAnswer : a)
+          answers: curState.answers!
+              .map((a) => a.id == event.answer!.id ? nAnswer : a)
               .toList());
     }
   }
@@ -198,12 +198,12 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
 
       //[TODO:] remove currentAvatar from recentUsersAvatar
       final nAnswers =
-          curState.answers.where((f) => f.id != event.answerId).toList();
+          curState.answers!.where((f) => f.id != event.answerId).toList();
 
       yield curState.copyWith(
         answers: nAnswers,
-        question: curState.question
-            .copyWith(ansCount: curState.question.ansCount - 1),
+        question: curState.question!
+            .copyWith(ansCount: curState.question!.ansCount - 1),
       );
     }
   }

@@ -7,25 +7,25 @@ import 'package:covidoc/utils/const/const.dart';
 
 class ChatAppBar extends StatelessWidget {
   const ChatAppBar({
-    Key key,
+    Key? key,
     this.imgUrl,
     this.name,
-    this.userId,
     this.onDelete,
-    this.msgRequest,
+    required this.userId,
+    required this.msgRequest,
     this.active = false,
     this.deleteCount = 0,
     this.deleteMode = false,
   }) : super(key: key);
 
-  final String name;
+  final String? name;
   final bool active;
-  final String imgUrl;
+  final String? imgUrl;
   final String userId;
   final bool deleteMode;
   final int deleteCount;
   final String msgRequest;
-  final VoidCallback onDelete;
+  final VoidCallback? onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +46,7 @@ class ChatAppBar extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       CircleAvatar(
-                        backgroundImage: CachedNetworkImageProvider(imgUrl),
+                        backgroundImage: CachedNetworkImageProvider(imgUrl!),
                         maxRadius: 20,
                       ),
                       const SizedBox(width: 12),
@@ -56,7 +56,7 @@ class ChatAppBar extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           mainAxisSize: MainAxisSize.min,
                           children: <Widget>[
-                            Text(name, style: AppFonts.SEMIBOLD_BLACK3_16),
+                            Text(name!, style: AppFonts.SEMIBOLD_BLACK3_16),
                             Text(active ? 'Online' : 'Offline',
                                 style: AppFonts.REGULAR_BLACK3_12),
                           ],
@@ -98,14 +98,16 @@ class ChatAppBar extends StatelessWidget {
 }
 
 class ChatMessagePopupMenu extends StatelessWidget {
-  const ChatMessagePopupMenu({this.userId, this.msgRequest});
+  const ChatMessagePopupMenu(
+      {Key? key, required this.userId, required this.msgRequest})
+      : super(key: key);
   final String userId;
   final String msgRequest;
 
   @override
   Widget build(BuildContext context) {
     return PopupMenuButton(
-      onSelected: (val) {
+      onSelected: (dynamic val) {
         switch (val) {
           case 'profile':
             Navigator.push(

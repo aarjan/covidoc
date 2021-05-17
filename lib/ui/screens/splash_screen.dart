@@ -5,7 +5,7 @@ import 'package:covidoc/utils/const/const.dart';
 class SplashScreen extends StatelessWidget {
   static const ROUTE_NAME = '/splash';
 
-  const SplashScreen();
+  const SplashScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

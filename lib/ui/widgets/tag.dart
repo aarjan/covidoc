@@ -4,7 +4,7 @@ import 'package:covidoc/utils/const/const.dart';
 
 ///CONTAINER CONTAINING A TEXT WITH GREY BACKGROUND AND LITTLE PADDING
 class Tag extends StatelessWidget {
-  const Tag({Key key, this.tag = '', this.dismissible = false})
+  const Tag({Key? key, this.tag = '', this.dismissible = false})
       : super(key: key);
   final String tag;
   final bool dismissible;

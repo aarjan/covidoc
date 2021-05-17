@@ -3,11 +3,11 @@ import 'package:covidoc/utils/const/const.dart';
 
 class AddQuestionView extends StatelessWidget {
   const AddQuestionView({
-    Key key,
+    Key? key,
     this.onAdd,
   }) : super(key: key);
 
-  final void Function() onAdd;
+  final void Function()? onAdd;
 
   @override
   Widget build(BuildContext context) {

@@ -17,11 +17,11 @@ import 'package:covidoc/bloc/message/message.dart';
 
 class ChatInput extends StatefulWidget {
   const ChatInput({
-    Key key,
+    Key? key,
     this.onSend,
   }) : super(key: key);
 
-  final void Function(String val, List<Photo> photos, MessageType type) onSend;
+  final void Function(String val, List<Photo> photos, MessageType type)? onSend;
 
   @override
   _ChatInputState createState() => _ChatInputState();
@@ -29,9 +29,9 @@ class ChatInput extends StatefulWidget {
 
 class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
   bool showCamera = true;
-  TextEditingController _controller;
+  TextEditingController? _controller;
   final List<Photo> _attachedImages = [];
-  Timer _timer;
+  Timer? _timer;
   double _right = 0;
   bool blip = false;
   bool canRecord = false;
@@ -39,18 +39,18 @@ class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
   int recordTime = 0;
   bool discardRecord = false;
   bool _recorderInited = false;
-  FlutterSoundRecorder _recorder;
+  late FlutterSoundRecorder? _recorder;
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController()
       ..addListener(() {
-        if (showCamera && _controller.value.text.isNotEmpty) {
+        if (showCamera && _controller!.value.text.isNotEmpty) {
           showCamera = false;
           setState(() {});
         }
-        if (!showCamera && _controller.value.text.isEmpty) {
+        if (!showCamera && _controller!.value.text.isEmpty) {
           showCamera = true;
           setState(() {});
         }
@@ -77,7 +77,7 @@ class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
         setState(() {});
       });
 
-      await _recorder.startRecorder(
+      await _recorder!.startRecorder(
         toFile: DateTime.now().millisecondsSinceEpoch.toString(),
         codec: Codec.aacADTS,
       );
@@ -94,15 +94,15 @@ class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
     try {
       _timer?.cancel();
       recordTime = 0;
-      final audioPath = await _recorder.stopRecorder();
+      final audioPath = await _recorder!.stopRecorder();
       log('stopRecord: $audioPath');
       setState(() {
         isRecord = false;
       });
       if (!discardRecord) {
-        final audioFile = File(audioPath);
+        final audioFile = File(audioPath!);
 
-        widget.onSend('', [Photo(file: audioFile, source: PhotoSource.File)],
+        widget.onSend!('', [Photo(file: audioFile, source: PhotoSource.File)],
             MessageType.Audio);
       }
     } catch (e) {
@@ -116,8 +116,8 @@ class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
   @override
   void dispose() {
     _timer?.cancel();
-    _controller.dispose();
-    _recorder.closeAudioSession();
+    _controller!.dispose();
+    _recorder!.closeAudioSession();
     _recorder = null;
     super.dispose();
   }
@@ -193,8 +193,8 @@ class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
                           ),
                           Expanded(
                             child: Shimmer.fromColors(
-                              baseColor: Colors.grey[900],
-                              highlightColor: Colors.grey[100],
+                              baseColor: Colors.grey[900]!,
+                              highlightColor: Colors.grey[100]!,
                               child: const Text(
                                 'Swipe to discard',
                                 textAlign: TextAlign.center,
@@ -271,7 +271,7 @@ class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
                       onTapDown: (d) async {
                         // Return early if
                         // textController has text or images are loaded
-                        if (_controller.value.text.isNotEmpty ||
+                        if (_controller!.value.text.isNotEmpty ||
                             _attachedImages.isNotEmpty) {
                           return;
                         }
@@ -324,14 +324,14 @@ class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
                         setState(() {});
                       },
                       onTap: () {
-                        final _txt = _controller.value.text.trim();
+                        final _txt = _controller!.value.text.trim();
 
                         if (_txt.isNotEmpty || _attachedImages.isNotEmpty) {
-                          widget.onSend(
+                          widget.onSend!(
                               _txt, _attachedImages, MessageType.Text);
                         }
 
-                        _controller.clear();
+                        _controller!.clear();
                       },
                       child: AnimatedContainer(
                         duration: const Duration(milliseconds: 300),

@@ -10,9 +10,9 @@ import 'package:intl/intl.dart';
 
 class SenderContent extends StatefulWidget {
   const SenderContent({
-    Key key,
-    @required this.msg,
-    @required this.onLongPress,
+    Key? key,
+    required this.msg,
+    required this.onLongPress,
   }) : super(key: key);
 
   final Message msg;
@@ -35,7 +35,7 @@ class _SenderContentState extends State<SenderContent> {
           _deleteMode = !_deleteMode;
         });
 
-        widget.onLongPress(_deleteMode, widget.msg.id);
+        widget.onLongPress(_deleteMode, widget.msg.id!);
       },
       child: Ink(
         color: _deleteMode ? AppColors.GREEN1 : null,
@@ -67,7 +67,7 @@ class _SenderContentState extends State<SenderContent> {
                   if (txtMsg)
                     Padding(
                       padding: const EdgeInsets.only(bottom: 6),
-                      child: Text(widget.msg.message,
+                      child: Text(widget.msg.message!,
                           softWrap: true, style: AppFonts.REGULAR_WHITE_14),
                     ),
                   Row(
@@ -75,7 +75,7 @@ class _SenderContentState extends State<SenderContent> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
-                      Text(DateFormat.jm().format(widget.msg.timestamp),
+                      Text(DateFormat.jm().format(widget.msg.timestamp!),
                           style: AppFonts.REGULAR_DEFAULT_12
                               .copyWith(color: AppColors.WHITE5)),
                       const SizedBox(
@@ -152,8 +152,8 @@ Widget buildDocuments(BuildContext context, Message msg) {
 
 class ReceiverContent extends StatefulWidget {
   const ReceiverContent({
-    Key key,
-    @required this.msg,
+    Key? key,
+    required this.msg,
   }) : super(key: key);
 
   final Message msg;
@@ -199,11 +199,11 @@ class _ReceiverContentState extends State<ReceiverContent> {
                   children: [
                     if (txtMsg)
                       Text(
-                        widget.msg.message,
+                        widget.msg.message!,
                         style: AppFonts.REGULAR_BLACK3_14,
                       ),
                     Text(
-                      DateFormat.jm().format(widget.msg.timestamp),
+                      DateFormat.jm().format(widget.msg.timestamp!),
                       style: AppFonts.REGULAR_WHITE2_11,
                     )
                   ],

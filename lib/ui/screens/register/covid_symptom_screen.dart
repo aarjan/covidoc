@@ -4,14 +4,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:covidoc/ui/router.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/ui/screens/screens.dart';
-import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/bloc/user/user_bloc.dart';
 
 class CovidSymptomScreen extends StatelessWidget {
   static const ROUTE_NAME = '/register/symptom';
 
-  const CovidSymptomScreen();
+  const CovidSymptomScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<UserBloc, UserState>(
@@ -26,14 +26,14 @@ class CovidSymptomScreen extends StatelessWidget {
 }
 
 class CovidSymptomView extends StatefulWidget {
-  const CovidSymptomView();
+  const CovidSymptomView({Key? key}) : super(key: key);
 
   @override
   _CovidSymptomViewState createState() => _CovidSymptomViewState();
 }
 
 class _CovidSymptomViewState extends State<CovidSymptomView> {
-  String _txt;
+  String? _txt;
   final _formKey = GlobalKey<FormState>();
 
   @override
@@ -44,8 +44,16 @@ class _CovidSymptomViewState extends State<CovidSymptomView> {
         title: Text('Covid symptoms', style: AppFonts.SEMIBOLD_BLACK3_16),
         centerTitle: true,
         automaticallyImplyLeading: false,
-        bottom: ProgressBar(
-            [AppColors.WHITE3, AppColors.WHITE3, AppColors.DEFAULT]),
+        bottom: PreferredSize(
+          preferredSize: const Size(double.infinity, 2),
+          child: Row(
+            children: [AppColors.WHITE3, AppColors.WHITE3, AppColors.DEFAULT]
+                .map((e) => Flexible(
+                    child:
+                        Container(color: e, width: double.infinity, height: 2)))
+                .toList(),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -55,7 +63,7 @@ class _CovidSymptomViewState extends State<CovidSymptomView> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               TextFormField(
-                onSaved: (val) => _txt = val.trim(),
+                onSaved: (val) => _txt = val!.trim(),
                 maxLines: 10,
                 autofocus: true,
                 decoration: InputDecoration(
@@ -68,7 +76,7 @@ class _CovidSymptomViewState extends State<CovidSymptomView> {
                 width: double.infinity,
                 child: TextButton(
                   onPressed: () {
-                    _formKey.currentState.save();
+                    _formKey.currentState!.save();
                     FocusScope.of(context).unfocus();
 
                     final user = AppUser(

@@ -10,7 +10,7 @@ import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/ui/screens/screens.dart';
 
 class App extends StatelessWidget {
-  const App({Key key}) : super(key: key);
+  const App({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -57,12 +57,10 @@ class App extends StatelessWidget {
                       isAuthenticated: true,
                     )
                   : const RegisterScreen();
-              break;
             case UnAuthenticated:
               return const HomeScreen(
                 isAuthenticated: false,
               );
-              break;
             default:
               return const SplashScreen();
           }

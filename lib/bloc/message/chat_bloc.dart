@@ -36,7 +36,7 @@ class StartChat extends ChatEvent {
 
 class ChatState extends Equatable {
   @override
-  List<Object> get props => [];
+  List<Object?> get props => [];
 }
 
 class ChatInitial extends ChatState {}
@@ -44,9 +44,9 @@ class ChatInitial extends ChatState {}
 class ChatLoadInProgress extends ChatState {}
 
 class ChatLoadSuccess extends ChatState {
-  final AppUser user;
-  final Chat chatWith;
-  final String userType;
+  final AppUser? user;
+  final Chat? chatWith;
+  final String? userType;
   final List<Chat> chats;
   final bool requestSent;
   final bool conversationStarted;
@@ -63,7 +63,7 @@ class ChatLoadSuccess extends ChatState {
   });
 
   @override
-  List<Object> get props => [
+  List<Object?> get props => [
         user,
         chats,
         chatWith,
@@ -74,13 +74,13 @@ class ChatLoadSuccess extends ChatState {
       ];
 
   ChatLoadSuccess copyWith({
-    AppUser user,
-    Chat chatWith,
-    List<Chat> chats,
-    String userType,
-    bool requestSent,
-    bool conversationStarted,
-    List<MessageRequest> requests,
+    AppUser? user,
+    Chat? chatWith,
+    List<Chat>? chats,
+    String? userType,
+    bool? requestSent,
+    bool? conversationStarted,
+    List<MessageRequest>? requests,
   }) {
     return ChatLoadSuccess(
       user: user ?? this.user,
@@ -96,25 +96,25 @@ class ChatLoadSuccess extends ChatState {
 
 class ChatBloc extends Bloc<ChatEvent, ChatState> {
   final MessageRepo repo;
-  ChatBloc({this.repo}) : super(ChatInitial());
+  ChatBloc({required this.repo}) : super(ChatInitial());
 
   @override
   Stream<ChatState> mapEventToState(ChatEvent event) async* {
     switch (event.runtimeType) {
       case StartChat:
-        yield* _mapStartChatEventToState(event);
+        yield* _mapStartChatEventToState(event as StartChat);
         break;
       case RequestChat:
-        yield* _mapRequestChatEventToState(event);
+        yield* _mapRequestChatEventToState(event as RequestChat);
         break;
       case LoadPatientChats:
-        yield* _mapLoadPatientChatsEventToState(event);
+        yield* _mapLoadPatientChatsEventToState(event as LoadPatientChats);
         break;
       case LoadDoctorChats:
-        yield* _mapLoadDoctorChatsEventToState(event);
+        yield* _mapLoadDoctorChatsEventToState(event as LoadDoctorChats);
         break;
       case LoadChatRequests:
-        yield* _mapLoadRequestsEventToState(event);
+        yield* _mapLoadRequestsEventToState(event as LoadChatRequests);
         break;
       default:
     }
@@ -140,6 +140,10 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
     yield ChatLoadInProgress();
     final user = await repo.getUser();
+    if (user == null) {
+      throw Exception('user is null');
+    }
+
     final chats = await repo.loadChats(user.chatIds);
     final requests = await repo.loadRequests();
 
@@ -158,13 +162,14 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
     }
     yield ChatLoadInProgress();
     final user = await repo.getUser();
-    final chats = await repo.loadChats(user.chatIds);
 
-    final requests = await repo.loadMsgRequestsByUser(user.id);
+    final chats = await repo.loadChats(user?.chatIds ?? []);
+
+    final requests = await repo.loadMsgRequestsByUser(user?.id);
     yield ChatLoadSuccess(
       user: user,
       chats: chats,
-      userType: user.type,
+      userType: user?.type,
       requests: requests,
     );
   }
@@ -216,7 +221,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
           chatId: chatId,
           fromUserId: event.chat.docId);
 
-      final user = curState.user;
+      final user = curState.user!;
       final toUserId =
           user.type == 'Patient' ? event.chat.docId : event.chat.patId;
       await repo.cacheUserChatRecord(user, toUserId, chatId);

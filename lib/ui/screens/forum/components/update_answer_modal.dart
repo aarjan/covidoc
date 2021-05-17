@@ -9,12 +9,12 @@ import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/model/entity/entity.dart';
 
 class UpdateAnswerModal extends StatefulWidget {
-  final String text;
-  final List<Photo> images;
-  final void Function(String text, List<Photo> images) onSend;
+  final String? text;
+  final List<Photo>? images;
+  final void Function(String? text, List<Photo> images)? onSend;
 
   const UpdateAnswerModal({
-    Key key,
+    Key? key,
     this.text,
     this.images,
     this.onSend,
@@ -25,8 +25,8 @@ class UpdateAnswerModal extends StatefulWidget {
 }
 
 class UpdateAnswerModalState extends State<UpdateAnswerModal> {
-  String _txt;
-  ScrollController _controller;
+  String? _txt;
+  ScrollController? _controller;
   final List<Photo> _attachedImages = [];
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
@@ -38,7 +38,7 @@ class UpdateAnswerModalState extends State<UpdateAnswerModal> {
     // init values
     _txt = widget.text;
 
-    for (final e in widget.images) {
+    for (final e in widget.images!) {
       _attachedImages.add(Photo(
         source: PhotoSource.Network,
         url: e.url,
@@ -125,10 +125,10 @@ class UpdateAnswerModalState extends State<UpdateAnswerModal> {
                               maxLines: null,
                               minLines: null,
                               initialValue: _txt,
-                              validator: (val) => val.trim().isEmpty
+                              validator: (val) => val!.trim().isEmpty
                                   ? 'Answer cannot be empty!'
                                   : null,
-                              onSaved: (str) => _txt = str.trim(),
+                              onSaved: (str) => _txt = str!.trim(),
                               decoration: InputDecoration(
                                 disabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
@@ -171,8 +171,8 @@ class UpdateAnswerModalState extends State<UpdateAnswerModal> {
                       Focus.of(context).unfocus();
 
                       // animate to bottom
-                      await _controller.animateTo(
-                          _controller.position.maxScrollExtent + 50,
+                      await _controller!.animateTo(
+                          _controller!.position.maxScrollExtent + 50,
                           duration: const Duration(milliseconds: 500),
                           curve: Curves.easeIn);
                     },
@@ -240,9 +240,9 @@ class UpdateAnswerModalState extends State<UpdateAnswerModal> {
                 Flexible(
                   child: DefaultButton(
                     onTap: () {
-                      _formKey.currentState.save();
-                      if (_formKey.currentState.validate()) {
-                        widget.onSend(_txt, _attachedImages);
+                      _formKey.currentState!.save();
+                      if (_formKey.currentState!.validate()) {
+                        widget.onSend!(_txt, _attachedImages);
                       }
                     },
                     title: 'Submit',

@@ -6,11 +6,11 @@ import 'package:photo_view/photo_view_gallery.dart';
 
 class ImageSlider extends StatefulWidget {
   const ImageSlider({
-    Key key,
-    @required this.images,
+    Key? key,
+    required this.images,
   }) : super(key: key);
 
-  final List<String> images;
+  final List<String?> images;
 
   @override
   _ImageSliderState createState() => _ImageSliderState();
@@ -43,7 +43,7 @@ class _ImageSliderState extends State<ImageSlider> {
                 child: SizedBox(
                   width: double.infinity,
                   child: CachedNetworkImage(
-                      imageUrl: widget.images[index], fit: BoxFit.cover),
+                      imageUrl: widget.images[index]!, fit: BoxFit.cover),
                 ),
               );
             },
@@ -61,7 +61,7 @@ class _ImageSliderState extends State<ImageSlider> {
                       vertical: 10.0, horizontal: 2.0),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    border: Border.all(color: Colors.grey[300]),
+                    border: Border.all(color: Colors.grey[300]!),
                     color: _current == index
                         ? Colors.grey[300]
                         : Colors.transparent,
@@ -77,9 +77,9 @@ class _ImageSliderState extends State<ImageSlider> {
 }
 
 class ImageGallerySlider extends StatelessWidget {
-  final List<String> images;
+  final List<String?>? images;
 
-  const ImageGallerySlider({Key key, this.images}) : super(key: key);
+  const ImageGallerySlider({Key? key, this.images}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -91,19 +91,19 @@ class ImageGallerySlider extends StatelessWidget {
         builder: (BuildContext context, int index) {
           return PhotoViewGalleryPageOptions(
             imageProvider: CachedNetworkImageProvider(
-              images[index],
+              images![index]!,
             ),
             initialScale: PhotoViewComputedScale.contained,
             maxScale: 2.0,
-            heroAttributes: PhotoViewHeroAttributes(tag: images[index]),
+            heroAttributes: PhotoViewHeroAttributes(tag: images![index]!),
           );
         },
-        itemCount: images.length,
+        itemCount: images!.length,
         loadingBuilder: (context, event) => Center(
           child: CircularProgressIndicator(
             value: event == null
                 ? 0
-                : event.cumulativeBytesLoaded / event.expectedTotalBytes,
+                : event.cumulativeBytesLoaded / event.expectedTotalBytes!,
           ),
         ),
       ),

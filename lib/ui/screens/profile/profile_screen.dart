@@ -17,7 +17,8 @@ class ProfileScreen extends StatefulWidget {
   static const ROUTE_NAME = '/user';
   final bool isAuthenticated;
 
-  const ProfileScreen({this.isAuthenticated = false});
+  const ProfileScreen({Key? key, this.isAuthenticated = false})
+      : super(key: key);
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -27,37 +28,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool _enabled = false;
 
-  int _age;
-  String _gender;
-  String _location;
-  String _language;
-  String _symptoms;
-  String _practice;
-  String _speciality;
-  String _yearsOfExperience;
+  int? _age;
+  String? _gender;
+  String? _location;
+  String? _language;
+  String? _symptoms;
+  String? _practice;
+  String? _speciality;
+  String? _yearsOfExperience;
 
-  AppUser _user;
+  AppUser? _user;
   int _status = 0;
-  FocusScopeNode _node;
+  late FocusScopeNode _node;
 
   final covidStatus = ['Positive', 'Negative', 'Not Tested'];
   List<String> years = ['1-2 years', '2-5 years', '5-10 years', '>10 years'];
 
-  void init(AppUser user) {
+  void init(AppUser? user) {
     _user = _user ?? user;
-    _age = _age ?? user.detail['age'];
-    _gender = _gender ?? user.detail['gender'];
-    _language = _language ?? user.detail['language'];
-    _location = _location ?? user.detail['location'];
-    _symptoms = _symptoms ?? user.detail['symptoms'];
-    _practice = _practice ?? user.detail['practice'];
-    _speciality = _speciality ?? user.detail['speciality'];
-    _yearsOfExperience = _yearsOfExperience ?? user.detail['yearsOfExperience'];
+    _age = _age ?? user!.detail!['age'];
+    _gender = _gender ?? user!.detail!['gender'];
+    _language = _language ?? user!.detail!['language'];
+    _location = _location ?? user!.detail!['location'];
+    _symptoms = _symptoms ?? user!.detail!['symptoms'];
+    _practice = _practice ?? user!.detail!['practice'];
+    _speciality = _speciality ?? user!.detail!['speciality'];
+    _yearsOfExperience =
+        _yearsOfExperience ?? user!.detail!['yearsOfExperience'];
   }
 
-  void updateState(int val) {
+  void updateState(int? val) {
     setState(() {
-      _status = val;
+      _status = val ?? 0;
     });
   }
 
@@ -108,11 +110,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
               CustomScrollView(
                 physics: const BouncingScrollPhysics(),
                 slivers: [
-                  mAppBar(_user),
+                  mAppBar(_user!),
                   SliverList(
                     delegate: SliverChildListDelegate([
                       const SizedBox(height: 20),
-                      _user.type == describeEnum(UserType.Patient)
+                      _user!.type == describeEnum(UserType.Patient)
                           ? buildPatientForm()
                           : buildDoctorForm(),
                     ]),
@@ -129,10 +131,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
           ? FloatingActionButton(
               onPressed: () {
                 if (_enabled) {
-                  _formKey.currentState.save();
+                  _formKey.currentState!.save();
                   FocusScope.of(context).unfocus();
 
-                  if (_formKey.currentState.validate()) {
+                  if (_formKey.currentState!.validate()) {
                     final nUser = AppUser(
                       detail: {
                         'age': _age,
@@ -185,9 +187,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onEdit: _node.nextFocus,
                 enabled: _enabled,
                 initialValue: _age.toString(),
-                onSave: (val) => _age = int.tryParse(val.trim(), radix: 10),
+                onSave: (val) => _age = int.tryParse(val!.trim(), radix: 10),
                 onValidate: (val) =>
-                    val.trim().isEmpty ? AppConst.AGE_ERROR : null,
+                    val!.trim().isEmpty ? AppConst.AGE_ERROR : null,
               ),
               const SizedBox(height: 16),
               FormInput(
@@ -195,9 +197,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 initialValue: _gender,
                 onEdit: _node.nextFocus,
                 enabled: _enabled,
-                onSave: (val) => _gender = val.trim(),
+                onSave: (val) => _gender = val!.trim(),
                 onValidate: (val) =>
-                    val.trim().isEmpty ? AppConst.GENDER_ERROR : null,
+                    val!.trim().isEmpty ? AppConst.GENDER_ERROR : null,
               ),
               const SizedBox(height: 16),
               FormInput(
@@ -205,9 +207,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 initialValue: _location,
                 onEdit: _node.nextFocus,
                 enabled: _enabled,
-                onSave: (val) => _location = val.trim(),
+                onSave: (val) => _location = val!.trim(),
                 onValidate: (val) =>
-                    val.trim().isEmpty ? AppConst.FULLNAME_LENGTH_ERROR : null,
+                    val!.trim().isEmpty ? AppConst.FULLNAME_LENGTH_ERROR : null,
               ),
               const SizedBox(height: 16),
               FormInput(
@@ -215,9 +217,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 initialValue: _language,
                 onEdit: _node.nextFocus,
                 enabled: _enabled,
-                onSave: (val) => _language = val.trim(),
+                onSave: (val) => _language = val!.trim(),
                 onValidate: (val) =>
-                    val.trim().isEmpty ? AppConst.FULLNAME_LENGTH_ERROR : null,
+                    val!.trim().isEmpty ? AppConst.FULLNAME_LENGTH_ERROR : null,
               ),
               const SizedBox(height: 16),
               FormInput(
@@ -227,7 +229,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 enabled: _enabled,
                 initialValue: _symptoms,
                 onEdit: _node.nextFocus,
-                onSave: (val) => _symptoms = val.trim(),
+                onSave: (val) => _symptoms = val!.trim(),
               ),
               const SizedBox(height: 16),
             ],
@@ -249,9 +251,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 onEdit: _node.nextFocus,
                 enabled: _enabled,
                 initialValue: _age.toString(),
-                onSave: (val) => _age = int.tryParse(val.trim(), radix: 10),
+                onSave: (val) => _age = int.tryParse(val!.trim(), radix: 10),
                 onValidate: (val) =>
-                    val.trim().isEmpty ? AppConst.AGE_ERROR : null,
+                    val!.trim().isEmpty ? AppConst.AGE_ERROR : null,
               ),
               const SizedBox(height: 16),
               FormInput(
@@ -259,9 +261,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 initialValue: _gender,
                 onEdit: _node.nextFocus,
                 enabled: _enabled,
-                onSave: (val) => _gender = val.trim(),
+                onSave: (val) => _gender = val!.trim(),
                 onValidate: (val) =>
-                    val.trim().isEmpty ? AppConst.GENDER_ERROR : null,
+                    val!.trim().isEmpty ? AppConst.GENDER_ERROR : null,
               ),
               const SizedBox(height: 16),
               FormInput(
@@ -269,9 +271,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 initialValue: _location,
                 onEdit: _node.nextFocus,
                 enabled: _enabled,
-                onSave: (val) => _location = val.trim(),
+                onSave: (val) => _location = val!.trim(),
                 onValidate: (val) =>
-                    val.trim().isEmpty ? AppConst.FULLNAME_LENGTH_ERROR : null,
+                    val!.trim().isEmpty ? AppConst.FULLNAME_LENGTH_ERROR : null,
               ),
               const SizedBox(height: 16),
               FormInput(
@@ -279,8 +281,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 initialValue: _speciality,
                 onEdit: _node.nextFocus,
                 enabled: _enabled,
-                onSave: (val) => _speciality = val.trim(),
-                onValidate: (val) => val.trim().isEmpty
+                onSave: (val) => _speciality = val!.trim(),
+                onValidate: (val) => val!.trim().isEmpty
                     ? AppConst.SPECIALITY_LENGTH_ERROR
                     : null,
               ),
@@ -290,7 +292,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 enabled: _enabled,
                 initialValue: _practice,
                 onEdit: _node.nextFocus,
-                onSave: (val) => _practice = val.trim(),
+                onSave: (val) => _practice = val!.trim(),
               ),
               const SizedBox(height: 16),
               Row(children: [
@@ -310,7 +312,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               child: Text(e),
                             ))
                         .toList(),
-                    onChanged: (val) {
+                    onChanged: (dynamic val) {
                       setState(() {
                         _yearsOfExperience = val;
                       });
@@ -343,14 +345,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
         ],
         centerTitle: false,
         title: Text(
-          user.fullname,
+          user.fullname!,
           style: AppFonts.BOLD_WHITE_18,
         ),
         background: Stack(
           fit: StackFit.expand,
           children: [
             CachedNetworkImage(
-              imageUrl: user.avatar,
+              imageUrl: user.avatar!,
               fit: BoxFit.cover,
             ),
             const DecoratedBox(

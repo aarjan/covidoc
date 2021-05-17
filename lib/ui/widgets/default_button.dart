@@ -9,7 +9,7 @@ class DefaultButton extends StatelessWidget {
   ///[title] property for the text to be displayed on the drop down
 
   const DefaultButton({
-    Key key,
+    Key? key,
     this.onTap,
     this.title = '',
     this.textColor,
@@ -19,7 +19,7 @@ class DefaultButton extends StatelessWidget {
   }) : super(key: key);
 
   ///Function associated when the button is tapped
-  final Function onTap;
+  final Function? onTap;
 
   ///Text to be displayed on the button
   final String title;
@@ -28,7 +28,7 @@ class DefaultButton extends StatelessWidget {
   final Color bgColor;
 
   ///Text color of the text in the button
-  final Color textColor;
+  final Color? textColor;
 
   ///Should there be a border around the button or not
   final bool border;
@@ -40,7 +40,7 @@ class DefaultButton extends StatelessWidget {
   Widget build(BuildContext context) {
     return Material(
       child: InkWell(
-        onTap: onTap,
+        onTap: onTap as void Function()?,
         borderRadius: BorderRadius.circular(borderRadius),
         child: Ink(
           width: double.infinity,

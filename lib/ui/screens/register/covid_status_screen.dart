@@ -3,14 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/ui/screens/screens.dart';
-import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/model/entity/entity.dart';
 import 'package:covidoc/bloc/user/user_bloc.dart';
 
 class CovidStatusScreen extends StatelessWidget {
   static const ROUTE_NAME = '/register/status';
 
-  const CovidStatusScreen();
+  const CovidStatusScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -20,22 +19,24 @@ class CovidStatusScreen extends StatelessWidget {
           Navigator.pushNamed(context, CovidSymptomScreen.ROUTE_NAME);
         }
       },
-      child: CovidStatusView(),
+      child: const CovidStatusView(),
     );
   }
 }
 
 class CovidStatusView extends StatefulWidget {
+  const CovidStatusView({Key? key}) : super(key: key);
+
   @override
   _CovidStatusViewState createState() => _CovidStatusViewState();
 }
 
 class _CovidStatusViewState extends State<CovidStatusView> {
-  int _status = 0;
+  int? _status = 0;
 
   final covidStatus = ['Positive', 'Negative', 'Not Tested'];
 
-  void updateState(int val) {
+  void updateState(int? val) {
     setState(() {
       _status = val;
     });
@@ -49,8 +50,16 @@ class _CovidStatusViewState extends State<CovidStatusView> {
         title: Text('Covid status', style: AppFonts.SEMIBOLD_BLACK3_16),
         centerTitle: true,
         automaticallyImplyLeading: false,
-        bottom: ProgressBar(
-            [AppColors.WHITE3, AppColors.DEFAULT, AppColors.WHITE3]),
+        bottom: PreferredSize(
+          preferredSize: const Size(double.infinity, 2),
+          child: Row(
+            children: [AppColors.WHITE3, AppColors.DEFAULT, AppColors.WHITE3]
+                .map((e) => Flexible(
+                    child:
+                        Container(color: e, width: double.infinity, height: 2)))
+                .toList(),
+          ),
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -70,7 +79,7 @@ class _CovidStatusViewState extends State<CovidStatusView> {
                     value: 0,
                     groupValue: _status,
                     activeColor: AppColors.DEFAULT,
-                    onChanged: (val) => updateState(val),
+                    onChanged: (dynamic val) => updateState(val),
                   ),
                 ),
                 const Divider(),
@@ -84,7 +93,7 @@ class _CovidStatusViewState extends State<CovidStatusView> {
                     value: 1,
                     groupValue: _status,
                     activeColor: AppColors.DEFAULT,
-                    onChanged: (val) => updateState(val),
+                    onChanged: (dynamic val) => updateState(val),
                   ),
                 ),
                 const Divider(),
@@ -98,7 +107,7 @@ class _CovidStatusViewState extends State<CovidStatusView> {
                     value: 2,
                     groupValue: _status,
                     activeColor: AppColors.DEFAULT,
-                    onChanged: (val) => updateState(val),
+                    onChanged: (dynamic val) => updateState(val),
                   ),
                 ),
                 const Divider(),
@@ -109,7 +118,7 @@ class _CovidStatusViewState extends State<CovidStatusView> {
               child: TextButton(
                 onPressed: () {
                   final user = AppUser(
-                    detail: {'covidStatus': covidStatus[_status]},
+                    detail: {'covidStatus': covidStatus[_status!]},
                   );
 
                   context.read<UserBloc>().add(UpdateUser(user: user));

@@ -17,7 +17,7 @@ class SessionRepository {
     return pref.saveString(AppConst.CACHE_LOGIN_TYPE, type);
   }
 
-  Future<String> getSignInType() {
+  Future<String?> getSignInType() {
     return pref.getString(AppConst.CACHE_LOGIN_TYPE);
   }
 
@@ -25,7 +25,7 @@ class SessionRepository {
     return pref.saveString(AppConst.CACHE_USER, jsonEncode(user));
   }
 
-  Future<AppUser> getUser() async {
+  Future<AppUser?> getUser() async {
     final data = await pref.getString(AppConst.CACHE_USER);
     if (data == null) {
       return null;
@@ -43,9 +43,7 @@ class SessionRepository {
       return [];
     }
     return (jsonDecode(docs) as List)
-        ?.map(
-          (d) => d == null ? null : AppUser.fromJson(d as Map<String, dynamic>),
-        )
-        ?.toList();
+        .map((d) => AppUser.fromJson(d as Map<String, dynamic>))
+        .toList();
   }
 }

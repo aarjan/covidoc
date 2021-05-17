@@ -14,11 +14,13 @@ import 'package:covidoc/ui/widgets/dropdown_filter.dart';
 import 'question_tags.dart';
 
 class AddUpdateQuestionModal extends StatelessWidget {
-  final Forum question;
+  final Forum? question;
   final void Function(String question, List<String> tags, String category,
       List<Photo> images) onSubmit;
 
-  const AddUpdateQuestionModal({this.question, this.onSubmit});
+  const AddUpdateQuestionModal(
+      {Key? key, this.question, required this.onSubmit})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -47,11 +49,11 @@ class AddUpdateQuestionModal extends StatelessWidget {
 }
 
 class _AddUpdateQuestion extends StatefulWidget {
-  final Forum question;
+  final Forum? question;
   final void Function(String question, List<String> tags, String category,
       List<Photo> images) onSubmit;
 
-  const _AddUpdateQuestion({Key key, this.question, this.onSubmit})
+  const _AddUpdateQuestion({Key? key, this.question, required this.onSubmit})
       : super(key: key);
 
   @override
@@ -59,8 +61,8 @@ class _AddUpdateQuestion extends StatefulWidget {
 }
 
 class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
-  String _question;
-  ScrollController _controller;
+  String _question = '';
+  ScrollController? _controller;
   final List<String> _tags = [];
   String _category = 'Category1';
   final List<Photo> _attachedImages = [];
@@ -76,11 +78,11 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
   void initValues() {
     // Initialize values if passed forum is not null
     if (widget.question != null) {
-      _question = widget.question.title;
+      _question = widget.question?.title ?? '';
 
-      _tags.addAll(widget.question.tags);
+      _tags.addAll(widget.question!.tags);
 
-      for (final e in widget.question.imageUrls) {
+      for (final e in widget.question!.imageUrls) {
         _attachedImages.add(Photo(
           source: PhotoSource.Network,
           url: e,
@@ -168,10 +170,10 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
                               maxLines: null,
                               minLines: null,
                               initialValue: _question,
-                              validator: (val) => val.trim().isEmpty
+                              validator: (val) => val!.trim().isEmpty
                                   ? 'Question cannot be empty!'
                                   : null,
-                              onSaved: (str) => _question = str.trim(),
+                              onSaved: (str) => _question = str!.trim(),
                               decoration: InputDecoration(
                                 disabledBorder: InputBorder.none,
                                 errorBorder: InputBorder.none,
@@ -213,8 +215,8 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
                       await getImage();
 
                       // animate to bottom
-                      await _controller.animateTo(
-                          _controller.position.maxScrollExtent + 50,
+                      await _controller!.animateTo(
+                          _controller!.position.maxScrollExtent + 50,
                           duration: const Duration(milliseconds: 500),
                           curve: Curves.easeIn);
                     },
@@ -274,12 +276,8 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
             ),
             child: QuestionTags(
               tags: _tags,
-              onAdd: (str) {
-                _tags.add(str);
-              },
-              onRemove: (str) {
-                _tags.remove(str);
-              },
+              onAdd: _tags.add,
+              onRemove: _tags.remove,
             ),
           ),
 
@@ -334,8 +332,8 @@ class _AddUpdateQuestionState extends State<_AddUpdateQuestion> {
                 Flexible(
                   child: DefaultButton(
                     onTap: () {
-                      _formKey.currentState.save();
-                      if (_formKey.currentState.validate()) {
+                      _formKey.currentState!.save();
+                      if (_formKey.currentState!.validate()) {
                         widget.onSubmit(
                             _question, _tags, _category, _attachedImages);
                       }
