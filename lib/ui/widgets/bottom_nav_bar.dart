@@ -1,34 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:covidoc/utils/const/const.dart';
 
-class BottomNavBar extends StatefulWidget {
+class BottomNavBar extends StatelessWidget {
   const BottomNavBar({
     Key? key,
-    this.onSelected,
+    required this.onSelected,
+    required this.selectedIndex,
   }) : super(key: key);
 
-  final Function(int)? onSelected;
-
-  @override
-  _BottomNavBarState createState() => _BottomNavBarState();
-}
-
-class _BottomNavBarState extends State<BottomNavBar> {
-  int _selectedIndex = 0;
+  final int selectedIndex;
+  final Function(int) onSelected;
 
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
-      backgroundColor: AppColors.WHITE1,
-      currentIndex: _selectedIndex,
-      onTap: (index) {
-        widget.onSelected!(index);
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
+      onTap: onSelected,
       showSelectedLabels: false,
       showUnselectedLabels: false,
+      currentIndex: selectedIndex,
+      backgroundColor: AppColors.WHITE1,
       type: BottomNavigationBarType.fixed,
       items: [
         const BottomNavigationBarItem(

@@ -15,15 +15,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.select((UserBloc b) => (b.state is UserLoadSuccess)
+        ? (b.state as UserLoadSuccess).user
+        : null);
+
     return BlocProvider(
       create: (context) => TabBloc()..add(const OnTabChanged(0)),
       child: BlocBuilder<TabBloc, TabState>(
         builder: (context, state) {
-          final user = context.select((UserBloc b) =>
-              (b.state is UserLoadSuccess)
-                  ? (b.state as UserLoadSuccess).user
-                  : null);
-
           return Scaffold(
             body: Builder(builder: (context) {
               switch (state) {
@@ -52,6 +51,7 @@ class HomeScreen extends StatelessWidget {
               }
             }),
             bottomNavigationBar: BottomNavBar(
+              selectedIndex: state.index,
               onSelected: (index) {
                 context.read<TabBloc>().add(OnTabChanged(index));
               },
