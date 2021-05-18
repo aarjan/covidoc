@@ -76,7 +76,10 @@ class _ForumScreenState extends State<ForumScreen> {
     return Scaffold(
       appBar: AppBar(
         automaticallyImplyLeading: false,
-        title: Text('Discuss', style: AppFonts.SEMIBOLD_WHITE_16),
+        title: Text(
+          'Discuss',
+          style: AppFonts.BOLD_WHITE_18,
+        ),
       ),
       body: BlocConsumer<ForumBloc, ForumState>(listener: (context, state) {
         if (state is ForumLoadSuccess && state.msg != null) {

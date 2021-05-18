@@ -24,7 +24,7 @@ class _DocChatListScreenState extends State<DocChatListScreen> {
   @override
   void initState() {
     super.initState();
-    context.read<ChatBloc>().add(LoadDoctorChats());
+    context.read<ChatBloc>().add(const LoadDoctorChats());
   }
 
   @override
@@ -34,7 +34,7 @@ class _DocChatListScreenState extends State<DocChatListScreen> {
         automaticallyImplyLeading: false,
         title: Text(
           'Conversations',
-          style: AppFonts.SEMIBOLD_WHITE_16,
+          style: AppFonts.BOLD_WHITE_18,
         ),
       ),
       body: BlocListener<ChatBloc, ChatState>(
@@ -56,7 +56,7 @@ class _DocChatListScreenState extends State<DocChatListScreen> {
               onRefresh: () async {
                 context
                     .read<ChatBloc>()
-                    .add(LoadDoctorChats(hardRefresh: true));
+                    .add(const LoadDoctorChats(hardRefresh: true));
               },
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),

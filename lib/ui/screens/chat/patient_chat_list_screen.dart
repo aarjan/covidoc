@@ -32,7 +32,7 @@ class _PatChatListScreenState extends State<PatChatListScreen>
 
     // load chats
     if (widget.isAuthenticated!)
-      context.read<ChatBloc>().add(LoadPatientChats());
+      context.read<ChatBloc>().add(const LoadPatientChats());
 
     _showAddBtn = false;
     _scrollController = ScrollController();
@@ -65,7 +65,7 @@ class _PatChatListScreenState extends State<PatChatListScreen>
         automaticallyImplyLeading: false,
         title: Text(
           'Conversations',
-          style: AppFonts.SEMIBOLD_WHITE_16,
+          style: AppFonts.BOLD_WHITE_18,
         ),
       ),
       body: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
@@ -86,7 +86,7 @@ class _PatChatListScreenState extends State<PatChatListScreen>
               onRefresh: () async {
                 context
                     .read<ChatBloc>()
-                    .add(LoadPatientChats(hardRefresh: true));
+                    .add(const LoadPatientChats(hardRefresh: true));
               },
               child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),

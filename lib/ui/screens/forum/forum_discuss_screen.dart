@@ -53,24 +53,14 @@ class _ForumDiscussScreenState extends State<ForumDiscussScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text(
+        title: Text(
           'Discuss',
-          style: TextStyle(color: Colors.black),
+          style: AppFonts.BOLD_WHITE_18,
         ),
-        backgroundColor: Colors.white,
-        centerTitle: true,
-        elevation: 1,
-        leading: IconButton(
-          icon: const Icon(
-            Icons.arrow_back_ios_rounded,
-            color: Colors.black,
-          ),
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-        ),
+        leading: const BackButton(color: Colors.white),
+        centerTitle: false,
+        titleSpacing: 0,
       ),
       body: BlocBuilder<AnswerBloc, AnswerState>(
         builder: (context, state) {
