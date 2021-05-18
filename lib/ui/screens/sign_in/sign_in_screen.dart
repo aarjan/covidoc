@@ -13,7 +13,7 @@ class SignInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocListener<SignInBloc, SignInState>(
+      body: BlocConsumer<SignInBloc, SignInState>(
         listener: (context, state) {
           if (state is SignInFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
@@ -29,7 +29,18 @@ class SignInScreen extends StatelessWidget {
                   context, RegisterScreen.ROUTE_NAME);
           }
         },
-        child: const SignInView(),
+        builder: (context, state) {
+          return Stack(
+            children: [
+              IgnorePointer(
+                ignoring: state is SignInProgress,
+                child: const SignInView(),
+              ),
+              if (state is SignInProgress)
+                const Center(child: CircularProgressIndicator()),
+            ],
+          );
+        },
       ),
     );
   }

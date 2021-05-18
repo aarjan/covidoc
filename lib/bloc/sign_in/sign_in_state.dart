@@ -7,6 +7,11 @@ class SignInInitial extends SignInState {
   List<Object> get props => [];
 }
 
+class SignInProgress extends SignInState {
+  @override
+  List<Object> get props => [];
+}
+
 class SignInSuccess extends SignInState {
   SignInSuccess({this.profileVerification = false});
 

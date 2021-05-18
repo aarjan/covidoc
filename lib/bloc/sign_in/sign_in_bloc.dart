@@ -14,6 +14,7 @@ class SignInBloc extends Bloc<SignInEvent, SignInState> {
     try {
       switch (event.runtimeType) {
         case SignInStarted:
+          yield SignInProgress();
           final signInType = (event as SignInStarted).type;
           final resp = await repo.signIn(signInType);
           yield* resp.fold(
