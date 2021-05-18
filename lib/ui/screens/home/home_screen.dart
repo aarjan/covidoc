@@ -41,9 +41,10 @@ class HomeScreen extends StatelessWidget {
                   isAuthenticated: isAuthenticated,
                 );
               case TabState.PROFILE:
-                return ProfileScreen(
-                  isAuthenticated: isAuthenticated,
-                );
+                return isAuthenticated
+                    ? const ProfileScreen()
+                    : const SignInScreen();
+
               default:
                 throw UnimplementedError();
             }

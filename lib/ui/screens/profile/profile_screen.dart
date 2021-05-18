@@ -9,16 +9,13 @@ import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/ui/widgets/widgets.dart';
 import 'package:covidoc/bloc/user/user_bloc.dart';
 import 'package:covidoc/model/entity/app_user.dart';
-import 'package:covidoc/ui/screens/sign_in/sign_in_screen.dart';
 
 import 'components.dart';
 
 class ProfileScreen extends StatefulWidget {
   static const ROUTE_NAME = '/user';
-  final bool isAuthenticated;
 
-  const ProfileScreen({Key? key, this.isAuthenticated = false})
-      : super(key: key);
+  const ProfileScreen({Key? key}) : super(key: key);
 
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
@@ -72,12 +69,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: !widget.isAuthenticated
-          ? AppBar(
-              automaticallyImplyLeading: false,
-              title: Text('User Profile', style: AppFonts.SEMIBOLD_WHITE_16),
-            )
-          : null,
       body: BlocConsumer<UserBloc, UserState>(
         listener: (context, state) {
           if (state is UserLoadSuccess && state.userUpdated) {
@@ -90,20 +81,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }
 
           if (_user == null) {
-            if (widget.isAuthenticated)
-              return const Center(child: CircularProgressIndicator());
-            else
-              return Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(20),
-                  child: DefaultButton(
-                    title: 'Sign in to continue',
-                    onTap: () {
-                      Navigator.pushNamed(context, SignInScreen.ROUTE_NAME);
-                    },
-                  ),
-                ),
-              );
+            return const Center(child: CircularProgressIndicator());
           }
 
           return Stack(
@@ -128,43 +106,41 @@ class _ProfileScreenState extends State<ProfileScreen> {
           );
         },
       ),
-      floatingActionButton: widget.isAuthenticated
-          ? FloatingActionButton(
-              onPressed: () {
-                if (_enabled) {
-                  _formKey.currentState!.save();
-                  FocusScope.of(context).unfocus();
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          if (_enabled) {
+            _formKey.currentState!.save();
+            FocusScope.of(context).unfocus();
 
-                  if (_formKey.currentState!.validate()) {
-                    final nUser = AppUser(
-                      detail: {
-                        'age': _age,
-                        'gender': _gender,
-                        'language': _language,
-                        'location': _location,
-                        'symptoms': _symptoms,
-                        'covidStatus': _status,
-                        'practice': _practice,
-                        'speciality': _speciality,
-                        'yearsOfExperience': _yearsOfExperience,
-                      },
-                      profileVerification: true,
-                    );
-                    context
-                        .read<UserBloc>()
-                        .add(UpdateUser(user: nUser, persist: true));
-                  }
-                }
+            if (_formKey.currentState!.validate()) {
+              final nUser = AppUser(
+                detail: {
+                  'age': _age,
+                  'gender': _gender,
+                  'language': _language,
+                  'location': _location,
+                  'symptoms': _symptoms,
+                  'covidStatus': _status,
+                  'practice': _practice,
+                  'speciality': _speciality,
+                  'yearsOfExperience': _yearsOfExperience,
+                },
+                profileVerification: true,
+              );
+              context
+                  .read<UserBloc>()
+                  .add(UpdateUser(user: nUser, persist: true));
+            }
+          }
 
-                setState(() {
-                  _enabled = !_enabled;
-                });
-              },
-              child: _enabled
-                  ? const Icon(Icons.beenhere_rounded, color: Colors.white)
-                  : const Icon(Icons.edit, color: Colors.white),
-            )
-          : null,
+          setState(() {
+            _enabled = !_enabled;
+          });
+        },
+        child: _enabled
+            ? const Icon(Icons.beenhere_rounded, color: Colors.white)
+            : const Icon(Icons.edit, color: Colors.white),
+      ),
     );
   }
 

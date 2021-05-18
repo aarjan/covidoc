@@ -4,6 +4,7 @@ import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/ui/router.dart';
+import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/ui/screens/screens.dart';
 
 class SignInScreen extends StatelessWidget {
@@ -13,6 +14,10 @@ class SignInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: Text('Sign In', style: AppFonts.BOLD_WHITE_18),
+      ),
       body: BlocConsumer<SignInBloc, SignInState>(
         listener: (context, state) {
           if (state is SignInFailure) {
@@ -51,49 +56,109 @@ class SignInView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'Sign In with Google!',
-            style: Theme.of(context).textTheme.headline6,
-          ),
-          const SizedBox(
-            height: 20,
-          ),
-          SignInButton(Buttons.Google, onPressed: () async {
-            context.read<SignInBloc>().add(SignInStarted(SignInType.Google));
-          }),
           const SizedBox(
             height: 20,
           ),
           Text(
-            'Sign In with Facebook!',
-            style: Theme.of(context).textTheme.headline6,
+            'Sign in and unlock special features!',
+            style: AppFonts.SEMIBOLD_BLACK3_18,
           ),
           const SizedBox(
             height: 20,
           ),
-          SignInButton(Buttons.FacebookNew, onPressed: () async {
-            context.read<SignInBloc>().add(SignInStarted(SignInType.Facebook));
-          }),
+          const PlanDescription(text: 'Communicate with Doctors in real time'),
+          const PlanDescription(text: 'Participate in the discussion'),
+          const PlanDescription(text: 'Get notified of your queries'),
+          const SizedBox(
+            height: 40,
+          ),
+          Center(
+            child: SignInButton(
+              Buttons.FacebookNew,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              padding: const EdgeInsets.all(15),
+              onPressed: () async {
+                context
+                    .read<SignInBloc>()
+                    .add(SignInStarted(SignInType.Facebook));
+              },
+            ),
+          ),
           const SizedBox(
             height: 20,
           ),
-          Text(
-            'Sign In with Twitter!',
-            style: Theme.of(context).textTheme.headline6,
+          Center(
+            child: SignInButton(
+              Buttons.Google,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              padding: const EdgeInsets.all(15),
+              onPressed: () async {
+                context
+                    .read<SignInBloc>()
+                    .add(SignInStarted(SignInType.Google));
+              },
+            ),
           ),
           const SizedBox(
             height: 20,
           ),
-          SignInButton(Buttons.Twitter, onPressed: () async {
-            context.read<SignInBloc>().add(SignInStarted(SignInType.Twitter));
-          }),
+          Center(
+            child: SignInButton(
+              Buttons.Twitter,
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10)),
+              padding: const EdgeInsets.all(15),
+              onPressed: () async {
+                context
+                    .read<SignInBloc>()
+                    .add(SignInStarted(SignInType.Twitter));
+              },
+            ),
+          ),
         ],
       ),
+    );
+  }
+}
+
+class PlanDescription extends StatelessWidget {
+  const PlanDescription({
+    Key? key,
+    required this.text,
+  }) : super(key: key);
+
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Icon(
+              Icons.check_circle_rounded,
+              color: AppColors.WHITE3,
+              size: 18,
+            ),
+            const SizedBox(
+              width: 5,
+            ),
+            Text(
+              text,
+              softWrap: true,
+              style: AppFonts.REGULAR_BLACK3_14,
+            ),
+          ],
+        ),
+        const SizedBox(height: 14),
+      ],
     );
   }
 }
