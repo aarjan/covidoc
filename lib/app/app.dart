@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:covidoc/config.dart';
 import 'package:covidoc/ui/router.dart';
 import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/model/repo/repo.dart';
@@ -54,23 +55,28 @@ class App extends StatelessWidget {
       ),
       initialRoute: '/',
       onGenerateRoute: Routes.generateRoute,
-      home: BlocBuilder<AuthBloc, AuthState>(
-        builder: (context, state) {
-          switch (state.runtimeType) {
-            case Authenticated:
-              return (state as Authenticated).profileVerification
-                  ? const HomeScreen(
-                      isAuthenticated: true,
-                    )
-                  : const RegisterScreen();
-            case UnAuthenticated:
-              return const HomeScreen(
-                isAuthenticated: false,
-              );
-            default:
-              return const SplashScreen();
-          }
-        },
+      home: Builder(
+        builder: (context) => AppConfig(
+          context: context,
+          child: BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              switch (state.runtimeType) {
+                case Authenticated:
+                  return (state as Authenticated).profileVerification
+                      ? const HomeScreen(
+                          isAuthenticated: true,
+                        )
+                      : const RegisterScreen();
+                case UnAuthenticated:
+                  return const HomeScreen(
+                    isAuthenticated: false,
+                  );
+                default:
+                  return const SplashScreen();
+              }
+            },
+          ),
+        ),
       ),
     );
   }

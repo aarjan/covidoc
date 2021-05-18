@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:covidoc/config.dart';
 import 'package:covidoc/utils/const/const.dart';
 
 class SplashScreen extends StatelessWidget {
@@ -9,9 +8,6 @@ class SplashScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // init appConfig for standard width/height
-    AppConfig(context);
-
     return Scaffold(
       body: Center(
         child: Container(
