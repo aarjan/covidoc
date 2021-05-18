@@ -10,9 +10,21 @@ class ChatEvent extends Equatable {
   List<Object> get props => [];
 }
 
-class LoadPatientChats extends ChatEvent {}
+class LoadPatientChats extends ChatEvent {
+  final bool hardRefresh;
+  LoadPatientChats({this.hardRefresh = false});
 
-class LoadDoctorChats extends ChatEvent {}
+  @override
+  List<Object> get props => [hardRefresh];
+}
+
+class LoadDoctorChats extends ChatEvent {
+  final bool hardRefresh;
+  LoadDoctorChats({this.hardRefresh = false});
+
+  @override
+  List<Object> get props => [hardRefresh];
+}
 
 class LoadChatRequests extends ChatEvent {}
 
@@ -157,7 +169,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Stream<ChatState> _mapLoadDoctorChatsEventToState(
       LoadDoctorChats event) async* {
-    if (state is ChatLoadSuccess) {
+    if (state is ChatLoadSuccess && !event.hardRefresh) {
       return;
     }
     yield ChatLoadInProgress();
@@ -179,7 +191,7 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
 
   Stream<ChatState> _mapLoadPatientChatsEventToState(
       LoadPatientChats event) async* {
-    if (state is ChatLoadSuccess) {
+    if (state is ChatLoadSuccess && !event.hardRefresh) {
       return;
     }
     yield ChatLoadInProgress();

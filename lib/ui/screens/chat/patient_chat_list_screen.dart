@@ -82,30 +82,37 @@ class _PatChatListScreenState extends State<PatChatListScreen>
           _user = state.user;
 
           if (state.requests.isNotEmpty) {
-            return SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              controller: _scrollController,
-              child: Column(
-                children: [
-                  AnimatedSize(
-                    vsync: this,
-                    duration: const Duration(milliseconds: 500),
-                    curve: Curves.easeIn,
-                    child: Visibility(
-                      visible: !_showAddBtn,
-                      key: const ValueKey('addBtn'),
-                      child: Padding(
-                        padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-                        child: AddQuestionView(
-                          onAdd: () {
-                            showBottomQuestionSheet(context, state.user);
-                          },
+            return RefreshIndicator(
+              onRefresh: () async {
+                context
+                    .read<ChatBloc>()
+                    .add(LoadPatientChats(hardRefresh: true));
+              },
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                controller: _scrollController,
+                child: Column(
+                  children: [
+                    AnimatedSize(
+                      vsync: this,
+                      duration: const Duration(milliseconds: 500),
+                      curve: Curves.easeIn,
+                      child: Visibility(
+                        visible: !_showAddBtn,
+                        key: const ValueKey('addBtn'),
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
+                          child: AddQuestionView(
+                            onAdd: () {
+                              showBottomQuestionSheet(context, state.user);
+                            },
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  _ChatListView(state.chats, state.requests, state.userType),
-                ],
+                    _ChatListView(state.chats, state.requests, state.userType),
+                  ],
+                ),
               ),
             );
           }

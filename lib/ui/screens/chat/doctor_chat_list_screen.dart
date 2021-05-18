@@ -5,7 +5,6 @@ import 'package:covidoc/ui/screens/screens.dart';
 
 import 'package:covidoc/ui/router.dart';
 import 'package:covidoc/bloc/bloc.dart';
-import 'package:covidoc/model/repo/repo.dart';
 import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/model/entity/entity.dart';
 
@@ -23,6 +22,12 @@ class DocChatListScreen extends StatefulWidget {
 
 class _DocChatListScreenState extends State<DocChatListScreen> {
   @override
+  void initState() {
+    super.initState();
+    context.read<ChatBloc>().add(LoadDoctorChats());
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
@@ -32,30 +37,28 @@ class _DocChatListScreenState extends State<DocChatListScreen> {
           style: AppFonts.SEMIBOLD_WHITE_16,
         ),
       ),
-      body: MultiBlocProvider(
-        providers: [
-          BlocProvider(
-            create: (context) => ChatBloc(
-              repo: context.read<MessageRepo>(),
-            )..add(LoadDoctorChats()),
-          ),
-        ],
-        child: BlocListener<ChatBloc, ChatState>(
-          listener: (context, state) {
-            if (state is ChatLoadSuccess && state.conversationStarted) {
-              context
-                  .read<MessageBloc>()
-                  .add(SubscribeMsg(chatId: state.chatWith!.id));
+      body: BlocListener<ChatBloc, ChatState>(
+        listener: (context, state) {
+          if (state is ChatLoadSuccess && state.conversationStarted) {
+            context
+                .read<MessageBloc>()
+                .add(SubscribeMsg(chatId: state.chatWith!.id));
 
-              Navigator.push(
-                  context,
-                  getRoute(
-                      ChatScreen(chat: state.chatWith!, isFromPatient: false)));
-            }
-          },
-          child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
-            if (state is ChatLoadSuccess) {
-              return SingleChildScrollView(
+            Navigator.push(
+                context,
+                getRoute(
+                    ChatScreen(chat: state.chatWith!, isFromPatient: false)));
+          }
+        },
+        child: BlocBuilder<ChatBloc, ChatState>(builder: (context, state) {
+          if (state is ChatLoadSuccess) {
+            return RefreshIndicator(
+              onRefresh: () async {
+                context
+                    .read<ChatBloc>()
+                    .add(LoadDoctorChats(hardRefresh: true));
+              },
+              child: SingleChildScrollView(
                 physics: const AlwaysScrollableScrollPhysics(),
                 child: Column(
                   children: [
@@ -66,11 +69,11 @@ class _DocChatListScreenState extends State<DocChatListScreen> {
                     ),
                   ],
                 ),
-              );
-            }
-            return const Center(child: CircularProgressIndicator());
-          }),
-        ),
+              ),
+            );
+          }
+          return const Center(child: CircularProgressIndicator());
+        }),
       ),
     );
   }
