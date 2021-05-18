@@ -170,11 +170,11 @@ class _ForumScreenState extends State<ForumScreen> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
                             return QuestionItem(
+                              key: ValueKey(_forums![index].id),
                               question: _forums![index],
                               onTap: () {
-                                context
-                                    .read<AnswerBloc>()
-                                    .add(LoadAnswers(_forums![index]));
+                                context.read<AnswerBloc>().add(
+                                    LoadAnswers(question: _forums![index]));
 
                                 Navigator.push(
                                     context,

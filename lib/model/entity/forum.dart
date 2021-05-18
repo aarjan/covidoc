@@ -107,6 +107,7 @@ class Forum extends Equatable {
 }
 
 @JsonSerializable()
+@DateTimeConverter()
 class Answer extends Equatable {
   const Answer({
     this.id,

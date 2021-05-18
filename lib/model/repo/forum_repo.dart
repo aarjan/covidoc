@@ -34,13 +34,19 @@ class ForumRepo {
     return [];
   }
 
-  Future<List<Answer>> getAnswers(String? questionId) async {
+  Future<List<Answer>> getAnswers({String? questionId, int? createdAt}) async {
     final firestore = FirebaseFirestore.instance;
-    final fRef = await firestore
+    var query = firestore
         .collection('forum/$questionId/answer')
-        .limit(20)
-        .orderBy('updatedAt', descending: false)
-        .get();
+        .limit(10)
+        .orderBy('createdAt', descending: false);
+
+    // paginate
+    if (createdAt != null) {
+      query = query.startAfter([createdAt]);
+    }
+
+    final fRef = await query.get();
 
     if (fRef.docs.isNotEmpty) {
       return fRef.docs

@@ -15,9 +15,15 @@ class AnswerState extends Equatable {
 }
 
 class LoadAnswers extends AnswerEvent {
+  final bool loadMore;
   final Forum question;
+  final bool hardRefresh;
 
-  LoadAnswers(this.question);
+  LoadAnswers({
+    required this.question,
+    this.hardRefresh = false,
+    this.loadMore = false,
+  });
 }
 
 class AddAnswer extends AnswerEvent {
@@ -53,31 +59,35 @@ class AnswerInitial extends AnswerState {}
 class AnswerLoadInProgress extends AnswerState {}
 
 class AnswerLoadSuccess extends AnswerState {
-  final Forum? question;
-  final List<Answer>? answers;
+  final Forum question;
+  final bool hasReachedEnd;
   final bool answerUpdated;
+  final List<Answer> answers;
   final List<String>? uploadedImgUrls;
 
   AnswerLoadSuccess({
-    this.answers,
-    this.question,
+    required this.answers,
+    required this.question,
     this.uploadedImgUrls,
+    this.hasReachedEnd = false,
     this.answerUpdated = false,
   });
 
   @override
   List<Object?> get props =>
-      [answers, uploadedImgUrls, question, answerUpdated];
+      [hasReachedEnd, answers, uploadedImgUrls, question, answerUpdated];
 
   AnswerLoadSuccess copyWith({
     Forum? question,
     bool? answerUpdated,
+    bool? hasReachedEnd,
     List<Answer>? answers,
     List<String>? uploadedImgUrls,
   }) {
     return AnswerLoadSuccess(
       answers: answers ?? this.answers,
       question: question ?? this.question,
+      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
       answerUpdated: answerUpdated ?? this.answerUpdated,
       uploadedImgUrls: uploadedImgUrls ?? this.uploadedImgUrls,
     );
@@ -116,8 +126,55 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
   }
 
   Stream<AnswerState> _mapLoadAnswersEventToState(LoadAnswers event) async* {
+    // ------------------------------------------------------------------------
+    // RETURN EARLY
+    // IF hardRefresh == false AND loadMore == false AND FORUM IS ALREADY LOADED
+    // ------------------------------------------------------------------------
+    if (state is AnswerLoadSuccess && !event.hardRefresh && !event.loadMore) {
+      final curState = state as AnswerLoadSuccess;
+      if (curState.question.id! == event.question.id!) {
+        return;
+      }
+    }
+
+    // ------------------------------------------------------------------------
+    // LOAD MORE ITEMS
+    // IF FORUM IS ALREADY LOADED AND loadMore == true
+    // ------------------------------------------------------------------------
+    if (state is AnswerLoadSuccess && event.loadMore) {
+      final curState = state as AnswerLoadSuccess;
+
+      // If questionId doesn't match return
+      if (curState.question.id! != event.question.id!) {
+        return;
+      }
+
+      // ----------------------------------------------------------------------
+      // RETURN EARLY
+      // IF ALL THE AnswerS ARE LOADED i.e. hasReachedEnd == true
+      // ----------------------------------------------------------------------
+
+      if (curState.hasReachedEnd) {
+        return;
+      }
+
+      yield AnswerLoadInProgress();
+
+      final answers = await repo.getAnswers(
+          questionId: curState.question.id,
+          createdAt: curState.answers.last.createdAt!.millisecondsSinceEpoch);
+
+      final nAnswers = List<Answer>.from([...curState.answers, ...answers]);
+
+      yield curState.copyWith(
+        answers: nAnswers,
+        hasReachedEnd: answers.isEmpty,
+      );
+      return;
+    }
+
     yield AnswerLoadInProgress();
-    final answers = await repo.getAnswers(event.question.id);
+    final answers = await repo.getAnswers(questionId: event.question.id);
     yield AnswerLoadSuccess(question: event.question, answers: answers);
   }
 
@@ -147,15 +204,15 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
         createdAt: DateTime.now().toUtc(),
         updatedAt: DateTime.now().toUtc(),
       );
-      final addUserAvatar = curState.question!.recentUsersAvatar.length < 4;
+      final addUserAvatar = curState.question.recentUsersAvatar.length < 4;
 
       final answer = await repo.addAnswer(nAnswer, addUserAvatar);
 
-      final nAns = List<Answer>.from([...curState.answers!, answer]);
+      final nAns = List<Answer>.from([...curState.answers, answer]);
       yield curState.copyWith(
           answers: nAns,
-          question: curState.question!
-              .copyWith(ansCount: curState.question!.ansCount + 1));
+          question: curState.question
+              .copyWith(ansCount: curState.question.ansCount + 1));
     }
   }
 
@@ -183,7 +240,7 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
       await repo.updateAnswer(nAnswer);
 
       yield curState.copyWith(
-          answers: curState.answers!
+          answers: curState.answers
               .map((a) => a.id == event.answer!.id ? nAnswer : a)
               .toList());
     }
@@ -198,12 +255,12 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
 
       //[TODO:] remove currentAvatar from recentUsersAvatar
       final nAnswers =
-          curState.answers!.where((f) => f.id != event.answerId).toList();
+          curState.answers.where((f) => f.id != event.answerId).toList();
 
       yield curState.copyWith(
         answers: nAnswers,
-        question: curState.question!
-            .copyWith(ansCount: curState.question!.ansCount - 1),
+        question: curState.question
+            .copyWith(ansCount: curState.question.ansCount - 1),
       );
     }
   }
