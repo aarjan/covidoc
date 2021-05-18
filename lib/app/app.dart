@@ -45,8 +45,8 @@ class App extends StatelessWidget {
           elevation: 1,
           color: AppColors.DEFAULT,
           brightness: Brightness.dark,
-          systemOverlayStyle: SystemUiOverlayStyle(
-            statusBarColor: Colors.black.withOpacity(0.2),
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
             statusBarBrightness: Brightness.light,
           ),
           titleTextStyle: AppFonts.SEMIBOLD_WHITE_16,

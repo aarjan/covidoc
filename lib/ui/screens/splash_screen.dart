@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:covidoc/utils/const/const.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class SplashScreen extends StatelessWidget {
   static const ROUTE_NAME = '/splash';
@@ -18,27 +19,8 @@ class SplashScreen extends StatelessWidget {
           child: Column(
             children: <Widget>[
               const Spacer(),
-              const Icon(
-                Icons.healing,
-                size: 48,
-                color: Colors.white,
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-              Text(
-                AppConst.APP_NAME,
-                style: AppFonts.SEMIBOLD_WHITE_24,
-              ),
-              const SizedBox(
-                height: 5,
-              ),
-              Expanded(
-                child: Text(
-                  'Doctors at service',
-                  style: AppFonts.LIGHT_WHITE_14,
-                ),
-              ),
+              SvgPicture.asset('assets/logo.svg'),
+              const Spacer(),
               Text(
                 AppConst.APP_VERSION,
                 style: AppFonts.SEMIBOLD_WHITE_11,

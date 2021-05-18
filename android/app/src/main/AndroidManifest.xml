@@ -6,8 +6,10 @@
   <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
 
    <application
+        android:name="io.flutter.app.FlutterApplication"
         android:label="Covidoc"
         android:icon="@mipmap/ic_launcher"
+        android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         android:requestLegacyExternalStorage="true"
         >
         <activity
