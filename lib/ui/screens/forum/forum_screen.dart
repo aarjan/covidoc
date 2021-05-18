@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:covidoc/ui/router.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
@@ -28,8 +26,8 @@ class ForumScreen extends StatefulWidget {
 class _ForumScreenState extends State<ForumScreen> {
   List<Forum>? _forums;
   late bool _showAddBtn;
-  bool _isLoading = false;
   String _category = 'All';
+  bool _isLoading = false;
   late ScrollController _scrollController;
   final _categories = ['All', 'Category1', 'Category2', 'Category3'];
 
@@ -45,28 +43,28 @@ class _ForumScreenState extends State<ForumScreen> {
     // ------------------------------------------------------------------------
     _scrollController = ScrollController();
     _scrollController.addListener(() {
-      if (_scrollController.position.userScrollDirection ==
-              ScrollDirection.reverse &&
-          !_showAddBtn) {
+      final _direction = _scrollController.position.userScrollDirection;
+
+      if (_direction == ScrollDirection.reverse && !_showAddBtn) {
         setState(() {
           _showAddBtn = true;
         });
       }
-      if (_scrollController.position.userScrollDirection ==
-              ScrollDirection.forward &&
-          _showAddBtn) {
+      if (_direction == ScrollDirection.forward && _showAddBtn) {
         setState(() {
           _showAddBtn = false;
         });
       }
 
       // ----------------------------------------------------------------------
-      // FETCH MORE ITEMS WHEN REACHED THE BOTTOM OF THE SCREEN
+      // FETCH MORE ITEMS WHEN REACHED THE BOTTOM (90%) OF THE SCREEN
       // ----------------------------------------------------------------------
       final maxExtent = _scrollController.position.maxScrollExtent * 0.9;
-      if (_scrollController.position.pixels > maxExtent && !_isLoading) {
-        // context.read<ForumBloc>().add(LoadForum(hardRefresh: true));
-        log('exceed!');
+      if (_scrollController.position.pixels > maxExtent &&
+          !_isLoading &&
+          _direction == ScrollDirection.reverse) {
+        _isLoading = true;
+        context.read<ForumBloc>().add(LoadForum(loadMore: true));
       }
     });
 
@@ -86,6 +84,7 @@ class _ForumScreenState extends State<ForumScreen> {
         }
       }, builder: (context, state) {
         if (state is ForumLoadSuccess) {
+          _isLoading = false;
           _forums = state.forums;
         }
         return Stack(
@@ -140,9 +139,12 @@ class _ForumScreenState extends State<ForumScreen> {
                               onItemSelected: (val) {
                                 _category = val;
                                 setState(() {});
-                                context
-                                    .read<ForumBloc>()
-                                    .add(LoadForum(category: val));
+                                context.read<ForumBloc>().add(
+                                      LoadForum(
+                                        category: val,
+                                        hardRefresh: true,
+                                      ),
+                                    );
                               },
                             ),
                           ),
@@ -167,13 +169,6 @@ class _ForumScreenState extends State<ForumScreen> {
                           padding: EdgeInsets.zero,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (context, index) {
-                            // if (index + 1 == _forums!.length &&
-                            //     !state.hasReachedEnd) {
-                            //   context
-                            //       .read<ForumBloc>()
-                            //       .add(LoadForum(hardRefresh: true));
-                            // }
-
                             return QuestionItem(
                               question: _forums![index],
                               onTap: () {

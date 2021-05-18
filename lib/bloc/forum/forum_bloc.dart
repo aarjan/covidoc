@@ -37,11 +37,12 @@ class ReportForum extends ForumEvent {
 class LoadForum extends ForumEvent {
   final String? category;
   final bool hardRefresh;
+  final bool loadMore;
 
-  LoadForum({this.category, this.hardRefresh = false});
+  LoadForum({this.category, this.hardRefresh = false, this.loadMore = false});
 
   @override
-  List<Object?> get props => [category, hardRefresh];
+  List<Object?> get props => [category, hardRefresh, loadMore];
 }
 
 class AddImages extends ForumEvent {
@@ -186,14 +187,27 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
     // default categories; [TODO]: Add dynamic categories
     final categories = ['Category1', 'Category2', 'Category3'];
 
-    if (state is ForumLoadSuccess) {
+    // ------------------------------------------------------------------------
+    // RETURN EARLY
+    // IF hardRefresh == false AND loadMore == false AND FORUM IS ALREADY LOADED
+    // ------------------------------------------------------------------------
+    if (state is ForumLoadSuccess && !event.hardRefresh && !event.loadMore) {
+      return;
+    }
+
+    // ------------------------------------------------------------------------
+    // LOAD MORE ITEMS
+    // IF FORUM IS ALREADY LOADED AND loadMore == true
+    // ------------------------------------------------------------------------
+    if (state is ForumLoadSuccess && event.loadMore) {
       final curState = state as ForumLoadSuccess;
 
-      if (curState.hasReachedEnd) {
-        return;
-      }
+      // ----------------------------------------------------------------------
+      // RETURN EARLY
+      // IF ALL THE FORUMS ARE LOADED i.e. hasReachedEnd == true
+      // ----------------------------------------------------------------------
 
-      if (!event.hardRefresh) {
+      if (curState.hasReachedEnd) {
         return;
       }
 
