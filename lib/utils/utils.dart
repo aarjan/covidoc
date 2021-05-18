@@ -91,7 +91,7 @@ extension ShowContextToast on BuildContext {
   void toast(
     String msg, {
     SnackBarBehavior? behavior,
-    Duration duration = const Duration(seconds: 2),
+    int? seconds,
   }) {
     ScaffoldMessenger.of(this).removeCurrentSnackBar();
     ScaffoldMessenger.of(this).showSnackBar(SnackBar(
@@ -100,7 +100,7 @@ extension ShowContextToast on BuildContext {
         textAlign: (behavior != null) ? TextAlign.center : TextAlign.start,
       ),
       behavior: behavior,
-      duration: duration,
+      duration: Duration(seconds: seconds ?? 2),
     ));
   }
 

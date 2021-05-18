@@ -72,7 +72,11 @@ class _ForumScreenState extends State<ForumScreen>
         automaticallyImplyLeading: false,
         title: Text('Discuss', style: AppFonts.SEMIBOLD_WHITE_16),
       ),
-      body: BlocBuilder<ForumBloc, ForumState>(builder: (context, state) {
+      body: BlocConsumer<ForumBloc, ForumState>(listener: (context, state) {
+        if (state is ForumLoadSuccess && state.msg != null) {
+          context.toast(state.msg!, seconds: 4);
+        }
+      }, builder: (context, state) {
         if (state is ForumLoadSuccess) {
           return RefreshIndicator(
             onRefresh: () async {

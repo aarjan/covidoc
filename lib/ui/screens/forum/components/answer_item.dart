@@ -159,6 +159,17 @@ class _DiscussionPopUpMenu extends StatelessWidget {
               builder: (context) {
                 return ReportForumModal(
                   onSubmit: (String report, String reportType) {
+                    context.read<ForumBloc>().add(
+                          ReportForum(
+                              report: report,
+                              reportType: reportType,
+                              details: {
+                                'answerId': answer.id!,
+                                'postType': 'ForumAnswer',
+                                'forumId': answer.questionId!,
+                              }),
+                        );
+
                     Navigator.pop(context);
                   },
                 );

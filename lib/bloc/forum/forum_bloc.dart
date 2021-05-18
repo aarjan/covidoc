@@ -6,13 +6,32 @@ import 'package:equatable/equatable.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ForumEvent extends Equatable {
+  const ForumEvent();
+
   @override
   List<Object?> get props => [];
 }
 
 class ForumState extends Equatable {
+  const ForumState();
+
   @override
   List<Object?> get props => [];
+}
+
+class ReportForum extends ForumEvent {
+  final String report;
+  final String reportType;
+  final Map<String, String> details;
+
+  const ReportForum({
+    required this.report,
+    required this.details,
+    required this.reportType,
+  });
+
+  @override
+  List<Object?> get props => [report, reportType, details];
 }
 
 class LoadForum extends ForumEvent {
@@ -63,12 +82,14 @@ class ForumInitial extends ForumState {}
 class ForumLoadInProgress extends ForumState {}
 
 class ForumLoadSuccess extends ForumState {
+  final String? msg;
   final bool hasReachedEnd;
   final List<Forum> forums;
   final List<String>? categories;
   final List<String>? uploadedImgUrls;
 
   ForumLoadSuccess({
+    this.msg,
     this.categories,
     this.uploadedImgUrls,
     required this.forums,
@@ -77,18 +98,20 @@ class ForumLoadSuccess extends ForumState {
 
   @override
   List<Object?> get props =>
-      [forums, categories, uploadedImgUrls, hasReachedEnd];
+      [msg, forums, categories, uploadedImgUrls, hasReachedEnd];
 
   ForumLoadSuccess copyWith({
+    String? msg,
     List<Forum>? forums,
     bool? hasReachedEnd,
     List<String>? categories,
     List<String>? uploadedImgUrls,
   }) {
     return ForumLoadSuccess(
-      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
+      msg: msg ?? this.msg,
       forums: forums ?? this.forums,
       categories: categories ?? this.categories,
+      hasReachedEnd: hasReachedEnd ?? this.hasReachedEnd,
       uploadedImgUrls: uploadedImgUrls ?? this.uploadedImgUrls,
     );
   }
@@ -124,7 +147,24 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
       case DeleteForum:
         yield* _mapDeleteForumEventToState(event as DeleteForum);
         break;
+      case ReportForum:
+        yield* _mapReportForumEventToState(event as ReportForum);
+        break;
       default:
+    }
+  }
+
+  Stream<ForumState> _mapReportForumEventToState(ReportForum event) async* {
+    if (state is ForumLoadSuccess) {
+      final curState = state as ForumLoadSuccess;
+      yield ForumLoadInProgress();
+
+      await repo.reportPost(
+        report: event.report,
+        details: event.details,
+        reportType: event.reportType,
+      );
+      yield curState.copyWith(msg: 'Thank you for the report!');
     }
   }
 

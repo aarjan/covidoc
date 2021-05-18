@@ -4,11 +4,11 @@ import 'package:covidoc/utils/const/const.dart';
 import 'package:covidoc/ui/widgets/default_button.dart';
 
 class ReportForumModal extends StatefulWidget {
-  final void Function(String report, String reporType)? onSubmit;
+  final void Function(String report, String reporType) onSubmit;
 
   const ReportForumModal({
     Key? key,
-    this.onSubmit,
+    required this.onSubmit,
   }) : super(key: key);
 
   @override
@@ -16,9 +16,9 @@ class ReportForumModal extends StatefulWidget {
 }
 
 class _ReportBottomSheetState extends State<ReportForumModal> {
+  String _report = '';
   String _reportType = '';
   bool otherReason = false;
-  String _report = '';
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -115,7 +115,7 @@ class _ReportBottomSheetState extends State<ReportForumModal> {
               onTap: () {
                 _formKey.currentState!.save();
                 if (_formKey.currentState!.validate()) {
-                  widget.onSubmit!(_report, _reportType);
+                  widget.onSubmit(_report, _reportType);
                 }
               },
             )),
@@ -134,7 +134,7 @@ class _ReportBottomSheetState extends State<ReportForumModal> {
     return InkWell(
       onTap: () {
         if (!otherSelected) {
-          widget.onSubmit!('', reportType);
+          widget.onSubmit('', reportType);
         } else {
           setState(() {
             _reportType = reportType;
