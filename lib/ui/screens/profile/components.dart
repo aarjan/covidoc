@@ -39,6 +39,7 @@ class CovidStatusView extends StatelessWidget {
       children: [
         ListTile(
           dense: true,
+          contentPadding: EdgeInsets.zero,
           onTap: () => onTap!(0),
           title: Text(
             covidStatus[0],
@@ -54,6 +55,7 @@ class CovidStatusView extends StatelessWidget {
         const Divider(),
         ListTile(
           dense: true,
+          contentPadding: EdgeInsets.zero,
           onTap: () => onTap!(1),
           title: Text(
             covidStatus[1],
@@ -69,6 +71,7 @@ class CovidStatusView extends StatelessWidget {
         const Divider(),
         ListTile(
           dense: true,
+          contentPadding: EdgeInsets.zero,
           onTap: () => onTap!(2),
           title: Text(
             covidStatus[2],
@@ -136,7 +139,6 @@ class PopupBtn extends StatelessWidget {
       itemBuilder: (context) => [
         const PopupMenuItem(
           value: 'logout',
-          height: 12,
           child: Text('Logout'),
         ),
       ],

@@ -40,10 +40,16 @@ class App extends StatelessWidget {
             backgroundColor: AppColors.DEFAULT,
           ),
         ),
-        appBarTheme: const AppBarTheme(
+        appBarTheme: AppBarTheme(
           elevation: 1,
-          color: AppColors.WHITE,
-          brightness: Brightness.light,
+          color: AppColors.DEFAULT,
+          brightness: Brightness.dark,
+          systemOverlayStyle: SystemUiOverlayStyle(
+            statusBarColor: Colors.black.withOpacity(0.2),
+            statusBarBrightness: Brightness.light,
+          ),
+          titleTextStyle: AppFonts.SEMIBOLD_WHITE_16,
+          toolbarTextStyle: AppFonts.SEMIBOLD_WHITE_16,
         ),
       ),
       initialRoute: '/',
@@ -109,6 +115,7 @@ Widget runWidget() {
         BlocProvider(
           create: (context) => AnswerBloc(forumRepo),
         ),
+        BlocProvider(create: (context) => TabBloc()),
       ],
       child: const App(),
     ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'package:covidoc/config.dart';
 import 'package:covidoc/bloc/bloc.dart';
 import 'package:covidoc/utils/utils.dart';
 import 'package:covidoc/bloc/blog/blog.dart';
@@ -50,11 +51,12 @@ class UpperHalf extends StatelessWidget {
       height: screenHeight(context) / 2,
       padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
       child: Stack(
+        alignment: Alignment.center,
         children: [
-          Positioned(
-            top: 50,
-            left: 0,
+          Align(
+            alignment: Alignment.centerLeft,
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
@@ -73,7 +75,7 @@ class UpperHalf extends StatelessWidget {
             ),
           ),
           Positioned(
-              top: 50,
+              top: AppConfig().blockHeight(50),
               right: 0,
               child: Image.asset('assets/dashboard/doctor_greet.png')),
           Positioned(
@@ -92,7 +94,7 @@ class UpperHalf extends StatelessWidget {
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(10),
                   ),
-                  padding: const EdgeInsets.all(22),
+                  padding: EdgeInsets.all(AppConfig().blockHeight(22)),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

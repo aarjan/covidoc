@@ -69,7 +69,8 @@ class _ForumScreenState extends State<ForumScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Discuss', style: AppFonts.SEMIBOLD_BLACK3_16),
+        automaticallyImplyLeading: false,
+        title: Text('Discuss', style: AppFonts.SEMIBOLD_WHITE_16),
       ),
       body: BlocBuilder<ForumBloc, ForumState>(builder: (context, state) {
         if (state is ForumLoadSuccess) {

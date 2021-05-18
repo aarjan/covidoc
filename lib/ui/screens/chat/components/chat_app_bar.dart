@@ -31,7 +31,7 @@ class ChatAppBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: <Widget>[
           IconButton(
             onPressed: () {
@@ -76,12 +76,10 @@ class ChatAppBar extends StatelessWidget {
                           '$deleteCount',
                           style: AppFonts.MEDIUM_BLACK3_18,
                         )),
-                        Expanded(
-                          child: IconButton(
-                            onPressed: onDelete,
-                            icon:
-                                const Icon(Icons.delete, color: Colors.black54),
-                          ),
+                        const Spacer(),
+                        IconButton(
+                          onPressed: onDelete,
+                          icon: const Icon(Icons.delete, color: Colors.black54),
                         ),
                       ],
                     ),

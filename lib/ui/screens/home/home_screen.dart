@@ -19,46 +19,43 @@ class HomeScreen extends StatelessWidget {
         ? (b.state as UserLoadSuccess).user
         : null);
 
-    return BlocProvider(
-      create: (context) => TabBloc()..add(const OnTabChanged(0)),
-      child: BlocBuilder<TabBloc, TabState>(
-        builder: (context, state) {
-          return Scaffold(
-            body: Builder(builder: (context) {
-              switch (state) {
-                case TabState.DASHBOARD:
-                  return DashboardScreen(
-                    user: user,
-                  );
-                case TabState.CHAT:
-                  return user == null ||
-                          user.type == describeEnum(UserType.Patient)
-                      ? PatChatListScreen(
-                          isAuthenticated: isAuthenticated,
-                        )
-                      : const DocChatListScreen();
+    return BlocBuilder<TabBloc, TabState>(
+      builder: (context, state) {
+        return Scaffold(
+          body: Builder(builder: (context) {
+            switch (state) {
+              case TabState.DASHBOARD:
+                return DashboardScreen(
+                  user: user,
+                );
+              case TabState.CHAT:
+                return user == null ||
+                        user.type == describeEnum(UserType.Patient)
+                    ? PatChatListScreen(
+                        isAuthenticated: isAuthenticated,
+                      )
+                    : const DocChatListScreen();
 
-                case TabState.FORUM:
-                  return ForumScreen(
-                    isAuthenticated: isAuthenticated,
-                  );
-                case TabState.PROFILE:
-                  return ProfileScreen(
-                    isAuthenticated: isAuthenticated,
-                  );
-                default:
-                  throw UnimplementedError();
-              }
-            }),
-            bottomNavigationBar: BottomNavBar(
-              selectedIndex: state.index,
-              onSelected: (index) {
-                context.read<TabBloc>().add(OnTabChanged(index));
-              },
-            ),
-          );
-        },
-      ),
+              case TabState.FORUM:
+                return ForumScreen(
+                  isAuthenticated: isAuthenticated,
+                );
+              case TabState.PROFILE:
+                return ProfileScreen(
+                  isAuthenticated: isAuthenticated,
+                );
+              default:
+                throw UnimplementedError();
+            }
+          }),
+          bottomNavigationBar: BottomNavBar(
+            selectedIndex: state.index,
+            onSelected: (index) {
+              context.read<TabBloc>().add(OnTabChanged(index));
+            },
+          ),
+        );
+      },
     );
   }
 }

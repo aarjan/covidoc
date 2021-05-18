@@ -182,6 +182,9 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ),
                       IconButton(
+                        padding: const EdgeInsets.only(left: 5),
+                        constraints:
+                            const BoxConstraints(minHeight: 24, minWidth: 24),
                         icon: const Icon(Icons.close_rounded),
                         onPressed: () {
                           _clearReqmsg = true;

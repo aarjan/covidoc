@@ -237,7 +237,7 @@ class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
                                           'assets/forum/attach.svg'),
                                     ),
                                     const SizedBox(
-                                      width: 4,
+                                      width: 10,
                                     ),
                                     if (showCamera)
                                       GestureDetector(
@@ -249,7 +249,7 @@ class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
                                       ),
                                     if (showCamera)
                                       const SizedBox(
-                                        width: 4,
+                                        width: 10,
                                       ),
                                   ],
                                 )),

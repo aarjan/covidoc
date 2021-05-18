@@ -26,9 +26,10 @@ class _DocChatListScreenState extends State<DocChatListScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
         title: Text(
           'Conversations',
-          style: AppFonts.SEMIBOLD_BLACK3_16,
+          style: AppFonts.SEMIBOLD_WHITE_16,
         ),
       ),
       body: MultiBlocProvider(

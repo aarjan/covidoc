@@ -74,7 +74,8 @@ class _ProfileScreenState extends State<ProfileScreen> {
     return Scaffold(
       appBar: !widget.isAuthenticated
           ? AppBar(
-              title: const Text('User Profile'),
+              automaticallyImplyLeading: false,
+              title: Text('User Profile', style: AppFonts.SEMIBOLD_WHITE_16),
             )
           : null,
       body: BlocConsumer<UserBloc, UserState>(
@@ -348,6 +349,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
           user.fullname!,
           style: AppFonts.BOLD_WHITE_18,
         ),
+        titlePadding: const EdgeInsetsDirectional.only(start: 16, bottom: 16),
         background: Stack(
           fit: StackFit.expand,
           children: [
