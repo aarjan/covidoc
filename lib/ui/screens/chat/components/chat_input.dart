@@ -124,8 +124,9 @@ class _ChatInputState extends State<ChatInput> with TickerProviderStateMixin {
 
   Future getImage(ImageSource source) async {
     final imgPicker = ImagePicker();
+
     final pickedFile =
-        await imgPicker.getImage(source: source, imageQuality: 80);
+        await imgPicker.getImage(source: source, imageQuality: 70);
 
     if (pickedFile != null) {
       setState(() {
