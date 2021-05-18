@@ -103,6 +103,10 @@ class _DiscussionPopUpMenu extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final user = context.select((UserBloc b) => (b.state is UserLoadSuccess)
+        ? (b.state as UserLoadSuccess).user
+        : null);
+
     return PopupMenuButton<String>(
       onSelected: (str) async {
         final isAuthenticated = context.read<AuthBloc>().state is Authenticated;
@@ -173,16 +177,18 @@ class _DiscussionPopUpMenu extends StatelessWidget {
       ),
       padding: EdgeInsets.zero,
       itemBuilder: (context) => [
-        const PopupMenuItem(
-          height: 36,
-          value: 'edit',
-          child: Text('Edit'),
-        ),
-        const PopupMenuItem(
-          height: 36,
-          value: 'delete',
-          child: Text('Delete'),
-        ),
+        if (user?.id == answer.addedById)
+          const PopupMenuItem(
+            height: 36,
+            value: 'edit',
+            child: Text('Edit'),
+          ),
+        if (user?.id == answer.addedById)
+          const PopupMenuItem(
+            height: 36,
+            value: 'delete',
+            child: Text('Delete'),
+          ),
         const PopupMenuItem(
           height: 36,
           value: 'report',
