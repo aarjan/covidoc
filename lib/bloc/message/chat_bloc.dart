@@ -6,13 +6,15 @@ import 'package:covidoc/model/repo/message_repo.dart';
 import 'package:covidoc/model/entity/message_request.dart';
 
 class ChatEvent extends Equatable {
+  const ChatEvent();
+
   @override
   List<Object> get props => [];
 }
 
 class LoadPatientChats extends ChatEvent {
   final bool hardRefresh;
-  LoadPatientChats({this.hardRefresh = false});
+  const LoadPatientChats({this.hardRefresh = false});
 
   @override
   List<Object> get props => [hardRefresh];
@@ -20,7 +22,7 @@ class LoadPatientChats extends ChatEvent {
 
 class LoadDoctorChats extends ChatEvent {
   final bool hardRefresh;
-  LoadDoctorChats({this.hardRefresh = false});
+  const LoadDoctorChats({this.hardRefresh = false});
 
   @override
   List<Object> get props => [hardRefresh];
@@ -30,7 +32,7 @@ class LoadChatRequests extends ChatEvent {}
 
 class UpdateMsgRequest extends ChatEvent {
   final MessageRequest request;
-  UpdateMsgRequest(this.request);
+  const UpdateMsgRequest(this.request);
 
   @override
   List<Object> get props => [request];
@@ -38,7 +40,7 @@ class UpdateMsgRequest extends ChatEvent {
 
 class DelMsgRequest extends ChatEvent {
   final String id;
-  DelMsgRequest(this.id);
+  const DelMsgRequest(this.id);
 
   @override
   List<Object> get props => [id];
@@ -47,7 +49,7 @@ class DelMsgRequest extends ChatEvent {
 class RequestChat extends ChatEvent {
   final MessageRequest request;
 
-  RequestChat(this.request);
+  const RequestChat(this.request);
 
   @override
   List<Object> get props => [request];
@@ -56,10 +58,25 @@ class RequestChat extends ChatEvent {
 class StartChat extends ChatEvent {
   final Chat chat;
 
-  StartChat(this.chat);
+  const StartChat(this.chat);
 
   @override
   List<Object> get props => [chat];
+}
+
+class ReportChat extends ChatEvent {
+  final String report;
+  final String reportType;
+  final Map<String, String> details;
+
+  const ReportChat({
+    required this.report,
+    required this.details,
+    required this.reportType,
+  });
+
+  @override
+  List<Object> get props => [report, reportType, details];
 }
 
 class ChatState extends Equatable {
@@ -72,6 +89,7 @@ class ChatInitial extends ChatState {}
 class ChatLoadInProgress extends ChatState {}
 
 class ChatLoadSuccess extends ChatState {
+  final String? msg;
   final AppUser? user;
   final Chat? chatWith;
   final String? userType;
@@ -81,6 +99,7 @@ class ChatLoadSuccess extends ChatState {
   final List<MessageRequest> requests;
 
   ChatLoadSuccess({
+    this.msg,
     this.user,
     this.userType,
     this.chatWith,
@@ -92,6 +111,7 @@ class ChatLoadSuccess extends ChatState {
 
   @override
   List<Object?> get props => [
+        msg,
         user,
         chats,
         chatWith,
@@ -102,6 +122,7 @@ class ChatLoadSuccess extends ChatState {
       ];
 
   ChatLoadSuccess copyWith({
+    String? msg,
     AppUser? user,
     Chat? chatWith,
     List<Chat>? chats,
@@ -111,6 +132,7 @@ class ChatLoadSuccess extends ChatState {
     List<MessageRequest>? requests,
   }) {
     return ChatLoadSuccess(
+      msg: msg ?? this.msg,
       user: user ?? this.user,
       chats: chats ?? this.chats,
       userType: userType ?? this.userType,
@@ -129,6 +151,9 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
   @override
   Stream<ChatState> mapEventToState(ChatEvent event) async* {
     switch (event.runtimeType) {
+      case ReportChat:
+        yield* _mapReportChatEventToState(event as ReportChat);
+        break;
       case StartChat:
         yield* _mapStartChatEventToState(event as StartChat);
         break;
@@ -151,6 +176,20 @@ class ChatBloc extends Bloc<ChatEvent, ChatState> {
         yield* _mapLoadRequestsEventToState(event as LoadChatRequests);
         break;
       default:
+    }
+  }
+
+  Stream<ChatState> _mapReportChatEventToState(ReportChat event) async* {
+    if (state is ChatLoadSuccess) {
+      final curState = state as ChatLoadSuccess;
+      yield ChatLoadInProgress();
+
+      await repo.reportPost(
+        report: event.report,
+        details: event.details,
+        reportType: event.reportType,
+      );
+      yield curState.copyWith(msg: 'Thank you for the report!');
     }
   }
 

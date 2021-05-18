@@ -229,4 +229,17 @@ class MessageRepo {
     final res = await ref.putFile(img);
     return res.ref.getDownloadURL();
   }
+
+  Future<void> reportPost({
+    required String report,
+    required Map<String, String> details,
+    required String reportType,
+  }) async {
+    final firestore = FirebaseFirestore.instance;
+    await firestore.collection('report').add({
+      'report': report,
+      'details': details,
+      'reportType': reportType,
+    });
+  }
 }
