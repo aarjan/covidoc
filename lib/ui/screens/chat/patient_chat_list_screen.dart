@@ -81,7 +81,7 @@ class _PatChatListScreenState extends State<PatChatListScreen>
           // i.e. _showAddBtn=true;  only when user state is loaded
           _user = state.user;
 
-          if (state.requests.isNotEmpty) {
+          if (state.requests.isNotEmpty || state.chats.isNotEmpty) {
             return RefreshIndicator(
               onRefresh: () async {
                 context
