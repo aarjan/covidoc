@@ -30,15 +30,14 @@ class AddQuestionView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'Add a new question',
+                  'Ask a new question',
                   style: AppFonts.MEDIUM_BLACK3_16,
                 ),
                 const SizedBox(height: 5),
                 Text(
-                  'Lorem ipsum dolor sit amet, '
-                  'consectetur adipisg elit. In in nisi sed odio',
+                  AppConst.ASK_QUESTION_TXT,
                   softWrap: true,
-                  maxLines: 3,
+                  maxLines: 4,
                   style: AppFonts.REGULAR_BLACK3_10,
                 )
               ],

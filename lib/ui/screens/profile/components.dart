@@ -25,13 +25,14 @@ class CovidStatusView extends StatelessWidget {
     if (!enabled) {
       return ListTile(
         dense: true,
+        contentPadding: EdgeInsets.zero,
         trailing: Text(
           covidStatus[currentStatus!],
-          style: AppFonts.MEDIUM_WHITE3_16,
+          style: AppFonts.MEDIUM_BLACK3_16,
         ),
         title: Text(
           'Covid Status',
-          style: AppFonts.MEDIUM_WHITE3_16,
+          style: AppFonts.MEDIUM_BLACK3_16,
         ),
       );
     }
@@ -43,7 +44,7 @@ class CovidStatusView extends StatelessWidget {
           onTap: () => onTap!(0),
           title: Text(
             covidStatus[0],
-            style: AppFonts.MEDIUM_WHITE3_16,
+            style: AppFonts.MEDIUM_BLACK3_16,
           ),
           trailing: Radio<int>(
             value: 0,
@@ -59,7 +60,7 @@ class CovidStatusView extends StatelessWidget {
           onTap: () => onTap!(1),
           title: Text(
             covidStatus[1],
-            style: AppFonts.MEDIUM_WHITE3_16,
+            style: AppFonts.MEDIUM_BLACK3_16,
           ),
           trailing: Radio<int>(
             value: 1,
@@ -75,7 +76,7 @@ class CovidStatusView extends StatelessWidget {
           onTap: () => onTap!(2),
           title: Text(
             covidStatus[2],
-            style: AppFonts.MEDIUM_WHITE3_16,
+            style: AppFonts.MEDIUM_BLACK3_16,
           ),
           trailing: Radio<int>(
             value: 2,

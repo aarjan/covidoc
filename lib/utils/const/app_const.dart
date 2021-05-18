@@ -21,6 +21,10 @@ class AppConst {
   static const String MSG_ERROR =
       'Your message should be atleast 50 chars long';
 
+  static const String ASK_QUESTION_TXT =
+      'This app is maintained by volunteers, '
+      'please be decent when you ask the questions';
+
   static const String POST_ANONYMOUS_TXT = 'Post as anonymous';
   static const String REQUEST_UPDATE_BTN_TXT = 'UPDATE MESSAGE';
   static const String REQUEST_SEND_BTN_TXT = 'SEND MESSAGE';
