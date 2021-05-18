@@ -77,7 +77,10 @@ class UpperHalf extends StatelessWidget {
           Positioned(
               top: AppConfig().blockHeight(50),
               right: 0,
-              child: Image.asset('assets/dashboard/doctor_greet.png')),
+              child: Image.asset(
+                'assets/dashboard/doctor_greet.png',
+                width: AppConfig().blockWidth(160),
+              )),
           Positioned(
             bottom: 0,
             left: 0,
