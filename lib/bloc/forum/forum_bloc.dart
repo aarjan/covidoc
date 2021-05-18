@@ -228,7 +228,11 @@ class ForumBloc extends Bloc<ForumEvent, ForumState> {
 
     yield ForumLoadInProgress();
     final forums = await repo.getForums(category: event.category);
-    yield ForumLoadSuccess(forums: forums, categories: categories);
+    yield ForumLoadSuccess(
+      forums: forums,
+      categories: categories,
+      hasReachedEnd: forums.isEmpty,
+    );
   }
 
   Stream<ForumState> _mapAddForumEventToState(AddForum event) async* {

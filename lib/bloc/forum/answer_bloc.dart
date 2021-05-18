@@ -151,7 +151,16 @@ class AnswerBloc extends Bloc<AnswerEvent, AnswerState> {
 
       // ----------------------------------------------------------------------
       // RETURN EARLY
-      // IF ALL THE AnswerS ARE LOADED i.e. hasReachedEnd == true
+      // IF THERE ARE NO ANSWERS IN THE CURRENT STATE
+      // ----------------------------------------------------------------------
+      if (curState.answers.isEmpty) {
+        yield curState.copyWith(hasReachedEnd: true);
+        return;
+      }
+
+      // ----------------------------------------------------------------------
+      // RETURN EARLY
+      // IF ALL THE ANSWERS ARE LOADED i.e. hasReachedEnd == true
       // ----------------------------------------------------------------------
 
       if (curState.hasReachedEnd) {
