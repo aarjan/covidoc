@@ -25,8 +25,7 @@ class ForumScreen extends StatefulWidget {
   _ForumScreenState createState() => _ForumScreenState();
 }
 
-class _ForumScreenState extends State<ForumScreen>
-    with TickerProviderStateMixin {
+class _ForumScreenState extends State<ForumScreen> {
   List<Forum>? _forums;
   late bool _showAddBtn;
   bool _isLoading = false;
@@ -39,7 +38,7 @@ class _ForumScreenState extends State<ForumScreen>
     super.initState();
     _showAddBtn = false;
 
-    // -----------------------------------------------------------------------
+    // ------------------------------------------------------------------------
     // SCROLLCONTROLLER IS USED TO SHOW/HIDE FAB ICON & ADDQUESTION CONTAINER
     // IF SCROLLDIRECTION IS REVERSE (SCROLL DOWN) FAB ICON IS DISPLAYED
     // IF SCROLLDIRECTION IS FORWARD (SCROLL UP) ADDQUESTION IS DISPLAYED
@@ -61,9 +60,9 @@ class _ForumScreenState extends State<ForumScreen>
         });
       }
 
-      // ------------------------------------------------------------------
+      // ----------------------------------------------------------------------
       // FETCH MORE ITEMS WHEN REACHED THE BOTTOM OF THE SCREEN
-      // ------------------------------------------------------------------
+      // ----------------------------------------------------------------------
       final maxExtent = _scrollController.position.maxScrollExtent * 0.9;
       if (_scrollController.position.pixels > maxExtent && !_isLoading) {
         // context.read<ForumBloc>().add(LoadForum(hardRefresh: true));
@@ -111,21 +110,16 @@ class _ForumScreenState extends State<ForumScreen>
                         height: 20,
                       ),
                       // ------------------------------------------------------
-                      // ANIMATEDSIZE WIDGET FOR ANIMATING ADD QUESTION
+                      // ADDQUESTION WIDGET FOR ADDING NEW QUESTION
                       // VISIBIBLE IF _showAddBtn == false
                       // ------------------------------------------------------
-                      AnimatedSize(
-                        vsync: this,
-                        curve: Curves.easeIn,
-                        duration: const Duration(milliseconds: 400),
-                        child: Visibility(
-                          visible: !_showAddBtn,
-                          child: AddQuestionView(
-                            onAdd: () {
-                              showAddQuestionModal(
-                                  context, widget.isAuthenticated);
-                            },
-                          ),
+                      Visibility(
+                        visible: !_showAddBtn,
+                        child: AddQuestionView(
+                          onAdd: () {
+                            showAddQuestionModal(
+                                context, widget.isAuthenticated);
+                          },
                         ),
                       ),
                       const SizedBox(
